@@ -69,7 +69,12 @@ func _integrate_forces(s):
 			direction = -direction
 			get_node("sprite").set_scale(Vector2(-direction, 2))
 		
-		lv.x = direction*WALK_SPEED
+		lv.x += direction*WALK_SPEED
+		
+		if (direction < 0 and lv.x < WALK_SPEED):
+			lv.x = -WALK_SPEED
+		elif (direction > 0 and lv.x > WALK_SPEED):
+			lv.x = WALK_SPEED
 	
 	s.set_linear_velocity(lv)
 

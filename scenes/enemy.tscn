@@ -4,9 +4,6 @@
 [ext_resource path="res://sprites/enemy_tigre.png" type="Texture" id=2]
 [ext_resource path="res://sfx/sound_hit.wav" type="Sample" id=3]
 
-
-
-
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
@@ -214,7 +211,7 @@ type_mask = 15
 
 [node name="sound" type="SamplePlayer2D" parent="."]
 
-params/volume_db = 2.0
+params/volume_db = -10.0
 params/pitch_scale = 1.0
 params/attenuation/min_distance = 1.0
 params/attenuation/max_distance = 2048.0

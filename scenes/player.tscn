@@ -520,7 +520,7 @@ transform/pos = Vector2( 31.2428, 4.08784 )
 
 config/polyphony = 1
 config/samples = ExtResource( 4 )
-default/volume_db = 3.0
+default/volume_db = -10.0
 default/pitch_scale = 1.0
 default/pan = 0.0
 default/depth = 0.0

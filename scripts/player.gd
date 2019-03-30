@@ -57,11 +57,8 @@ func update_health(value):
 	elif (global.health > 10):
 		global.health = 10
 	
-	if (global.health > 0):
-		get_node("screen/hud/health").set_hidden(false)
+	if (global.health >= 0):
 		get_node("screen/hud/health").set_texture(imgs_health[global.health])
-	else:
-		get_node("screen/hud/health").set_hidden(true)
 
 func update_bullets(value):
 	global.bullets += value
@@ -71,11 +68,8 @@ func update_bullets(value):
 	elif (global.bullets > 10):
 		global.bullets = 10	
 	
-	if (global.bullets > 0):
-		get_node("screen/hud/bullets").set_hidden(false)
+	if (global.bullets >= 0):
 		get_node("screen/hud/bullets").set_texture(imgs_bullets[global.bullets])
-	else:
-		get_node("screen/hud/bullets").set_hidden(true)
 
 func update_bullet_type(type):
 	global.bullet_type = type
@@ -236,12 +230,12 @@ func _integrate_forces(s):
 		if (cc and cc extends enemy_class):
 			got_damage(-1)
 			
-			if (siding_left):
-				lv.x -= MAX_SPEED
+			if (can_wall_jump_right):
+				lv.x = -MAX_SPEED*0.5
 			else:
-				lv.x = MAX_SPEED
+				lv.x = MAX_SPEED*0.5
 			
-			lv.y = -JUMP_VELOCITY
+			lv.y = -JUMP_VELOCITY*0.5
 			grounded = false
 			move_control = false
 	
@@ -501,9 +495,9 @@ func _ready():
 	
 	dust = get_node("dust")
 	
-	for i in range(10):
-		imgs_health[i+1] = load("res://sprites/hud_health_%02d.png"%(i+1))
-		imgs_bullets[i+1] = load("res://sprites/hud_bullets_%02d.png"%(i+1))
+	for i in range(11):
+		imgs_health[i] = load("res://sprites/hud_health_%02d.png"%(i))
+		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
 
 func _on_timer_damage_timeout():
 	disable_damage = false

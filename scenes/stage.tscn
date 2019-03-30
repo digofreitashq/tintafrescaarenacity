@@ -13,7 +13,7 @@
 [ext_resource path="res://sprites/enemy_cachorro.png" type="Texture" id=11]
 [ext_resource path="res://sprites/enemy_pato.png" type="Texture" id=12]
 [ext_resource path="res://scenes/player.tscn" type="PackedScene" id=13]
-[ext_resource path="res://bgm/music.ogg" type="AudioStream" id=14]
+[ext_resource path="res://bgm/tintafresca_stage1.ogg" type="AudioStream" id=14]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -25,7 +25,7 @@ extents = Vector2( 10, 10 )
 custom_solver_bias = 0.0
 extents = Vector2( 10, 10 )
 
-[sub_resource type="ConvexPolygonShape2D" id=6]
+[sub_resource type="ConvexPolygonShape2D" id=3]
 
 custom_solver_bias = 0.0
 points = Vector2Array( 830.122, 962.277, 909.345, 1046.34, 857.624, 1082.87, 790.034, 1052.95 )
@@ -126,7 +126,7 @@ shapes/2/trigger = false
 shapes/3/shape = SubResource( 2 )
 shapes/3/transform = Matrix32( -3.20299, 0, 0, -14.3007, 1133.46, 686.328 )
 shapes/3/trigger = false
-shapes/4/shape = SubResource( 6 )
+shapes/4/shape = SubResource( 3 )
 shapes/4/transform = Matrix32( 1, 0, 0, 1, -0.511597, 29.5371 )
 shapes/4/trigger = false
 shapes/5/shape = SubResource( 4 )
@@ -278,7 +278,7 @@ mass = 3.57143
 stream/stream = ExtResource( 14 )
 stream/play = true
 stream/loop = true
-stream/volume_db = 0.5
+stream/volume_db = 0.0
 stream/autoplay = true
 stream/paused = false
 stream/loop_restart_time = 0.0
