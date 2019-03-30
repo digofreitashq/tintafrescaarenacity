@@ -25,7 +25,7 @@ extents = Vector2( 10, 10 )
 custom_solver_bias = 0.0
 extents = Vector2( 10, 10 )
 
-[sub_resource type="ConvexPolygonShape2D" id=3]
+[sub_resource type="ConvexPolygonShape2D" id=6]
 
 custom_solver_bias = 0.0
 points = Vector2Array( 830.122, 962.277, 909.345, 1046.34, 857.624, 1082.87, 790.034, 1052.95 )
@@ -33,7 +33,7 @@ points = Vector2Array( 830.122, 962.277, 909.345, 1046.34, 857.624, 1082.87, 790
 [sub_resource type="RectangleShape2D" id=4]
 
 custom_solver_bias = 0.0
-extents = Vector2( 10, 10 )
+extents = Vector2( 12.4596, 12.1284 )
 
 [sub_resource type="RectangleShape2D" id=5]
 
@@ -49,11 +49,12 @@ script/script = ExtResource( 1 )
 
 scroll/base_scale = Vector2( 1, 0 )
 
-[node name="tilemap_layer1" type="TileMap" parent="."]
+[node name="tilemap_32" type="TileMap" parent="."]
 
+transform/scale = Vector2( 2, 2 )
 mode = 0
 tile_set = ExtResource( 3 )
-cell/size = Vector2( 64, 64 )
+cell/size = Vector2( 32, 32 )
 cell/quadrant_size = 16
 cell/custom_transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 cell/half_offset = 2
@@ -65,16 +66,17 @@ collision/bounce = 0.0
 collision/layers = 1
 collision/mask = 1
 occluder/light_mask = 1
-tile_data = IntArray( 524294, 25, 524295, 26, 524296, 26, 524297, 26, 524298, 26, 524299, 26, 524300, 27, 589830, 89, 589831, 90, 589832, 90, 589833, 90, 589834, 98, 589835, 90, 589836, 91, 720895, 17, 655360, 19, 655361, 62, 655362, 62, 655363, 62, 655364, 62, 655365, 62, 655366, 97, 655367, 98, 655368, 98, 655369, 98, 655370, 98, 655371, 98, 655372, 99, 786431, 106, 720896, 107, 720900, 69, 720901, 70, 720902, 89, 720903, 97, 720904, 98, 720905, 98, 720906, 98, 720907, 99, 720908, 91, 851967, 114, 786432, 115, 786437, 78, 786438, 89, 786439, 90, 786440, 92, 786441, 90, 786442, 92, 786443, 90, 786444, 91, 917503, 114, 851968, 115, 851973, 78, 851974, 89, 851975, 90, 851976, 92, 851977, 36, 851978, 92, 851979, 90, 851980, 91, 983039, 114, 917504, 115, 917509, 78, 917510, 97, 917511, 98, 917512, 100, 917513, 44, 917514, 100, 917515, 98, 917516, 99, 1048575, 114, 983040, 115, 983041, 2, 983042, 2, 983043, 1, 983044, 2, 983045, 2, 983046, 2, 983047, 2, 983048, 4, 983049, 1, 983050, 2, 983051, 3, 983052, 3, 983053, 9, 983054, 9, 983055, 9, 983056, 9, 983057, 9, 1114111, 114, 1048576, 115, 1048577, 9, 1048578, 9, 1048579, 9, 1048580, 9, 1048581, 9, 1048582, 9, 1048583, 9, 1048584, 9, 1048585, 9, 1048586, 9, 1048587, 9, 1048588, 9, 1048589, 9, 1048590, 1, 1048591, 1, 1048592, 1, 1048593, 9, 1179647, 122, 1114112, 123, 1114113, 9, 1114114, 9, 1114115, 9, 1114116, 9, 1114117, 9, 1114118, 9, 1114119, 9, 1114120, 9, 1114121, 9, 1114122, 9, 1114123, 9, 1114124, 9, 1114125, 9, 1114126, 9, 1114127, 9, 1114128, 9, 1114129, 9, 1245183, 9, 1179648, 9, 1179649, 9, 1179650, 9, 1179651, 9, 1179652, 9, 1179653, 9, 1179654, 9, 1179655, 9, 1179656, 9, 1179657, 9, 1179658, 9, 1179659, 9, 1179660, 9, 1179661, 9, 1179662, 9, 1179663, 9, 1179664, 9, 1179665, 9 )
+tile_data = IntArray( 720893, 130, 720894, 130, 720895, 130, 655360, 131, 786429, 134, 786430, 134, 786431, 134, 720896, 135, 851965, 134, 851966, 134, 851967, 134, 786432, 135, 786448, 37, 786449, 38, 786450, 39, 917501, 134, 917502, 134, 917503, 134, 851968, 135, 851984, 41, 851985, 42, 851986, 43, 983037, 134, 983038, 134, 983039, 134, 917504, 135, 917520, 41, 917521, 42, 917522, 43, 1048573, 134, 1048574, 134, 1048575, 134, 983040, 135, 983041, 1, 983042, 2, 983043, 2, 983044, 2, 983045, 2, 983046, 1, 983047, 2, 983048, 2, 983049, 2, 983050, 1, 983051, 2, 983052, 2, 983053, 6, 983056, 41, 983057, 42, 983058, 43, 1114109, 138, 1114110, 138, 1114111, 138, 1048576, 139, 1048589, 7, 1048590, 1, 1048591, 3, 1048592, 45, 1048593, 46, 1048594, 47 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="tilemap_layer2" type="TileMap" parent="."]
+[node name="tilemap_16" type="TileMap" parent="."]
 
+transform/scale = Vector2( 2, 2 )
 mode = 0
 tile_set = ExtResource( 3 )
-cell/size = Vector2( 64, 64 )
+cell/size = Vector2( 32, 32 )
 cell/quadrant_size = 16
 cell/custom_transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 cell/half_offset = 2
@@ -86,7 +88,7 @@ collision/bounce = 0.0
 collision/layers = 1
 collision/mask = 1
 occluder/light_mask = 1
-tile_data = IntArray( 589830, 88, 589834, 90, 655366, 88, 720902, 88, 720903, 106, 720904, 106, 720905, 103, 720906, 104, 786438, 88, 786439, 95, 786440, 64, 786443, 79, 851968, 101, 851974, 88, 851975, 95, 851976, 72, 851978, 102, 851979, 87, 917510, 96, 917511, 95, 917515, 95, 983053, 128, 1048589, 125 )
+tile_data = IntArray( 720893, 130, 720894, 130, 720895, 130, 655360, 131, 786429, 134, 786430, 134, 786431, 134, 720896, 135, 851965, 134, 851966, 134, 851967, 134, 786432, 135, 786448, 37, 786449, 38, 786450, 39, 917501, 134, 917502, 134, 917503, 134, 851968, 135, 851984, 41, 851985, 42, 851986, 43, 983037, 134, 983038, 134, 983039, 134, 917504, 135, 917520, 41, 917521, 42, 917522, 43, 1048573, 134, 1048574, 134, 1048575, 134, 983040, 135, 983041, 1, 983042, 2, 983043, 2, 983044, 2, 983045, 2, 983046, 1, 983047, 2, 983048, 2, 983049, 2, 983050, 1, 983051, 2, 983052, 2, 983053, 6, 983056, 41, 983057, 42, 983058, 43, 1114109, 138, 1114110, 138, 1114111, 138, 1048576, 139, 1048589, 7, 1048590, 1, 1048591, 3, 1048592, 45, 1048593, 46, 1048594, 47 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -113,10 +115,10 @@ __meta__ = {
 
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Matrix32( 46.1391, 0, 0, 10.2743, 372.426, 1065.18 )
+shapes/0/transform = Matrix32( 46.1391, 0, 0, 10.2743, 376.97, 1092.44 )
 shapes/0/trigger = false
 shapes/1/shape = SubResource( 1 )
-shapes/1/transform = Matrix32( 21.9476, 0, 0, 6.77654, 1001.11, 1100.05 )
+shapes/1/transform = Matrix32( 21.9476, 0, 0, 6.77654, 1012.47, 1134.13 )
 shapes/1/trigger = false
 shapes/2/shape = SubResource( 2 )
 shapes/2/transform = Matrix32( -6.51632, 0, 0, -23.3711, -1.49314, 871.2 )
@@ -124,8 +126,8 @@ shapes/2/trigger = false
 shapes/3/shape = SubResource( 2 )
 shapes/3/transform = Matrix32( -3.20299, 0, 0, -14.3007, 1133.46, 686.328 )
 shapes/3/trigger = false
-shapes/4/shape = SubResource( 3 )
-shapes/4/transform = Matrix32( 1, 0, 0, 1, 1.7605, 6.10352e-05 )
+shapes/4/shape = SubResource( 6 )
+shapes/4/transform = Matrix32( 1, 0, 0, 1, -0.511597, 29.5371 )
 shapes/4/trigger = false
 shapes/5/shape = SubResource( 4 )
 shapes/5/transform = Matrix32( 7.8624, 0, 0, 14.0139, 1121.62, 940.708 )
@@ -145,25 +147,19 @@ __meta__ = {
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
 
-transform/pos = Vector2( 372.426, 1065.18 )
+transform/pos = Vector2( 376.97, 1092.44 )
 transform/scale = Vector2( 46.1391, 10.2743 )
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="CollisionShape2D1" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
 
-transform/pos = Vector2( 1001.11, 1100.05 )
+transform/pos = Vector2( 1012.47, 1134.13 )
 transform/scale = Vector2( 21.9476, 6.77654 )
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 1
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="CollisionShape2D 2" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
 
@@ -189,14 +185,11 @@ __meta__ = {
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collisions/StaticBody2D"]
 
-transform/pos = Vector2( 1.7605, 6.10352e-05 )
+transform/pos = Vector2( -0.511597, 29.5371 )
 build_mode = 0
 polygon = Vector2Array( 830.122, 962.277, 909.345, 1046.34, 857.624, 1082.87, 790.034, 1052.95 )
 shape_range = Vector2( 4, 4 )
 trigger = false
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="CollisionShape2D 3" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
 
