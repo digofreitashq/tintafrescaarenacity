@@ -1,9 +1,9 @@
-[gd_scene load_steps=27 format=1]
+[gd_scene load_steps=19 format=1]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/hud_base.png" type="Texture" id=2]
 [ext_resource path="res://sprites/hud_health_10.png" type="Texture" id=3]
-[ext_resource path="res://sprites/hud_bullets_10.png" type="Texture" id=4]
+[ext_resource path="res://sprites/hud_bullets_00.PNG" type="Texture" id=4]
 [ext_resource path="res://sprites/spray_2.png" type="Texture" id=5]
 [ext_resource path="res://sprites/hud_health_01.png" type="Texture" id=6]
 [ext_resource path="res://sprites/hud_health_02.png" type="Texture" id=7]
@@ -14,16 +14,8 @@
 [ext_resource path="res://sprites/hud_health_07.png" type="Texture" id=12]
 [ext_resource path="res://sprites/hud_health_08.png" type="Texture" id=13]
 [ext_resource path="res://sprites/hud_health_09.png" type="Texture" id=14]
-[ext_resource path="res://sprites/hud_bullets_01.png" type="Texture" id=15]
-[ext_resource path="res://sprites/hud_bullets_02.png" type="Texture" id=16]
-[ext_resource path="res://sprites/hud_bullets_03.png" type="Texture" id=17]
-[ext_resource path="res://sprites/hud_bullets_04.png" type="Texture" id=18]
-[ext_resource path="res://sprites/hud_bullets_05.png" type="Texture" id=19]
-[ext_resource path="res://sprites/hud_bullets_06.png" type="Texture" id=20]
-[ext_resource path="res://sprites/hud_bullets_07.png" type="Texture" id=21]
-[ext_resource path="res://sprites/hud_bullets_08.png" type="Texture" id=22]
-[ext_resource path="res://sprites/hud_bullets_09.png" type="Texture" id=23]
-[ext_resource path="res://sfx/sound_fill.wav" type="Sample" id=24]
+[ext_resource path="res://sfx/sound_fill.wav" type="Sample" id=15]
+[ext_resource path="res://fonts/gbb.fnt" type="BitmapFont" id=16]
 
 [sub_resource type="Animation" id=1]
 
@@ -46,20 +38,20 @@ tracks/1/path = NodePath("bullets:texture")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 0, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1 ),
-"transitions": FloatArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
 "update": 0,
-"values": [ null, ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 4 ) ]
+"values": [ ExtResource( 4 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("sound:play/play")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 0, 0.55 ),
-"transitions": FloatArray( 1, 1 ),
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
 "update": 0,
-"values": [ "fill", "fill" ]
+"values": [ "fill" ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("spray:visibility/visible")
@@ -78,7 +70,7 @@ samples/fill = {
 "db": 0.0,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 24 )
+"sample": ExtResource( 15 )
 }
 
 [node name="hud" type="Node2D"]
@@ -105,6 +97,7 @@ centered = false
 
 [node name="spray" type="Sprite" parent="."]
 
+visibility/visible = false
 transform/scale = Vector2( 2, 2 )
 texture = ExtResource( 5 )
 centered = false
@@ -136,5 +129,46 @@ default/filter/gain = 1.0
 default/reverb_room = 2
 default/reverb_send = 0.0
 default/chorus_send = 0.0
+
+[node name="label_sprays" type="Label" parent="."]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 0
+size_flags/vertical = 0
+margin/left = 4.0
+margin/top = 45.0
+margin/right = 224.0
+margin/bottom = 75.0
+custom_fonts/font = ExtResource( 16 )
+custom_colors/font_color = Color( 0.0627451, 0.772549, 0.364706, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
+text = "0000"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="label_enemies" type="Label" parent="."]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 0
+size_flags/vertical = 0
+margin/left = 4.0
+margin/top = 66.0
+margin/right = 224.0
+margin/bottom = 96.0
+custom_fonts/font = ExtResource( 16 )
+custom_colors/font_color = Color( 0.843137, 0.231373, 0.0196078, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/line_spacing = 0
+custom_constants/shadow_offset_y = 2
+text = "0000"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
 
 

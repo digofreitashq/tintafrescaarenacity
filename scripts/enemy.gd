@@ -27,6 +27,7 @@ func setSprite(newSprite):
 		get_node("sprite").set_texture(sprite)
 
 func _die():
+	get_tree().get_current_scene().get_node("player").update_enemies(-1)
 	clear_shapes()
 	queue_free()
 
@@ -83,3 +84,5 @@ func _ready():
 	
 	rc_left = get_node("raycast_left")
 	rc_right = get_node("raycast_right")
+	
+	get_tree().get_current_scene().get_node("player").update_enemies(1)

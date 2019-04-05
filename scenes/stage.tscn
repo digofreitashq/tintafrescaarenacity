@@ -1,19 +1,18 @@
-[gd_scene load_steps=20 format=1]
+[gd_scene load_steps=16 format=1]
 
 [ext_resource path="res://scripts/stage.gd" type="Script" id=1]
 [ext_resource path="res://scenes/parallax_bg.tscn" type="PackedScene" id=2]
 [ext_resource path="res://tilesets/tilemap.res" type="TileSet" id=3]
-[ext_resource path="res://scenes/seesaw.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/moving_platform.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scenes/spray_normal.tscn" type="PackedScene" id=6]
-[ext_resource path="res://scenes/spray_triple.tscn" type="PackedScene" id=7]
-[ext_resource path="res://scenes/enemy.tscn" type="PackedScene" id=8]
-[ext_resource path="res://sprites/enemy_porco.png" type="Texture" id=9]
-[ext_resource path="res://sprites/enemy_tigre.png" type="Texture" id=10]
-[ext_resource path="res://sprites/enemy_cachorro.png" type="Texture" id=11]
-[ext_resource path="res://sprites/enemy_pato.png" type="Texture" id=12]
-[ext_resource path="res://scenes/player.tscn" type="PackedScene" id=13]
-[ext_resource path="res://bgm/tintafresca_stage1.ogg" type="AudioStream" id=14]
+[ext_resource path="res://scenes/spray_normal.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/spray_triple.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/enemy.tscn" type="PackedScene" id=6]
+[ext_resource path="res://sprites/enemy_porco.png" type="Texture" id=7]
+[ext_resource path="res://sprites/enemy_tigre.png" type="Texture" id=8]
+[ext_resource path="res://sprites/enemy_cachorro.png" type="Texture" id=9]
+[ext_resource path="res://sprites/enemy_rato.png" type="Texture" id=10]
+[ext_resource path="res://sprites/enemy_pato.png" type="Texture" id=11]
+[ext_resource path="res://scenes/player.tscn" type="PackedScene" id=12]
+[ext_resource path="res://bgm/tintafresca_stage1.ogg" type="AudioStream" id=13]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -23,22 +22,7 @@ extents = Vector2( 10, 10 )
 [sub_resource type="RectangleShape2D" id=2]
 
 custom_solver_bias = 0.0
-extents = Vector2( 10, 10 )
-
-[sub_resource type="ConvexPolygonShape2D" id=3]
-
-custom_solver_bias = 0.0
-points = Vector2Array( 830.122, 962.277, 909.345, 1046.34, 857.624, 1082.87, 790.034, 1052.95 )
-
-[sub_resource type="RectangleShape2D" id=4]
-
-custom_solver_bias = 0.0
-extents = Vector2( 12.4596, 12.1284 )
-
-[sub_resource type="RectangleShape2D" id=5]
-
-custom_solver_bias = 0.0
-extents = Vector2( 10, 10 )
+extents = Vector2( 9.99899, 10.5103 )
 
 [node name="stage" type="Node"]
 
@@ -49,7 +33,7 @@ script/script = ExtResource( 1 )
 
 scroll/base_scale = Vector2( 1, 0 )
 
-[node name="tilemap_32" type="TileMap" parent="."]
+[node name="tilemap_layer1" type="TileMap" parent="."]
 
 transform/scale = Vector2( 2, 2 )
 mode = 0
@@ -66,12 +50,12 @@ collision/bounce = 0.0
 collision/layers = 1
 collision/mask = 1
 occluder/light_mask = 1
-tile_data = IntArray( 720893, 130, 720894, 130, 720895, 130, 655360, 131, 786429, 134, 786430, 134, 786431, 134, 720896, 135, 851965, 134, 851966, 134, 851967, 134, 786432, 135, 786448, 37, 786449, 38, 786450, 39, 917501, 134, 917502, 134, 917503, 134, 851968, 135, 851984, 41, 851985, 42, 851986, 43, 983037, 134, 983038, 134, 983039, 134, 917504, 135, 917520, 41, 917521, 42, 917522, 43, 1048573, 134, 1048574, 134, 1048575, 134, 983040, 135, 983041, 1, 983042, 2, 983043, 2, 983044, 2, 983045, 2, 983046, 1, 983047, 2, 983048, 2, 983049, 2, 983050, 1, 983051, 2, 983052, 2, 983053, 6, 983056, 41, 983057, 42, 983058, 43, 1114109, 138, 1114110, 138, 1114111, 138, 1048576, 139, 1048589, 7, 1048590, 1, 1048591, 3, 1048592, 45, 1048593, 46, 1048594, 47 )
+tile_data = IntArray( 720898, 61, 720899, 62, 720900, 62, 720901, 63, 786434, 65, 786435, 66, 786436, 66, 786437, 67, 851970, 69, 851971, 70, 851972, 70, 851973, 71, 917504, 30, 917505, 30, 917506, 30, 917507, 30, 917508, 30, 917509, 30, 917510, 30, 917511, 30, 917512, 30, 917513, 30, 917514, 30, 917515, 30, 917516, 30, 917517, 30, 917518, 30, 917519, 30, 917520, 30, 983040, 30, 983041, 30, 983042, 30, 983043, 30, 983044, 30, 983045, 30, 983046, 30, 983047, 30, 983048, 30, 983049, 30, 983050, 30, 983051, 30, 983052, 30, 983053, 30, 983054, 30, 983055, 30, 983056, 30 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="tilemap_16" type="TileMap" parent="."]
+[node name="tilemap_layer2" type="TileMap" parent="."]
 
 transform/scale = Vector2( 2, 2 )
 mode = 0
@@ -88,22 +72,12 @@ collision/bounce = 0.0
 collision/layers = 1
 collision/mask = 1
 occluder/light_mask = 1
-tile_data = IntArray( 720893, 130, 720894, 130, 720895, 130, 655360, 131, 786429, 134, 786430, 134, 786431, 134, 720896, 135, 851965, 134, 851966, 134, 851967, 134, 786432, 135, 786448, 37, 786449, 38, 786450, 39, 917501, 134, 917502, 134, 917503, 134, 851968, 135, 851984, 41, 851985, 42, 851986, 43, 983037, 134, 983038, 134, 983039, 134, 917504, 135, 917520, 41, 917521, 42, 917522, 43, 1048573, 134, 1048574, 134, 1048575, 134, 983040, 135, 983041, 1, 983042, 2, 983043, 2, 983044, 2, 983045, 2, 983046, 1, 983047, 2, 983048, 2, 983049, 2, 983050, 1, 983051, 2, 983052, 2, 983053, 6, 983056, 41, 983057, 42, 983058, 43, 1114109, 138, 1114110, 138, 1114111, 138, 1048576, 139, 1048589, 7, 1048590, 1, 1048591, 3, 1048592, 45, 1048593, 46, 1048594, 47 )
+tile_data = IntArray(  )
 __meta__ = {
 "_edit_lock_": true
 }
 
 [node name="others" type="Node" parent="."]
-
-[node name="seesaw" parent="others" instance=ExtResource( 4 )]
-
-transform/pos = Vector2( 562.537, 917.987 )
-
-[node name="moving_platform" parent="others" instance=ExtResource( 5 )]
-
-transform/pos = Vector2( 972.104, 717.108 )
-motion = Vector2( 100, 50 )
-cycle = 5.0
 
 [node name="Collisions" type="Node2D" parent="."]
 
@@ -115,26 +89,14 @@ __meta__ = {
 
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Matrix32( 46.1391, 0, 0, 10.2743, 376.97, 1092.44 )
+shapes/0/transform = Matrix32( 46.1391, 0, 0, 10.2743, 433.772, 1001.56 )
 shapes/0/trigger = false
-shapes/1/shape = SubResource( 1 )
-shapes/1/transform = Matrix32( 21.9476, 0, 0, 6.77654, 1012.47, 1134.13 )
+shapes/1/shape = SubResource( 2 )
+shapes/1/transform = Matrix32( -6.51632, 0, 0, -23.3711, -1.49314, 871.2 )
 shapes/1/trigger = false
 shapes/2/shape = SubResource( 2 )
-shapes/2/transform = Matrix32( -6.51632, 0, 0, -23.3711, -1.49314, 871.2 )
+shapes/2/transform = Matrix32( -6.66198, 0, 0, -24.9639, 948.944, 851.267 )
 shapes/2/trigger = false
-shapes/3/shape = SubResource( 2 )
-shapes/3/transform = Matrix32( -3.20299, 0, 0, -14.3007, 1133.46, 686.328 )
-shapes/3/trigger = false
-shapes/4/shape = SubResource( 3 )
-shapes/4/transform = Matrix32( 1, 0, 0, 1, -0.511597, 29.5371 )
-shapes/4/trigger = false
-shapes/5/shape = SubResource( 4 )
-shapes/5/transform = Matrix32( 7.8624, 0, 0, 14.0139, 1121.62, 940.708 )
-shapes/5/trigger = false
-shapes/6/shape = SubResource( 5 )
-shapes/6/transform = Matrix32( 7.93992, 0, 0, 3.05318, 499.871, 739.3 )
-shapes/6/trigger = false
 collision/layers = 1
 collision/mask = 1
 constant_linear_velocity = Vector2( 0, 0 )
@@ -147,19 +109,11 @@ __meta__ = {
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
 
-transform/pos = Vector2( 376.97, 1092.44 )
+transform/pos = Vector2( 433.772, 1001.56 )
 transform/scale = Vector2( 46.1391, 10.2743 )
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
-
-[node name="CollisionShape2D1" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
-
-transform/pos = Vector2( 1012.47, 1134.13 )
-transform/scale = Vector2( 21.9476, 6.77654 )
-shape = SubResource( 1 )
-trigger = false
-_update_shape_index = 1
 
 [node name="CollisionShape2D 2" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
 
@@ -167,76 +121,48 @@ transform/pos = Vector2( -1.49314, 871.2 )
 transform/scale = Vector2( -6.51632, -23.3711 )
 shape = SubResource( 2 )
 trigger = false
-_update_shape_index = 2
+_update_shape_index = 1
 __meta__ = {
 "_edit_lock_": true
 }
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
 
-transform/pos = Vector2( 1133.46, 686.328 )
-transform/scale = Vector2( -3.20299, -14.3007 )
+transform/pos = Vector2( 948.944, 851.267 )
+transform/scale = Vector2( -6.66198, -24.9639 )
 shape = SubResource( 2 )
 trigger = false
-_update_shape_index = 3
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collisions/StaticBody2D"]
-
-transform/pos = Vector2( -0.511597, 29.5371 )
-build_mode = 0
-polygon = Vector2Array( 830.122, 962.277, 909.345, 1046.34, 857.624, 1082.87, 790.034, 1052.95 )
-shape_range = Vector2( 4, 4 )
-trigger = false
-
-[node name="CollisionShape2D 3" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
-
-transform/pos = Vector2( 1121.62, 940.708 )
-transform/scale = Vector2( 7.8624, 14.0139 )
-shape = SubResource( 4 )
-trigger = false
-_update_shape_index = 5
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="CollisionShape2D 4" type="CollisionShape2D" parent="Collisions/StaticBody2D"]
-
-transform/pos = Vector2( 499.871, 739.3 )
-transform/scale = Vector2( 7.93992, 3.05318 )
-shape = SubResource( 5 )
-trigger = false
-_update_shape_index = 6
+_update_shape_index = 2
 
 [node name="sprays" type="Node" parent="."]
 
-[node name="spray_normal 15" parent="sprays" instance=ExtResource( 6 )]
+editor/display_folded = true
+
+[node name="spray_normal 15" parent="sprays" instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 214.795, 895.035 )
 
-[node name="spray_normal 16" parent="sprays" instance=ExtResource( 6 )]
+[node name="spray_normal 16" parent="sprays" instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 283.706, 892.579 )
 
-[node name="spray_normal 17" parent="sprays" instance=ExtResource( 6 )]
+[node name="spray_normal 17" parent="sprays" instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 347.706, 892.579 )
 
-[node name="spray_normal 18" parent="sprays" instance=ExtResource( 6 )]
+[node name="spray_normal 18" parent="sprays" instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 347.706, 828.579 )
 
-[node name="spray_normal 19" parent="sprays" instance=ExtResource( 6 )]
+[node name="spray_normal 19" parent="sprays" instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 283.706, 828.579 )
 
-[node name="spray_normal 20" parent="sprays" instance=ExtResource( 6 )]
+[node name="spray_normal 20" parent="sprays" instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 219.706, 828.579 )
 
-[node name="spray_triple" parent="sprays" instance=ExtResource( 7 )]
+[node name="spray_triple" parent="sprays" instance=ExtResource( 5 )]
 
 transform/pos = Vector2( 164, 828 )
 
@@ -245,29 +171,35 @@ transform/pos = Vector2( 164, 828 )
 [node name="enemies" type="Node" parent="."]
 
 process/pause_mode = 1
+editor/display_folded = true
 
-[node name="enemy 6" parent="enemies" instance=ExtResource( 8 )]
+[node name="enemy 6" parent="enemies" instance=ExtResource( 6 )]
 
-transform/pos = Vector2( 310.87, 668.637 )
+transform/pos = Vector2( 410.841, 745.887 )
 mass = 0.52
-sprite = ExtResource( 9 )
+sprite = ExtResource( 7 )
 
-[node name="enemy9" parent="enemies" instance=ExtResource( 8 )]
+[node name="enemy9" parent="enemies" instance=ExtResource( 6 )]
 
 transform/pos = Vector2( 640.321, 733.527 )
-sprite = ExtResource( 10 )
+sprite = ExtResource( 8 )
 
-[node name="enemy10" parent="enemies" instance=ExtResource( 8 )]
+[node name="enemy10" parent="enemies" instance=ExtResource( 6 )]
 
 transform/pos = Vector2( 506.892, 640.378 )
-sprite = ExtResource( 11 )
+sprite = ExtResource( 9 )
 
-[node name="enemy11" parent="enemies" instance=ExtResource( 8 )]
+[node name="enemy11" parent="enemies" instance=ExtResource( 6 )]
 
 transform/pos = Vector2( 217.375, 584.992 )
-sprite = ExtResource( 12 )
+sprite = ExtResource( 10 )
 
-[node name="player" parent="." instance=ExtResource( 13 )]
+[node name="enemy12" parent="enemies" instance=ExtResource( 6 )]
+
+transform/pos = Vector2( 315.074, 675.875 )
+sprite = ExtResource( 11 )
+
+[node name="player" parent="." instance=ExtResource( 12 )]
 
 process/pause_mode = 1
 transform/pos = Vector2( 983.867, 593.737 )
@@ -275,7 +207,7 @@ mass = 3.57143
 
 [node name="music" type="StreamPlayer" parent="."]
 
-stream/stream = ExtResource( 14 )
+stream/stream = ExtResource( 13 )
 stream/play = true
 stream/loop = true
 stream/volume_db = 0.0
@@ -288,7 +220,7 @@ stream/buffering_ms = 500
 
 mode = 0
 tile_set = ExtResource( 3 )
-cell/size = Vector2( 64, 64 )
+cell/size = Vector2( 32, 32 )
 cell/quadrant_size = 16
 cell/custom_transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 cell/half_offset = 2
@@ -309,7 +241,7 @@ __meta__ = {
 
 mode = 0
 tile_set = ExtResource( 3 )
-cell/size = Vector2( 64, 64 )
+cell/size = Vector2( 32, 32 )
 cell/quadrant_size = 16
 cell/custom_transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 cell/half_offset = 2

@@ -4,11 +4,14 @@ var timer_start = null
 var pressed_start = false
 
 func _ready():
-	start_game() # PULA
+	#start_game() # PULA
+	get_node("music").play(0)
 	get_node("anim").play("disclaimer")
 
+func anim_start():
+	get_node("anim_start").play("updown")
+
 func disclaimer_end():
-	get_node("music").play(0)
 	timer_start = get_node("timer_start")
 	timer_start.connect("timeout", self, "start")
 	timer_start.start()

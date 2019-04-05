@@ -79,6 +79,24 @@ func update_bullet_type(type):
 	elif (global.bullet_type == global.BULLET_TRIPLE):
 		get_node("screen/hud/spray").set_hidden(false)
 
+func update_sprays(value):
+	global.sprays += value
+	
+	if (global.sprays < 0):
+		global.sprays = 0
+	
+	if (global.sprays >= 0):
+		get_node("screen/hud/label_sprays").set('text', "%0*d" % [4, global.sprays])
+
+func update_enemies(value):
+	global.enemies += value
+	
+	if (global.enemies < 0):
+		global.enemies = 0
+	
+	if (global.enemies >= 0):
+		get_node("screen/hud/label_enemies").set('text', "%0*d" % [4, global.enemies])
+
 func got_damage(value):
 	update_health(value)
 	disable_damage = true
