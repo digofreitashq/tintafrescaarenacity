@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/sound_letter.wav-4150d295ef3028edb8a00ec0c68a184e.sample"
+
+[deps]
+
+source_file="res://sfx/sound_letter.wav"
+dest_files=[ "res://.import/sound_letter.wav-4150d295ef3028edb8a00ec0c68a184e.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

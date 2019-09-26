@@ -3,6 +3,8 @@ extends Node
 var timer_start = null
 var pressed_start = false
 
+var sound_click = preload("res://sfx/sound_click.wav")
+
 func _ready():
 	#start_game() # PULA
 	get_node("music").play(0)
@@ -23,7 +25,10 @@ func start():
 		if (press_start):
 			pressed_start = true
 			get_node("anim").play("fadeout")
-			get_node("sound").play("click")
+			
+			get_node("sound").stream = sound_click
+			get_node("sound").play(0)
 
 func start_game():
 	get_tree().change_scene("res://scenes/stage.tscn")
+

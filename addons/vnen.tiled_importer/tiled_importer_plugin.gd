@@ -95,7 +95,7 @@ func import(path, metadata):
 	if not options["post_script"].empty():
 
 		var script = load(options["post_script"])
-		if not script or not script extends GDScript:
+		if not script or not script is GDScript:
 			return "Error loading post import script"
 
 		script = script.new()
@@ -104,7 +104,7 @@ func import(path, metadata):
 
 		scene = script.post_import(scene)
 
-		if scene == null or not scene extends Node2D:
+		if scene == null or not scene is Node2D:
 			return "Invalid scene returned from post import script"
 
 	var packed_scene = PackedScene.new()
@@ -119,3 +119,4 @@ func import(path, metadata):
 		return "Error saving scene"
 
 	return "OK"
+

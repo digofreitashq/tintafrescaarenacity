@@ -11,14 +11,17 @@ var phrases = ""
 var current_phrase_index = 0
 var current_pos = 0
 
+var sound_letter = preload("res://sfx/sound_letter.wav")
+var sound_next = preload("res://sfx/sound_next.wav")
+
 func _ready():
 	clear()
 
 func clear():
-	get_node("dialog_bg").set_hidden(true)
-	get_node("dialog_brace_left").set_hidden(true)
-	get_node("dialog_brace_right").set_hidden(true)
-	get_node("dialog_next").set_hidden(true)
+	get_node("dialog_bg").visible = !(true)
+	get_node("dialog_brace_left").visible = !(true)
+	get_node("dialog_brace_right").visible = !(true)
+	get_node("dialog_next").visible = !(true)
 	
 	text = get_node("text")
 	timer_letter = get_node("timer_letter")
@@ -86,7 +89,8 @@ func update_text():
 		return
 	
 	get_node("text").set_text(phrases[current_phrase_index].substr(0,current_pos))
-	get_node("sound").play("letter")
+	get_node("sound").stream = sound_letter
+	get_node("sound").play(0)
 	timer_letter.disconnect("timeout",self,"update_text")
 	timer_letter.connect("timeout",self,"update_text")
 	timer_letter.set_wait_time(0.05)
@@ -102,7 +106,8 @@ func wait_button():
 			current_pos = 0
 			
 			get_node("anim").play("hide_next")
-			get_node("sound").play("next")
+			get_node("sound").stream = sound_next
+			get_node("sound").play(0)
 			
 			timer_interaction.stop()
 			timer_interaction.set_wait_time(0.5)
@@ -114,5 +119,6 @@ func wait_button():
 			timer_letter.start()
 		else:
 			current_pos = phrases[current_phrase_index].length()-1
-			get_node("sound").play("next")
+			get_node("sound").stream = sound_next
+			get_node("sound").play(0)
 			update_text()

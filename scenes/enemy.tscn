@@ -1,47 +1,44 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scripts/enemy.gd" type="Script" id=1]
 [ext_resource path="res://sprites/enemy_tigre.png" type="Texture" id=2]
-[ext_resource path="res://sfx/sound_hit.wav" type="Sample" id=3]
 
-[sub_resource type="RectangleShape2D" id=1]
-
-custom_solver_bias = 0.0
-extents = Vector2( 10, 10 )
-
-[sub_resource type="Animation" id=2]
-
-resource/name = "explode"
-length = 1.0
-loop = false
+[sub_resource type="Animation" id=1]
+resource_name = "explode"
 step = 0.25
 tracks/0/type = "value"
-tracks/0/path = NodePath("sprite:visibility/self_opacity")
+tracks/0/path = NodePath("sprite:self_modulate:a")
 tracks/0/interp = 1
+tracks/0/loop_wrap = true
 tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/keys = {
-"times": FloatArray( 0.5, 1 ),
-"transitions": FloatArray( 1, 1 ),
+"times": PoolRealArray( 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ 1.0, 0.0 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("sprite:frame")
 tracks/1/interp = 1
+tracks/1/loop_wrap = true
 tracks/1/imported = false
+tracks/1/enabled = true
 tracks/1/keys = {
-"times": FloatArray(  ),
-"transitions": FloatArray(  ),
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
 "update": 0,
 "values": [  ]
 }
 tracks/2/type = "method"
 tracks/2/path = NodePath(".")
 tracks/2/interp = 1
+tracks/2/loop_wrap = true
 tracks/2/imported = false
+tracks/2/enabled = true
 tracks/2/keys = {
-"times": FloatArray( 1 ),
-"transitions": FloatArray( 1 ),
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [  ],
 "method": "_die"
@@ -50,174 +47,113 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/path = NodePath("sound:play/play")
 tracks/3/interp = 1
+tracks/3/loop_wrap = true
 tracks/3/imported = false
+tracks/3/enabled = true
 tracks/3/keys = {
-"times": FloatArray( 0 ),
-"transitions": FloatArray( 1 ),
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ "hit" ]
 }
 
-[sub_resource type="Animation" id=3]
-
+[sub_resource type="Animation" id=2]
 length = 0.5
 loop = true
 step = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
+tracks/0/loop_wrap = true
 tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/keys = {
-"times": FloatArray( 0 ),
-"transitions": FloatArray( 1 ),
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ 1 ]
 }
 
-[sub_resource type="Animation" id=4]
-
-resource/name = "walk"
+[sub_resource type="Animation" id=3]
+resource_name = "walk"
 length = 2.0
 loop = true
 step = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
+tracks/0/loop_wrap = true
 tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/keys = {
-"times": FloatArray( 0, 0.5, 1, 1.5 ),
-"transitions": FloatArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.5, 1, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 0, 1, 2, 1 ]
 }
 
-[sub_resource type="SampleLibrary" id=5]
+[sub_resource type="RectangleShape2D" id=4]
 
-samples/hit = {
-"db": 0.0,
-"pitch": 1.0,
-"priority": 0,
-"sample": ExtResource( 3 )
-}
-
-[node name="enemy" type="RigidBody2D"]
-
-input/pickable = false
-shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Matrix32( 1, 0, 0, 2.46291, 5.18417, 11.2322 )
-shapes/0/trigger = false
-shapes/1/shape = SubResource( 1 )
-shapes/1/transform = Matrix32( 1, 0, 0, 3.14276, -5.51569, 13.3862 )
-shapes/1/trigger = false
-shapes/2/shape = SubResource( 1 )
-shapes/2/transform = Matrix32( 1, 0, 0, 2.48801, -18.495, 10.7552 )
-shapes/2/trigger = false
-collision/layers = 1
-collision/mask = 1
-mode = 2
-mass = 0.510204
-friction = 0.0
-bounce = 0.0
-gravity_scale = 1.0
-custom_integrator = false
-continuous_cd = 0
-contacts_reported = 4
-contact_monitor = false
-sleeping = false
-can_sleep = true
-velocity/linear = Vector2( 0, 0 )
-velocity/angular = 0.0
-damp_override/linear = -1.0
-damp_override/angular = -1.0
-script/script = ExtResource( 1 )
-sprite = null
+[node name="enemy" type="KinematicBody2D"]
+script = ExtResource( 1 )
 
 [node name="enabler" type="VisibilityEnabler2D" parent="."]
-
-visibility/visible = false
-transform/pos = Vector2( 16.2569, 11.0034 )
-transform/scale = Vector2( 23.5056, 10.8629 )
-rect = Rect2( -10, -10, 20, 20 )
-enabler/pause_animations = true
-enabler/freeze_bodies = true
-enabler/pause_particles = true
-enabler/pause_animated_sprites = true
-enabler/process_parent = false
-enabler/fixed_process_parent = false
+visible = false
+position = Vector2( 16.2569, 11.0034 )
+scale = Vector2( 23.5056, 10.8629 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
-
-playback/process_mode = 1
-playback/default_blend_time = 0.0
-root/root = NodePath("..")
-anims/explode = SubResource( 2 )
-anims/idle = SubResource( 3 )
-anims/walk = SubResource( 4 )
-playback/active = true
-playback/speed = 3.0
-blend_times = [  ]
-autoplay = ""
+playback_speed = 3.0
+anims/explode = SubResource( 1 )
+anims/idle = SubResource( 2 )
+anims/walk = SubResource( 3 )
 
 [node name="sprite" type="Sprite" parent="."]
-
-transform/pos = Vector2( -0.735077, -0.735092 )
-transform/scale = Vector2( 2, 2 )
+position = Vector2( -0.735077, -0.735092 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 hframes = 3
 frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-
-visibility/visible = false
-transform/pos = Vector2( 5.18417, 11.2322 )
-transform/scale = Vector2( 1, 2.46291 )
-shape = SubResource( 1 )
-trigger = false
-_update_shape_index = 0
+visible = false
+position = Vector2( 5.18417, 11.2322 )
+scale = Vector2( 1, 2.46291 )
+shape = SubResource( 4 )
 
 [node name="CollisionShape2D 2" type="CollisionShape2D" parent="."]
-
-visibility/visible = false
-transform/pos = Vector2( -5.51569, 13.3862 )
-transform/scale = Vector2( 1, 3.14276 )
-shape = SubResource( 1 )
-trigger = false
-_update_shape_index = 1
+visible = false
+position = Vector2( -5.51569, 13.3862 )
+scale = Vector2( 1, 3.14276 )
+shape = SubResource( 4 )
 
 [node name="CollisionShape2D 3" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2( -18.495, 10.7552 )
+scale = Vector2( 1, 2.48801 )
+shape = SubResource( 4 )
 
-visibility/visible = false
-transform/pos = Vector2( -18.495, 10.7552 )
-transform/scale = Vector2( 1, 2.48801 )
-shape = SubResource( 1 )
-trigger = false
-_update_shape_index = 2
-
-[node name="raycast_left" type="RayCast2D" parent="."]
-
-transform/pos = Vector2( -32, 22 )
+[node name="detect_floor_left" type="RayCast2D" parent="."]
+visible = false
+position = Vector2( -32, 22 )
 enabled = true
 cast_to = Vector2( 0, 45 )
-layer_mask = 1
-type_mask = 15
 
-[node name="raycast_right" type="RayCast2D" parent="."]
-
-transform/pos = Vector2( 32, 22 )
+[node name="detect_wall_left" type="RayCast2D" parent="."]
+position = Vector2( -32, -19 )
 enabled = true
 cast_to = Vector2( 0, 45 )
-layer_mask = 1
-type_mask = 15
 
-[node name="sound" type="SamplePlayer2D" parent="."]
+[node name="detect_floor_right" type="RayCast2D" parent="."]
+visible = false
+position = Vector2( 32, 22 )
+enabled = true
+cast_to = Vector2( 0, 45 )
 
-params/volume_db = -10.0
-params/pitch_scale = 1.0
-params/attenuation/min_distance = 1.0
-params/attenuation/max_distance = 2048.0
-params/attenuation/distance_exp = 1.0
-config/polyphony = 3
-config/samples = SubResource( 5 )
-config/pitch_random = 0.0
+[node name="detect_wall_right" type="RayCast2D" parent="."]
+position = Vector2( 32, -18 )
+enabled = true
+cast_to = Vector2( 0, 45 )
 
-
+[node name="sound" type="AudioStreamPlayer2D" parent="."]
+volume_db = -10.0

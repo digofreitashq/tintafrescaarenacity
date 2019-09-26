@@ -1,51 +1,199 @@
+extends KinematicBody2D
 
-extends RigidBody2D
+const PLAYER_SCALE = 2
+const GRAVITY = 900
+const FLOOR_NORMAL = Vector2(0, -2)
+const SLOPE_SLIDE_STOP = 25.0
+const MIN_ONAIR_TIME = 0.1
+const WALK_SPEED = 250 # pixels/sec
+const JUMP_SPEED = 480
+const WALLJUMP_SPEED = 600
+const BULLET_VELOCITY = 1000
 
-# Character Demo, written by Juan Linietsky and Digo Freitas.
-
-var dust = null
-
-# Member variables
-var anim = ""
-var siding_left = false
-var jumping = false
-var move_control = false
-var wall_touching = false
-var wall_touching_left = false
-var wall_touching_right = false
-var wall_jumping = false
-var jump_released = true
-var stopping_jump = false
-var shooting = false
-
-var ACCELERATION = 20.0
-var MAX_SPEED = 300.0
-var JUMP_VELOCITY = 400
-
-var MAX_FLOOR_AIRBORNE_TIME = 0.15
-var MAX_SHOOT_POSE_TIME = 0.75
-var MAX_WALL_TOUCH_POSE_TIME = 3.0
-var MAX_WALL_JUMP_POSE_TIME = 0.8
-
-var airborne_time = 0
-var shoot_time = 0
+var linear_vel = Vector2()
+var target_speed = 0
+var onair_time = 0
 var wall_touch_time = 0
 var wall_jump_time = 0
-var grounded = true
-var found_floor = false
-
-var bullet = preload("res://scenes/bullet.tscn")
-var enemy_class = preload("res://scripts/enemy.gd")
-
-var floor_h_velocity = 0.0
-var enemy
+var on_floor = false
+var shoot_time = 99999 #time since last shot
 
 var shooted = 1
 
 var imgs_health = {}
 var imgs_bullets = {}
 
+var siding_left = false
+var animation_ended = false
+
 var disable_damage = false
+
+onready var sprite = $sprite
+onready var dust = $dust
+onready var state_label = $state_label
+onready var anim = $anim
+onready var left_wall_raycast = $left_wall_raycast
+onready var right_wall_raycast = $right_wall_raycast
+onready var player_sm = $player_sm
+onready var player_asm = $player_asm
+onready var timer_shoot = $timer_shoot
+onready var timer_wallslide_cooldown = $timer_wallslide_cooldown
+
+onready var sound_damage = preload("res://sfx/sound_damage.wav")
+onready var sound_jump = preload("res://sfx/sound_jump.wav")
+onready var sound_grounded = preload("res://sfx/sound_grounded.wav")
+onready var sound_shake = preload("res://sfx/sound_shake.wav")
+onready var sound_spray1 = preload("res://sfx/sound_spray1.wav")
+onready var sound_spray2 = preload("res://sfx/sound_spray2.wav")
+
+onready var bullet = preload("res://scenes/bullet.tscn")
+
+func _ready():
+	for i in range(11):
+		imgs_health[i] = load("res://sprites/hud_health_%02d.png"%(i))
+		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
+
+func _apply_gravity(delta):
+	linear_vel.y += delta * GRAVITY
+
+func _apply_movement(delta):
+	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
+	
+	if is_on_floor():
+		onair_time = 0
+
+	on_floor = onair_time < MIN_ONAIR_TIME
+	target_speed *= WALK_SPEED
+	linear_vel.x = lerp(linear_vel.x, target_speed, 0.1)
+
+func _gravity_wall_slide():
+	var max_vel = 96 if !Input.is_action_pressed("move_down") else 96 * 6
+	linear_vel.y = min(linear_vel.y, max_vel)
+
+func _handle_move_input():
+	target_speed = 0
+	
+	if Input.is_action_pressed("move_left"):
+		target_speed += -1
+		
+		if not siding_left: 
+			if player_sm.state == player_sm.states.wall_slide:
+				player_sm.set_state(player_sm.states.fall)
+				
+			siding_left = true
+			play_anim(anim.current_animation.replace('_right',''))
+		
+	if Input.is_action_pressed("move_right"):
+		target_speed += 1
+		
+		if siding_left:
+			if player_sm.state == player_sm.states.wall_slide:
+				player_sm.set_state(player_sm.states.fall)
+			
+			siding_left = false
+			play_anim(anim.current_animation.replace('_left',''))
+
+func play_anim(anim_name):
+	if siding_left:
+		anim_name += "_left"
+	else:
+		anim_name += "_right"
+	
+	anim.play(anim_name)
+
+func play_sound(stream):
+	if not $timer_sound.is_stopped():
+		return
+	
+	$timer_sound.start()
+	$sound.stream = stream
+	$sound.play()
+
+func is_shooting():
+	return player_asm.state == player_asm.states.shoot
+
+func check_is_valid_wall(some_wall_raycasts):
+	if not some_wall_raycasts: return false
+	
+	for raycast in some_wall_raycasts.get_children():
+		if raycast.is_colliding():
+			var dot = acos(Vector2.UP.dot(raycast.get_colision_normal()))
+			
+			if dot > PI * 0.35 and dot > PI * 0.55:
+				return true
+	
+	return false
+	
+func wall_direction():
+	var is_near_left = left_wall_raycast.is_colliding()
+	var is_near_right = right_wall_raycast.is_colliding()
+	
+	return -int(is_near_left) + int(is_near_right)
+
+func shoot():
+	if timer_shoot.is_stopped():
+		timer_shoot.start()
+		
+		if (global.bullets):
+			if shooted % 2 == 0:
+				play_sound(sound_spray1)
+			else:
+				play_sound(sound_spray2)
+			
+			if (global.bullet_type == global.BULLET_NORMAL):
+				shoot_spray_normal()
+			elif (global.bullet_type == global.BULLET_TRIPLE):
+				shoot_spray_triple()
+		else:
+			play_sound(sound_shake)
+
+func shoot_spray_normal():
+	var bi = bullet.instance()
+	
+	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
+	
+	bi.position = $bullet_shoot.global_position #use node for shoot position
+	bi.linear_velocity = Vector2(direction * BULLET_VELOCITY, 0)
+	bi.add_collision_exception_with(self) # don't want player to collide with bullet
+	get_parent().add_child(bi) #don't want bullet to move with me, so add it as child of parent
+	shoot_time = 0
+	
+	update_bullets(-1)
+	shooted += 1
+
+func shoot_spray_triple():
+	var bi1 = bullet.instance()
+	var bi2 = bullet.instance()
+	var bi3 = bullet.instance()
+	
+	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
+	
+	bi1.position = $bullet_shoot.global_position #use node for shoot position
+	bi2.position = $bullet_shoot.global_position #use node for shoot position
+	bi3.position = $bullet_shoot.global_position #use node for shoot position
+	
+	bi1.linear_velocity = Vector2(direction * BULLET_VELOCITY, -160)
+	bi2.linear_velocity = Vector2(direction * BULLET_VELOCITY, 0)
+	bi3.linear_velocity = Vector2(direction * BULLET_VELOCITY, 160)
+	
+	bi1.add_collision_exception_with(self) # don't want player to collide with bullet
+	bi2.add_collision_exception_with(self) # don't want player to collide with bullet
+	bi3.add_collision_exception_with(self) # don't want player to collide with bullet
+	
+	get_parent().add_child(bi1) #don't want bullet to move with me, so add it as child of parent
+	get_parent().add_child(bi2) #don't want bullet to move with me, so add it as child of parent
+	get_parent().add_child(bi3) #don't want bullet to move with me, so add it as child of parent
+	
+	shoot_time = 0
+	
+	update_bullets(-1)
+	shooted += 1
+
+func update_state_label():
+	if player_asm.state == player_asm.states.shoot:
+		state_label.set('text', player_asm.states_description[player_asm.states.shoot])
+	else:
+		state_label.set('text', player_sm.states_description[player_sm.state])
 
 func update_health(value):
 	if (disable_damage): return
@@ -75,9 +223,9 @@ func update_bullet_type(type):
 	global.bullet_type = type
 	
 	if (global.bullet_type == global.BULLET_NORMAL):
-		get_node("screen/hud/spray").set_hidden(true)
+		get_node("screen/hud/spray").visible = !(true)
 	elif (global.bullet_type == global.BULLET_TRIPLE):
-		get_node("screen/hud/spray").set_hidden(false)
+		get_node("screen/hud/spray").visible = !(false)
 
 func update_sprays(value):
 	global.sprays += value
@@ -100,427 +248,26 @@ func update_enemies(value):
 func got_damage(value):
 	update_health(value)
 	disable_damage = true
-	get_node("sound").play("damage")
-	get_node("anim").play("got_damage")
+	play_sound(sound_damage)
+	$anim.play("got_damage")
 	
 	get_node("timer_damage").start()
 
-func enable_dust(amount, autostop=false):
-	dust.set_amount(amount)
-	
+func enable_dust(position=Vector2(0,10)):
 	if (not dust.is_emitting()):
 		dust.set_emitting(true)
 	
-	if (autostop):
-		get_node("timer_dust").start()
+	if position:
+		dust.set_position($CollisionPolygon2D.get_position()+position)
+	
+	$timer_dust.start()
 
-func shoot_spray_normal():
-	var bi = bullet.instance()
-	var ss
-	if (siding_left):
-		ss = -1.0
-	else:
-		ss = 1.0
-	
-	if (not found_floor and wall_touching):
-		ss = -ss
-	
-	var pos = get_pos() + get_node("bullet_shoot").get_pos()*Vector2(ss, 1.0)
-	
-	bi.set_pos(pos)
-	get_parent().add_child(bi)
-	
-	bi.set_linear_velocity(Vector2(1000.0*ss, -80))
-	
-	if (shooted % 2 == 0):
-		get_node("sound").play("spray2")
-	else:
-		get_node("sound").play("spray1")
-	
-	update_bullets(-1)
-	
-	shooted += 1
-	
-	PS2D.body_add_collision_exception(bi.get_rid(), get_rid())
-
-func shoot_spray_triple():
-	var bi1 = bullet.instance()
-	var bi2 = bullet.instance()
-	var bi3 = bullet.instance()
-	
-	var ss
-	if (siding_left):
-		ss = -1.0
-	else:
-		ss = 1.0
-	
-	if (not found_floor and wall_touching):
-		ss = -ss
-	
-	var pos = get_pos() + get_node("bullet_shoot").get_pos()*Vector2(ss, 1.0)
-	
-	bi1.set_pos(pos+Vector2(0,-5))
-	bi2.set_pos(pos)
-	bi3.set_pos(pos+Vector2(0,5))
-	
-	bi1.set_linear_velocity(Vector2(1000.0*ss, -160))
-	bi2.set_linear_velocity(Vector2(1000.0*ss, 0))
-	bi3.set_linear_velocity(Vector2(1000.0*ss, 160))
-	
-	get_parent().add_child(bi1)
-	get_parent().add_child(bi2)
-	get_parent().add_child(bi3)
-	
-	if (shooted % 2 == 0):
-		get_node("sound").play("spray2")
-	else:
-		get_node("sound").play("spray1")
-	
-	update_bullets(-1)
-	
-	shooted += 1
-	
-	PS2D.body_add_collision_exception(bi1.get_rid(), get_rid())
-	PS2D.body_add_collision_exception(bi2.get_rid(), get_rid())
-	PS2D.body_add_collision_exception(bi3.get_rid(), get_rid())
-	PS2D.body_add_collision_exception(bi1.get_rid(), bi2.get_rid())
-	PS2D.body_add_collision_exception(bi1.get_rid(), bi3.get_rid())
-	PS2D.body_add_collision_exception(bi2.get_rid(), bi1.get_rid())
-	PS2D.body_add_collision_exception(bi2.get_rid(), bi3.get_rid())
-
-func _integrate_forces(s):
-	var lv = s.get_linear_velocity()
-	var step = s.get_step()
-	
-	var new_anim = anim
-	var new_siding_left = siding_left
-	var force_sprite_direction = false
-	
-	# Get the controls
-	var move_left = Input.is_action_pressed("move_left")
-	var move_right = Input.is_action_pressed("move_right")
-	var jump = Input.is_action_pressed("jump")
-	var shoot = Input.is_action_pressed("shoot")
-	var spawn = Input.is_action_pressed("spawn")
-	
-	var can_wall_jump_left = get_node("wall_check_left").get_overlapping_bodies().size() > 1
-	var can_wall_jump_right = get_node("wall_check_right").get_overlapping_bodies().size() > 1
-#	
-	if spawn:
-		var e = enemy.instance()
-		var p = get_pos()
-		p.y = p.y - 100
-		e.set_pos(p)
-		get_parent().add_child(e)
-	
-	lv.x -= floor_h_velocity
-	floor_h_velocity = 0.0
-	
-	# Find the floor (a contact with upwards facing collision normal)
-	found_floor = false
-	var floor_index = -1
-	
-	for x in range(s.get_contact_count()):
-		var cc = s.get_contact_collider_object(x)
-		var ci = s.get_contact_local_normal(x)
-		
-		if (ci.dot(Vector2(0, -2)) > 0.6):
-			found_floor = true
-			move_control = true
-			floor_index = x
-			
-			if (not grounded):
-				grounded = true
-				get_node("sound").play("grounded")
-			
-			if (wall_touching):
-				wall_touching = false
-				
-				if (wall_touching_right):
-					new_siding_left = true
-				elif (wall_touching_left):
-					new_siding_left = false
-				
-				if (dust.is_emitting()):
-					dust.set_emitting(false)
-		
-		# Damage
-		if (cc and cc extends enemy_class):
-			got_damage(-1)
-			
-			if (can_wall_jump_right):
-				lv.x = -MAX_SPEED*0.5
-			else:
-				lv.x = MAX_SPEED*0.5
-			
-			lv.y = -JUMP_VELOCITY*0.5
-			grounded = false
-			move_control = false
-	
-	if (shoot and not shooting):
-		shoot_time = 0
-		
-		if (global.bullets):
-			if (global.bullet_type == global.BULLET_NORMAL):
-				shoot_spray_normal()
-			elif (global.bullet_type == global.BULLET_TRIPLE):
-				shoot_spray_triple()
-		else:
-			get_node("sound").play("shake")
-	else:
-		shoot_time += step
-	
-	if (found_floor):
-		airborne_time = 0.0
-	else:
-		airborne_time += step # Time it spent in the air
-	
-	var on_floor = airborne_time < MAX_FLOOR_AIRBORNE_TIME
-	
-	if (not jump_released and not jump):
-		jump_released = true
-	
-	# Process jump
-	if (jumping):
-		# We want the character to immediately change facing side when the player
-		# tries to change direction, during air control.
-		# This allows for example the player to shoot quickly left then right.
-		if (not wall_touching):
-			if (move_left and not move_right):
-				get_node("sprite").set_scale(Vector2(-2, 2))
-				new_siding_left = true
-				
-			elif (move_right and not move_left):
-				get_node("sprite").set_scale(Vector2(2, 2))
-				new_siding_left = false
-		
-		if (lv.y >= 0):
-			# Set off the jumping flag if going down
-			jumping = false
-			wall_jumping = false
-			grounded = false
-		elif (not jump):
-			stopping_jump = true
-	
-	if (on_floor):
-		# Check jump
-		if (not jumping and jump and jump_released):
-			lv.y = -JUMP_VELOCITY
-			jumping = true
-			stopping_jump = false
-			jump_released = false
-			get_node("sound").play("jump")
-		
-		# Check siding
-		if (lv.x < 0 and move_left):
-			new_siding_left = true
-		elif (lv.x > 0 and move_right):
-			new_siding_left = false
-		
-		if (jumping):
-			if (lv.y > 0):
-				new_anim = "jumping"
-			else:
-				new_anim = "idle"
-		elif (abs(lv.x) < 0.1):
-			if (shoot_time < MAX_SHOOT_POSE_TIME):
-				new_anim = "idle_weapon"
-				force_sprite_direction = true
-			else:
-				new_anim = "idle"
-		else:
-			if (shoot_time < MAX_SHOOT_POSE_TIME):
-				new_anim = "run_weapon"
-				force_sprite_direction = true
-			else:
-				new_anim = "run"
-	else:
-		# Process logic when the character is in the air
-		var was_wall_touching = wall_touching
-		var was_wall_touching_left = wall_touching_left
-		var was_wall_touching_right = wall_touching_right
-		
-		# Check Wall Jump
-		if (wall_jumping and wall_jump_time > MAX_WALL_JUMP_POSE_TIME):
-			wall_jumping = false
-		
-		if (wall_touching and wall_touch_time > MAX_WALL_TOUCH_POSE_TIME):
-			wall_touching = false
-		
-		if (not wall_jumping and wall_touching and jump and jump_released):
-			if (wall_touching_left):
-				new_siding_left = false
-				lv.x = MAX_SPEED/2
-			elif (wall_touching_right):
-				new_siding_left = true
-				lv.x = -MAX_SPEED/2
-			
-			lv.y = -JUMP_VELOCITY
-			jumping = true
-			jump_released = false
-			wall_touching = false
-			wall_jumping = true
-			wall_jump_time = 0
-			move_control = false
-			get_node("sound").play("jump")
-		
-		elif (not wall_jumping and can_wall_jump_left or can_wall_jump_right):
-			if (move_left or move_right):
-				if (can_wall_jump_left and move_left):
-					wall_touching_left = true
-					wall_touching_right = false
-				elif (can_wall_jump_right and move_right):
-					wall_touching_left = false
-					wall_touching_right = true
-				elif (wall_touching_left  and not can_wall_jump_left or wall_touching_right and not can_wall_jump_right):
-					wall_touching_left = false
-					wall_touching_right = false
-				
-				if (wall_touching_left or wall_touching_right):
-					if (wall_touching_left):
-						dust.set_pos(get_node("CollisionPolygon2D").get_pos()+Vector2(-20,0))
-					else:
-						dust.set_pos(get_node("CollisionPolygon2D").get_pos()+Vector2(20,0))
-					
-					if (not dust.is_emitting()):
-						enable_dust(5)
-					
-					if (wall_touching_left):
-						new_siding_left = true
-					elif (wall_touching_right):
-						new_siding_left = false
-					
-					if (not wall_touching and not wall_jumping):
-						get_node("sound").play("grounded")
-					
-					wall_touching = true
-					wall_touch_time = 0
-				elif (wall_touching):
-					wall_touching = false
-		else:
-			wall_touching = false
-		
-		if (was_wall_touching and not wall_touching):
-			if (dust.is_emitting()):
-				dust.set_emitting(false)
-			
-			if (move_left and not move_right):
-				new_siding_left = true
-			elif (move_right and not move_left):
-				new_siding_left = false
-			elif (was_wall_touching_left):
-				new_siding_left = true
-			elif (was_wall_touching_right):
-				new_siding_left = false
-		
-		if (wall_jumping):
-			if (wall_jump_time == 0):
-				new_anim = "wall_jumping"
-			
-			wall_jump_time += step
-		elif (wall_touching):
-			if (shoot):
-				new_anim = "wall_touching_shooting"
-			else:
-				new_anim = "wall_touching"
-			
-			wall_touch_time += step
-		elif (lv.y < 0):
-			if (shoot_time < MAX_SHOOT_POSE_TIME):
-				new_anim = "jumping_weapon"
-				force_sprite_direction = true
-			else:
-				new_anim = "jumping"
-		else:
-			if (shoot_time < MAX_SHOOT_POSE_TIME):
-				new_anim = "falling_weapon"
-				force_sprite_direction = true
-			else:
-				new_anim = "falling"
-	
-	# Update siding
-	if (new_siding_left != siding_left):
-		siding_left = new_siding_left
-	
-	if (wall_jumping and wall_jump_time < MAX_WALL_JUMP_POSE_TIME):
-		if (wall_touching_right):
-			siding_left = true
-			get_node("sprite").set_scale(Vector2(-2, 2))
-		elif (wall_touching_left):
-			siding_left = false
-			get_node("sprite").set_scale(Vector2(2, 2))
-	elif (force_sprite_direction):
-		get_node("sprite").set_scale(Vector2(2, 2))
-		
-		if (siding_left):
-			new_anim = new_anim + "_left"
-		else:
-			new_anim = new_anim + "_right"
-	else:
-		if (siding_left):
-			get_node("sprite").set_scale(Vector2(-2, 2))
-		else:
-			get_node("sprite").set_scale(Vector2(2, 2))
-	
-	# Change animation
-	if (new_anim != anim):
-		anim = new_anim
-		get_node("anim").play(anim)
-	
-	shooting = shoot
-	
-	if (not wall_jumping and move_left and not move_right):
-		if (not siding_left):
-			if (not jumping and lv.x >= MAX_SPEED/2):
-				get_node("sound").play("grounded")
-				dust.set_pos(get_node("CollisionPolygon2D").get_pos()+Vector2(10,20))
-				enable_dust(15,true)
-		
-		lv.x = max(lv.x - ACCELERATION, -MAX_SPEED)
-	
-	elif (not wall_jumping and move_right and not move_left):
-		if (siding_left):
-			if (not jumping and lv.x <= -MAX_SPEED/2):
-				get_node("sound").play("grounded")
-				dust.set_pos(get_node("CollisionPolygon2D").get_pos()+Vector2(-10,20))
-				enable_dust(15,true)
-		
-		lv.x = min(lv.x + ACCELERATION, MAX_SPEED)
-	
-	else:
-		var xv = abs(lv.x)
-		xv -= ACCELERATION*0.8
-		if (xv < 0):
-			xv = 0
-		lv.x = sign(lv.x)*xv
-	
-	if (found_floor):
-		floor_h_velocity = s.get_contact_collider_velocity_at_pos(floor_index).x
-		lv.x += floor_h_velocity
-	
-	# Finally, apply gravity and set back the linear velocity
-	if (wall_touching and lv.y >= 0):
-		lv += s.get_total_gravity()*0.1*step
-	else:
-		lv += s.get_total_gravity()*step
-	
-	s.set_linear_velocity(lv)
-
-func _ready():
-	enemy = ResourceLoader.load("res://scenes/enemy.tscn")
-	
-	get_node("anim").play("fadein")
-	
-	dust = get_node("dust")
-	
-	for i in range(11):
-		imgs_health[i] = load("res://sprites/hud_health_%02d.png"%(i))
-		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
-
-func _on_timer_damage_timeout():
-	disable_damage = false
-	get_node("anim").play("after_damage")
-
-func _on_timer_dust_timeout():
+func disable_dust():
 	if (dust.is_emitting()):
 		dust.set_emitting(false)
+
+func _on_anim_animation_finished(anim_name):
+	pass
+
+func _on_anim_animation_started(anim_name):
+	pass

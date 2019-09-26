@@ -1,155 +1,155 @@
-[gd_scene load_steps=15 format=1]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scripts/dialog.gd" type="Script" id=1]
 [ext_resource path="res://sprites/dialog_bg.png" type="Texture" id=2]
 [ext_resource path="res://sprites/dialog_brace_left.png" type="Texture" id=3]
 [ext_resource path="res://sprites/dialog_brace_right.png" type="Texture" id=4]
 [ext_resource path="res://sprites/dialog_next.png" type="Texture" id=5]
-[ext_resource path="res://fonts/pressstart2p.fnt" type="BitmapFont" id=6]
+[ext_resource path="res://fonts/pressstart2p.font" type="BitmapFont" id=6]
 [ext_resource path="res://sfx/sound_click.wav" type="Sample" id=7]
 [ext_resource path="res://sfx/sound_letter.wav" type="Sample" id=8]
 [ext_resource path="res://sfx/sound_next.wav" type="Sample" id=9]
 
 [sub_resource type="Animation" id=1]
 
-resource/name = "close"
+resource_name = "close"
 length = 0.1
 loop = false
 step = 0.1
 tracks/0/type = "value"
-tracks/0/path = NodePath("dialog_brace_left:visibility/visible")
+tracks/0/path = NodePath("dialog_brace_left:visible")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 0, 0 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 0, 0 ),
 "update": 0,
 "values": [ true, false ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("dialog_brace_right:visibility/visible")
+tracks/1/path = NodePath("dialog_brace_right:visible")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 0, 0 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 0, 0 ),
 "update": 0,
 "values": [ true, false ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("dialog_brace_left:transform/pos")
+tracks/2/path = NodePath("dialog_brace_left:position")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 1, 0 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 0 ),
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( -64, 0 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("dialog_brace_right:transform/pos")
+tracks/3/path = NodePath("dialog_brace_right:position")
 tracks/3/interp = 1
 tracks/3/imported = false
 tracks/3/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 1, 0 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 0 ),
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( 64, 0 ) ]
 }
 tracks/4/type = "value"
-tracks/4/path = NodePath("dialog_bg:visibility/visible")
+tracks/4/path = NodePath("dialog_bg:visible")
 tracks/4/interp = 1
 tracks/4/imported = false
 tracks/4/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 0, 0 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 0, 0 ),
 "update": 0,
 "values": [ true, false ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath("dialog_bg:visibility/opacity")
+tracks/5/path = NodePath("dialog_bg:modulate:a")
 tracks/5/interp = 1
 tracks/5/imported = false
 tracks/5/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 0.25, 0 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 0.25, 0 ),
 "update": 0,
 "values": [ 1.0, 0.0 ]
 }
 tracks/6/type = "value"
-tracks/6/path = NodePath("dialog_next:visibility/visible")
+tracks/6/path = NodePath("dialog_next:visible")
 tracks/6/interp = 1
 tracks/6/imported = false
 tracks/6/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 0, 1 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 0, 1 ),
 "update": 0,
 "values": [ true, false ]
 }
 tracks/7/type = "value"
-tracks/7/path = NodePath("text:visibility/visible")
+tracks/7/path = NodePath("text:visible")
 tracks/7/interp = 1
 tracks/7/imported = false
 tracks/7/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 0, 1 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 0, 1 ),
 "update": 0,
 "values": [ true, false ]
 }
 tracks/8/type = "value"
-tracks/8/path = NodePath("text:visibility/opacity")
+tracks/8/path = NodePath("text:modulate:a")
 tracks/8/interp = 1
 tracks/8/imported = false
 tracks/8/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 1, 4 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 4 ),
 "update": 0,
 "values": [ 1.0, 0.0 ]
 }
 tracks/9/type = "value"
-tracks/9/path = NodePath("dialog_next:visibility/opacity")
+tracks/9/path = NodePath("dialog_next:modulate:a")
 tracks/9/interp = 1
 tracks/9/imported = false
 tracks/9/keys = {
-"times": FloatArray( 0, 0.1 ),
-"transitions": FloatArray( 1, 4 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 4 ),
 "update": 0,
 "values": [ 1.0, 0.0 ]
 }
 
 [sub_resource type="Animation" id=2]
 
-resource/name = "hide_next"
+resource_name = "hide_next"
 length = 0.5
 loop = false
 step = 0.1
 tracks/0/type = "value"
-tracks/0/path = NodePath("dialog_next:transform/pos")
+tracks/0/path = NodePath("dialog_next:position")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.2 ),
-"transitions": FloatArray( 0, 0 ),
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0, 0 ),
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( 0, 4 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("dialog_next:visibility/visible")
+tracks/1/path = NodePath("dialog_next:visible")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 0, 0.5 ),
-"transitions": FloatArray( 0, 0 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0, 0 ),
 "update": 0,
 "values": [ true, false ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("dialog_next:visibility/opacity")
+tracks/2/path = NodePath("dialog_next:modulate:a")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 0, 0.2, 0.5 ),
-"transitions": FloatArray( 0, 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.5 ),
+"transitions": PoolRealArray( 0, 1, 1 ),
 "update": 0,
 "values": [ 1.0, 1.0, 0.0 ]
 }
@@ -160,82 +160,82 @@ length = 0.5
 loop = false
 step = 0.1
 tracks/0/type = "value"
-tracks/0/path = NodePath("dialog_brace_left:visibility/visible")
+tracks/0/path = NodePath("dialog_brace_left:visible")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.5 ),
-"transitions": FloatArray( 1, 0 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 0 ),
 "update": 0,
 "values": [ true, true ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("dialog_brace_right:visibility/visible")
+tracks/1/path = NodePath("dialog_brace_right:visible")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 0, 0.5 ),
-"transitions": FloatArray( 1, 0 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 0 ),
 "update": 0,
 "values": [ true, true ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("dialog_brace_left:transform/pos")
+tracks/2/path = NodePath("dialog_brace_left:position")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 0, 0.2, 0.5 ),
-"transitions": FloatArray( 1, 0, 0 ),
+"times": PoolRealArray( 0, 0.2, 0.5 ),
+"transitions": PoolRealArray( 1, 0, 0 ),
 "update": 0,
 "values": [ Vector2( -64, 0 ), Vector2( 0, 0 ), Vector2( 0, 0 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("dialog_brace_right:transform/pos")
+tracks/3/path = NodePath("dialog_brace_right:position")
 tracks/3/interp = 1
 tracks/3/imported = false
 tracks/3/keys = {
-"times": FloatArray( 0, 0.2, 0.5 ),
-"transitions": FloatArray( 1, 0, 0 ),
+"times": PoolRealArray( 0, 0.2, 0.5 ),
+"transitions": PoolRealArray( 1, 0, 0 ),
 "update": 0,
 "values": [ Vector2( 64, 0 ), Vector2( 0, 0 ), Vector2( 0, 0 ) ]
 }
 tracks/4/type = "value"
-tracks/4/path = NodePath("dialog_bg:visibility/visible")
+tracks/4/path = NodePath("dialog_bg:visible")
 tracks/4/interp = 1
 tracks/4/imported = false
 tracks/4/keys = {
-"times": FloatArray( 0, 0.5 ),
-"transitions": FloatArray( 0, 0 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0, 0 ),
 "update": 0,
 "values": [ true, true ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath("dialog_bg:visibility/opacity")
+tracks/5/path = NodePath("dialog_bg:modulate:a")
 tracks/5/interp = 1
 tracks/5/imported = false
 tracks/5/keys = {
-"times": FloatArray( 0, 0.2, 0.5 ),
-"transitions": FloatArray( 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.2, 0.5 ),
+"transitions": PoolRealArray( 0, 0.25, 0 ),
 "update": 0,
 "values": [ 0.0, 0.0, 1.0 ]
 }
 tracks/6/type = "value"
-tracks/6/path = NodePath("text:visibility/visible")
+tracks/6/path = NodePath("text:visible")
 tracks/6/interp = 1
 tracks/6/imported = false
 tracks/6/keys = {
-"times": FloatArray( 0, 0.5 ),
-"transitions": FloatArray( 1, 0 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 0 ),
 "update": 0,
 "values": [ false, true ]
 }
 tracks/7/type = "value"
-tracks/7/path = NodePath("text:visibility/opacity")
+tracks/7/path = NodePath("text:modulate:a")
 tracks/7/interp = 1
 tracks/7/imported = false
 tracks/7/keys = {
-"times": FloatArray( 0, 0.5 ),
-"transitions": FloatArray( 1, 0 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 0 ),
 "update": 0,
 "values": [ 0.0, 1.0 ]
 }
@@ -246,47 +246,47 @@ length = 1.0
 loop = true
 step = 0.1
 tracks/0/type = "value"
-tracks/0/path = NodePath("dialog_next:transform/pos")
+tracks/0/path = NodePath("dialog_next:position")
 tracks/0/interp = 1
 tracks/0/imported = false
 tracks/0/keys = {
-"times": FloatArray( 0, 0.5, 1 ),
-"transitions": FloatArray( 0, 0, 0 ),
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 0, 0, 0 ),
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( 0, 4 ), Vector2( 0, 0 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("dialog_next:transform/rot")
+tracks/1/path = NodePath("dialog_next:rotation_degrees")
 tracks/1/interp = 1
 tracks/1/imported = false
 tracks/1/keys = {
-"times": FloatArray( 0, 0.5, 1 ),
-"transitions": FloatArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
 "values": [ 0.0, 0.0, 0.0 ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("dialog_next:visibility/visible")
+tracks/2/path = NodePath("dialog_next:visible")
 tracks/2/interp = 1
 tracks/2/imported = false
 tracks/2/keys = {
-"times": FloatArray( 0 ),
-"transitions": FloatArray( 0 ),
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 0 ),
 "update": 0,
 "values": [ true ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("dialog_next:visibility/opacity")
+tracks/3/path = NodePath("dialog_next:modulate:a")
 tracks/3/interp = 1
 tracks/3/imported = false
 tracks/3/keys = {
-"times": FloatArray( 0, 1 ),
-"transitions": FloatArray( 0, 0 ),
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 0, 0 ),
 "update": 0,
 "values": [ 1.0, 1.0 ]
 }
 
-[sub_resource type="SampleLibrary" id=5]
+[sub_resource type="Resource" id=5]
 
 samples/click = {
 "db": 0.0,
@@ -309,14 +309,14 @@ samples/next = {
 
 [node name="dialog" type="Node"]
 
-process/pause_mode = 2
-script/script = ExtResource( 1 )
+pause_mode = 2
+script = ExtResource( 1 )
 
 [node name="dialog_bg" type="Sprite" parent="."]
 
-visibility/visible = false
-visibility/opacity = 0.0
-transform/scale = Vector2( 2, 2 )
+visible = false
+modulate = Color( 1, 1, 1, 0 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 centered = false
 __meta__ = {
@@ -325,9 +325,9 @@ __meta__ = {
 
 [node name="dialog_brace_left" type="Sprite" parent="."]
 
-visibility/visible = false
-transform/pos = Vector2( -64, 0 )
-transform/scale = Vector2( 2, 2 )
+visible = false
+position = Vector2( -64, 0 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 centered = false
 __meta__ = {
@@ -336,9 +336,9 @@ __meta__ = {
 
 [node name="dialog_brace_right" type="Sprite" parent="."]
 
-visibility/visible = false
-transform/pos = Vector2( 64, 0 )
-transform/scale = Vector2( 2, 2 )
+visible = false
+position = Vector2( 64, 0 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 centered = false
 __meta__ = {
@@ -347,8 +347,8 @@ __meta__ = {
 
 [node name="dialog_next" type="Sprite" parent="."]
 
-transform/pos = Vector2( 0, 4 )
-transform/scale = Vector2( 2, 2 )
+position = Vector2( 0, 4 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 5 )
 centered = false
 __meta__ = {
@@ -357,16 +357,16 @@ __meta__ = {
 
 [node name="text" type="Label" parent="."]
 
-visibility/visible = false
-visibility/opacity = 0.0
+visible = false
+modulate = Color( 1, 1, 1, 0 )
 focus/ignore_mouse = true
 focus/stop_mouse = true
-size_flags/horizontal = 2
-size_flags/vertical = 0
-margin/left = 49.0
-margin/top = 355.0
-margin/right = 593.0
-margin/bottom = 451.0
+size_flags_horizontal = 1
+size_flags_vertical = 0
+margin_left = 49.0
+margin_top = 355.0
+margin_right = 593.0
+margin_bottom = 451.0
 custom_fonts/font = ExtResource( 6 )
 custom_constants/line_spacing = 10
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -378,22 +378,23 @@ max_lines_visible = -1
 __meta__ = {
 "_edit_lock_": true
 }
+mouse_filter = 1
 
 [node name="anim" type="AnimationPlayer" parent="."]
 
-playback/process_mode = 1
-playback/default_blend_time = 0.0
-root/root = NodePath("..")
+playback_process_mode = 1
+playback_default_blend_time = 0.0
+root_node = NodePath("..")
 anims/close = SubResource( 1 )
 anims/hide_next = SubResource( 2 )
 anims/open = SubResource( 3 )
 anims/show_next = SubResource( 4 )
-playback/active = true
-playback/speed = 1.0
+playback_active = true
+playback_speed = 1.0
 blend_times = [  ]
 autoplay = ""
 
-[node name="sound" type="SamplePlayer" parent="."]
+[node name="sound" type="Node" parent="."]
 
 config/polyphony = 1
 config/samples = SubResource( 5 )
@@ -423,5 +424,3 @@ process_mode = 1
 wait_time = 0.01
 one_shot = false
 autostart = false
-
-

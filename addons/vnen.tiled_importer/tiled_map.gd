@@ -306,15 +306,15 @@ func build():
 			var tilemap = TileMap.new()
 			tilemap.set_name(name)
 			tilemap.set_cell_size(cell_size)
-			tilemap.set_opacity(opacity)
-			tilemap.set_hidden(not visible)
+			tilemap.modulate.a = opacity
+			tilemap.visible = !(not visible)
 			tilemap.set_mode(map_mode)
 
 			var offset = Vector2()
 			if l.has("offsetx") and l.has("offsety"):
 				offset = Vector2(int(l.offsetx), int(l.offsety))
 
-			tilemap.set_pos(offset)
+			tilemap.set_position(offset)
 
 			var firstgid = 0
 			tilemap.set_tileset(_tileset_from_gid(firstgid))
@@ -376,10 +376,10 @@ func build():
 				return image
 
 			sprite.set_texture(image)
-			sprite.set_opacity(opacity)
-			sprite.set_hidden(not visible)
+			sprite.modulate.a = opacity
+			sprite.visible = !(not visible)
 			scene.add_child(sprite)
-			sprite.set_pos(pos + offset)
+			sprite.set_position(pos + offset)
 			sprite.set_owner(scene)
 
 		elif l.type == "objectgroup":
@@ -395,8 +395,8 @@ func build():
 				_set_meta(object, l.properties, l.propertytypes)
 
 			object.set_name(l.name)
-			object.set_opacity(opacity)
-			object.set_hidden(not visible)
+			object.modulate.a = opacity
+			object.visible = !(not visible)
 			scene.add_child(object)
 			object.set_owner(scene)
 
@@ -421,7 +421,7 @@ func build():
 							pos.x = float(obj.x)
 						if obj.has("y"):
 							pos.y = float(obj.y)
-						occluder.set_pos(pos)
+						occluder.set_position(pos)
 
 						var rot = 0
 						if obj.has("rotation"):
@@ -431,7 +431,7 @@ func build():
 						var obj_visible = true
 						if obj.has("visible"):
 							obj_visible = bool(obj.visible)
-						occluder.set_hidden(not obj_visible)
+						occluder.visible = !(not obj_visible)
 
 						occluder.set_occluder_polygon(shape)
 
@@ -454,18 +454,18 @@ func build():
 						if not ("polygon" in obj or "polyline" in obj):
 							collision = CollisionShape2D.new()
 							collision.set_shape(shape)
-							if shape extends RectangleShape2D:
+							if shape is RectangleShape2D:
 								offset = shape.get_extents()
-							elif shape extends CircleShape2D:
+							elif shape is CircleShape2D:
 								offset = Vector2(shape.get_radius(), shape.get_radius())
-							elif shape extends CapsuleShape2D:
+							elif shape is CapsuleShape2D:
 								offset = Vector2(shape.get_radius(), shape.get_height())
-							collision.set_pos(-offset)
+							collision.set_position(-offset)
 							rot_offset = 180
 						else:
 							collision = CollisionPolygon2D.new()
 							var points = null
-							if shape extends ConcavePolygonShape2D:
+							if shape is ConcavePolygonShape2D:
 								points = []
 								var segments = shape.get_segments()
 								for i in range(0, segments.size()):
@@ -481,7 +481,7 @@ func build():
 						var obj_visible = true
 						if obj.has("visible"):
 							obj_visible = bool(obj.visible)
-						body.set_hidden(not obj_visible)
+						body.visible = !(not obj_visible)
 
 						var rot = 0
 						if obj.has("rotation"):
@@ -492,7 +492,7 @@ func build():
 								rot = -rot
 						body.set_rotd(rot)
 
-						body.add_shape(shape, Matrix32(0, -offset))
+						body.add_shape(shape, Transform2D(0, -offset))
 
 						body.add_child(collision)
 						object.add_child(body)
@@ -505,7 +505,7 @@ func build():
 						if obj.has("y"):
 							pos.y = float(obj.y)
 
-						body.set_pos(pos)
+						body.set_position(pos)
 
 						if options.custom_properties and obj.has("properties") and obj.has("propertytypes"):
 							_set_meta(body, obj.properties, obj.propertytypes)
@@ -537,7 +537,7 @@ func build():
 						pos.x = float(obj.x)
 					if obj.has("y"):
 						pos.y = float(obj.y)
-					sprite.set_pos(pos)
+					sprite.set_position(pos)
 
 					var rot = 0
 					if obj.has("rotation"):
@@ -547,7 +547,7 @@ func build():
 					var obj_visible = true
 					if obj.has("visible"):
 						obj_visible = bool(obj.visible)
-					sprite.set_hidden(not obj_visible)
+					sprite.visible = !(not obj_visible)
 
 					object.add_child(sprite)
 					sprite.set_owner(scene)
@@ -583,7 +583,7 @@ func _shape_from_object(obj):
 	var shape = "No shape created. That really shouldn't happen..."
 
 	if "polygon" in obj or "polyline" in obj:
-		var vertices = Vector2Array()
+		var vertices = PoolVector2Array()
 
 		if "polygon" in obj:
 			for point in obj.polygon:
@@ -635,7 +635,7 @@ func _shape_from_object(obj):
 		var size = Vector2(int(obj.width), int(obj.height))
 
 		if obj.type == "navigation" or obj.type == "occluder":
-			var vertices = Vector2Array([
+			var vertices = PoolVector2Array([
 				Vector2(0, 0),
 				Vector2(size.width, 0),
 				size,
@@ -690,7 +690,7 @@ func _sort_points_cw(vertices):
 	var sorter = PointSorter.new(centroid)
 	vertices.sort_custom(sorter, "is_less")
 
-	return Vector2Array(vertices)
+	return PoolVector2Array(vertices)
 
 class PointSorter:
 	var center
@@ -1146,3 +1146,4 @@ func _attributes_to_dict(parser):
 			val = false
 		data[attr] = val
 	return data
+

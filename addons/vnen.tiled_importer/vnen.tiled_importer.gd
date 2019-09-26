@@ -38,3 +38,4 @@ func _enter_tree():
 func _exit_tree():
 	remove_import_plugin(import_plugin)
 	import_plugin = null
+

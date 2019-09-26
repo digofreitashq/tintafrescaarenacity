@@ -231,7 +231,7 @@ func _on_Options_custom_popup_edited( arrow_clicked ):
 		if value & (1 << i):
 			popup_menu.set_item_checked(i, true)
 
-	popup_menu.set_pos(pop_place.pos)
+	popup_menu.set_position(pop_place.position)
 	popup_menu.popup()
 
 
@@ -301,3 +301,4 @@ func _on_ImportTilemap_confirmed():
 		return
 
 	hide()
+

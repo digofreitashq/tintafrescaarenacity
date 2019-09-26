@@ -1,4 +1,4 @@
-[gd_resource type="SampleLibrary" load_steps=9 format=1]
+[gd_resource type="Resource" load_steps=1 format=2]
 
 [ext_resource path="res://sfx/sound_coin.wav" type="Sample" id=1]
 [ext_resource path="res://sfx/sound_damage.wav" type="Sample" id=2]
@@ -59,4 +59,3 @@ samples/spray2 = {
 "priority": 0,
 "sample": ExtResource( 8 )
 }
-
