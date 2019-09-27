@@ -586,7 +586,7 @@ position = Vector2( 0, -10 )
 stream = ExtResource( 6 )
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PoolVector2Array( -0.0828857, 25.17, -16, -22, 16, -22 )
+polygon = PoolVector2Array( -0.0828857, 25.17, -15.37, 6.54497, -16, -22, 16, -22, 15.8728, 6.83696 )
 
 [node name="ui" type="CanvasLayer" parent="."]
 editor/display_folded = true
@@ -678,6 +678,16 @@ cast_to = Vector2( -10, 0 )
 position = Vector2( 10, -30 )
 enabled = true
 cast_to = Vector2( 10, 0 )
+
+[node name="left_damage_raycast" type="RayCast2D" parent="."]
+position = Vector2( -14, -20 )
+enabled = true
+cast_to = Vector2( 0, 40 )
+
+[node name="right_damage_raycast2" type="RayCast2D" parent="."]
+position = Vector2( 14, -20 )
+enabled = true
+cast_to = Vector2( 0, 40 )
 [connection signal="animation_finished" from="anim" to="." method="_on_anim_animation_finished"]
 [connection signal="animation_started" from="anim" to="." method="_on_anim_animation_started"]
 [connection signal="timeout" from="timer_damage" to="." method="_on_timer_damage_timeout"]

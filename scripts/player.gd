@@ -129,6 +129,17 @@ func wall_direction():
 	var is_near_right = right_wall_raycast.is_colliding()
 	
 	return -int(is_near_left) + int(is_near_right)
+	
+func is_damaged():
+	for damage_raycast in [$left_damage_raycast, $right_damage_raycast]:
+		if not is_instance_valid(damage_raycast): continue
+		if not damage_raycast.is_colliding(): continue
+		
+		for body in damage_raycast.get_incoming_connections():
+			if "enemy" in body.get_name():
+				return true
+	
+	return false
 
 func shoot():
 	if timer_shoot.is_stopped():
@@ -267,9 +278,11 @@ func update_enemies(value):
 func got_damage(value):
 	update_health(value)
 	disable_damage = true
+	
+	linear_vel = Vector2((PLAYER_SCALE if siding_left else -PLAYER_SCALE)*WALLJUMP_SPEED, -WALLJUMP_SPEED)
+	
 	play_sound(sound_damage)
 	$anim.play("got_damage")
-	
 	get_node("timer_damage").start()
 
 func enable_dust(position=Vector2(0,10)):
@@ -290,3 +303,4 @@ func _on_anim_animation_finished(anim_name):
 
 func _on_anim_animation_started(anim_name):
 	pass
+

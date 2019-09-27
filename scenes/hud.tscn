@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/hud_base.png" type="Texture" id=2]
@@ -14,7 +14,8 @@
 [ext_resource path="res://sprites/hud_health_07.png" type="Texture" id=12]
 [ext_resource path="res://sprites/hud_health_08.png" type="Texture" id=13]
 [ext_resource path="res://sprites/hud_health_09.png" type="Texture" id=14]
-[ext_resource path="res://fonts/gbb.font" type="BitmapFont" id=15]
+[ext_resource path="res://sfx/sound_fill.wav" type="AudioStream" id=15]
+[ext_resource path="res://fonts/gbb.font" type="BitmapFont" id=16]
 
 [sub_resource type="Animation" id=1]
 resource_name = "fill"
@@ -44,7 +45,7 @@ tracks/1/keys = {
 "values": [ ExtResource( 4 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("sound:play/play")
+tracks/2/path = NodePath("spray:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -53,19 +54,21 @@ tracks/2/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ "fill" ]
+"values": [ false ]
 }
-tracks/3/type = "value"
-tracks/3/path = NodePath("spray:visible")
+tracks/3/type = "audio"
+tracks/3/path = NodePath("sound")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ false ]
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 15 )
+} ],
+"times": PoolRealArray( 0 )
 }
 
 [node name="hud" type="Node2D"]
@@ -95,7 +98,9 @@ centered = false
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/fill = SubResource( 1 )
 
-[node name="sound" type="Node" parent="."]
+[node name="sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 15 )
+volume_db = -20.0
 
 [node name="label_sprays" type="Label" parent="."]
 margin_left = 4.0
@@ -105,7 +110,7 @@ margin_bottom = 75.0
 mouse_filter = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
-custom_fonts/font = ExtResource( 15 )
+custom_fonts/font = ExtResource( 16 )
 custom_colors/font_color = Color( 0.0627451, 0.772549, 0.364706, 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_x = 2
@@ -120,7 +125,7 @@ margin_bottom = 96.0
 mouse_filter = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
-custom_fonts/font = ExtResource( 15 )
+custom_fonts/font = ExtResource( 16 )
 custom_colors/font_color = Color( 0.843137, 0.231373, 0.0196078, 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_x = 2

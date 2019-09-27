@@ -37,6 +37,9 @@ func _state_logic(delta):
 		parent._gravity_wall_slide()
 	
 	parent.update_state_label()
+	
+	if parent.is_damaged():
+		parent.got_damage(-1)
 
 func _get_transition(delta):
 	match state:
