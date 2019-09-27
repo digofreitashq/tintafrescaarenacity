@@ -10,7 +10,7 @@ const STATE_WALKING = 0
 const STATE_KILLED = 1
 
 var linear_velocity = Vector2()
-var direction = -2
+var direction = 2 if randi() % 2 == 0 else -2
 var anim=""
 
 var state = STATE_WALKING
@@ -20,13 +20,15 @@ onready var detect_wall_left = $detect_wall_left
 onready var detect_floor_right = $detect_floor_right
 onready var detect_wall_right = $detect_wall_right
 
+onready var sound_hit = preload("res://sfx/sound_hit.wav")
+
 func _ready():
 	get_tree().get_current_scene().get_node("player").update_enemies(1)
 
 func _physics_process(delta):
 	var new_anim = "idle"
 
-	if state==STATE_WALKING:
+	if state == STATE_WALKING:
 		linear_velocity += GRAVITY_VEC * delta
 		linear_velocity.x = direction * WALK_SPEED
 		linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
@@ -52,15 +54,19 @@ func getSpriteTexture():
 func setSpriteTexture(newSpriteTexture):
 	sprite_texture = newSpriteTexture
 	if newSpriteTexture:
-		get_node("sprite").set_texture(load(newSpriteTexture))
+		$sprite.set_texture(load(newSpriteTexture))
 
 func hit_by_bullet():
 	state = STATE_KILLED
 	linear_velocity.x = 0
 	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
-	get_node("anim").play("explode")
-	return
+	$sound.stream = sound_hit
+	$sound.play()
+	$anim.play("explode")
 
-	
-	get_tree().get_current_scene().get_node("player").update_enemies(-1)
+func _die():
+	queue_free()
 
+func _on_Area2D_body_entered(body):
+	if ("bullet" in body.get_name()):
+		hit_by_bullet()

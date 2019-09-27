@@ -8,7 +8,7 @@ const MIN_ONAIR_TIME = 0.1
 const WALK_SPEED = 250 # pixels/sec
 const JUMP_SPEED = 480
 const WALLJUMP_SPEED = 600
-const BULLET_VELOCITY = 1000
+const BULLET_VELOCITY = 800
 
 var linear_vel = Vector2()
 var target_speed = 0
@@ -149,9 +149,14 @@ func shoot():
 
 func shoot_spray_normal():
 	var bi = bullet.instance()
+	bi._ready()
 	
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
+	if player_sm.state == player_sm.states.wall_slide: direction *= -1
+	
+	bi.sprite.scale.x = -direction
+	bi.particles.scale.x = -direction
 	bi.position = $bullet_shoot.global_position #use node for shoot position
 	bi.linear_velocity = Vector2(direction * BULLET_VELOCITY, 0)
 	bi.add_collision_exception_with(self) # don't want player to collide with bullet
@@ -166,7 +171,21 @@ func shoot_spray_triple():
 	var bi2 = bullet.instance()
 	var bi3 = bullet.instance()
 	
+	bi1._ready()
+	bi2._ready()
+	bi3._ready()
+	
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
+	
+	if player_sm.state == player_sm.states.wall_slide: direction *= -1
+	
+	bi1.sprite.scale.x = -direction
+	bi2.sprite.scale.x = -direction
+	bi3.sprite.scale.x = -direction
+	
+	bi1.particles.scale.x = -direction
+	bi2.particles.scale.x = -direction
+	bi3.particles.scale.x = -direction
 	
 	bi1.position = $bullet_shoot.global_position #use node for shoot position
 	bi2.position = $bullet_shoot.global_position #use node for shoot position
