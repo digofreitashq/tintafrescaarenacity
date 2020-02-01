@@ -4,17 +4,18 @@ var timer_start = null
 var pressed_start = false
 
 var sound_click = preload("res://sfx/sound_click.wav")
+var sound_beep = preload("res://sfx/sound_beep.wav")
 
 func _ready():
 	#start_game() # PULA
-	get_node("music").play(0)
-	get_node("anim").play("disclaimer")
+	$music.play(0)
+	$anim.play("disclaimer")
 
 func anim_start():
-	get_node("anim_start").play("updown")
+	$anim_start.play("updown")
 
 func disclaimer_end():
-	timer_start = get_node("timer_start")
+	timer_start = $timer_start
 	timer_start.connect("timeout", self, "start")
 	timer_start.start()
 
@@ -24,11 +25,10 @@ func start():
 		
 		if (press_start):
 			pressed_start = true
-			get_node("anim").play("fadeout")
+			$anim.play("fadeout")
 			
-			get_node("sound").stream = sound_click
-			get_node("sound").play(0)
+			$sound.stream = sound_click
+			$sound.play(0)
 
 func start_game():
 	get_tree().change_scene("res://scenes/stage.tscn")
-

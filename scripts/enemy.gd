@@ -16,30 +16,33 @@ var anim=""
 var state = STATE_WALKING
 
 onready var detect_floor_left = $detect_floor_left
-onready var detect_wall_left = $detect_wall_left
 onready var detect_floor_right = $detect_floor_right
+onready var detect_wall_left = $detect_wall_left
 onready var detect_wall_right = $detect_wall_right
+onready var detect_player_left = $detect_player_left
+onready var detect_player_right = $detect_player_right
 
 onready var sound_hit = preload("res://sfx/sound_hit.wav")
 
 func _ready():
 	get_tree().get_current_scene().get_node("player").update_enemies(1)
 
+func _die():
+	get_tree().get_current_scene().get_node("player").update_enemies(-1)
+	queue_free()
+
 func _physics_process(delta):
 	var new_anim = "idle"
 
 	if state == STATE_WALKING:
-		linear_velocity += GRAVITY_VEC * delta
-		linear_velocity.x = direction * WALK_SPEED
-		linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
-
-		if not detect_floor_left.is_colliding() or detect_wall_left.is_colliding():
+		"""
+		if direction == -2.0 and (not detect_floor_left.is_colliding() or detect_wall_left.is_colliding()):
 			direction = 2.0
-
-		if not detect_floor_right.is_colliding() or detect_wall_right.is_colliding():
+		
+		if direction == 2.0 and (not detect_floor_right.is_colliding() or detect_wall_right.is_colliding()):
 			direction = -2.0
-
-		$sprite.scale = Vector2(direction, 2.0)
+		"""
+		set_direction(delta)
 		new_anim = "walk"
 	else:
 		new_anim = "explode"
@@ -47,6 +50,12 @@ func _physics_process(delta):
 	if anim != new_anim:
 		anim = new_anim
 		$anim.play(anim)
+
+func set_direction(delta=0):
+	linear_velocity += GRAVITY_VEC * delta
+	linear_velocity.x = direction * WALK_SPEED
+	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
+	$sprite.scale = Vector2(-direction, 2.0)
 
 func getSpriteTexture():
 	return sprite_texture
@@ -64,9 +73,22 @@ func hit_by_bullet():
 	$sound.play()
 	$anim.play("explode")
 
-func _die():
-	queue_free()
-
-func _on_Area2D_body_entered(body):
+func _on_damage_area_body_entered(body):
+	if ("enemy" in body.get_name()): return
+	
 	if ("bullet" in body.get_name()):
 		hit_by_bullet()
+	elif ("player" in body.get_name()):
+		var on_left = self.global_position.x > body.global_position.x
+		
+		get_tree().get_current_scene().get_node("player").got_damage(-1, on_left)
+
+func _on_chase_area_body_entered(body):
+	if ("player" in body.get_name()):
+		if self.global_position.x > body.global_position.x:
+			direction = -2
+		else:
+			direction = 2
+		
+		set_direction()
+		

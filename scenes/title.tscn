@@ -1,11 +1,14 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scripts/title.gd" type="Script" id=1]
 [ext_resource path="res://sprites/title.png" type="Texture" id=2]
 [ext_resource path="res://sprites/title_start.png" type="Texture" id=3]
-[ext_resource path="res://sprites/title_credits.png" type="Texture" id=4]
-[ext_resource path="res://bgm/tintafresca_stage1.ogg" type="AudioStream" id=5]
-[ext_resource path="res://sfx/sound_click.wav" type="AudioStream" id=6]
+[ext_resource path="res://sprites/title_credits_01.png" type="Texture" id=4]
+[ext_resource path="res://bgm/TintaFrescaTitle.ogg" type="AudioStream" id=5]
+[ext_resource path="res://sfx/sound_beep.wav" type="AudioStream" id=6]
+[ext_resource path="res://sprites/title_credits_02.png" type="Texture" id=7]
+[ext_resource path="res://sprites/title_credits_03.png" type="Texture" id=8]
+[ext_resource path="res://sprites/title_credits_04.png" type="Texture" id=9]
 
 [sub_resource type="Animation" id=1]
 resource_name = "updown"
@@ -25,31 +28,30 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=2]
-length = 6.0
-step = 0.5
+length = 3.0
 tracks/0/type = "value"
-tracks/0/path = NodePath("disclaimer:modulate:a")
+tracks/0/path = NodePath("disclaimer:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1, 5, 6 ),
-"transitions": PoolRealArray( 1, 1, 1, 0 ),
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 0 ),
 "update": 0,
-"values": [ 0.0, 1.0, 1.0, 0.0 ]
+"values": [ true, false ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("disclaimer:visible")
+tracks/1/path = NodePath("disclaimer:modulate:a")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 6 ),
-"transitions": PoolRealArray( 1, 0 ),
+"times": PoolRealArray( 0.3, 0.5, 1.7, 2.1 ),
+"transitions": PoolRealArray( 1, 1, 1, 0 ),
 "update": 0,
-"values": [ true, false ]
+"values": [ 0.0, 1.0, 1.0, 0.0 ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("bg:visible")
@@ -115,6 +117,32 @@ tracks/6/keys = {
 "args": [  ],
 "method": "anim_start"
 } ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("disclaimer:texture")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.5, 0.6, 0.7, 0.8, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 4 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 4 ) ]
+}
+tracks/8/type = "audio"
+tracks/8/path = NodePath("sound")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 6 )
+} ],
+"times": PoolRealArray( 0.5 )
 }
 
 [sub_resource type="Animation" id=3]
@@ -186,17 +214,22 @@ tracks/4/keys = {
 script = ExtResource( 1 )
 
 [node name="bg" type="Sprite" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 centered = false
 
 [node name="start" type="Sprite" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 0, -2.76638 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 centered = false
 
 [node name="disclaimer" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 centered = false
@@ -206,6 +239,7 @@ wait_time = 0.01
 
 [node name="music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )
+volume_db = -23.0
 
 [node name="sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 6 )

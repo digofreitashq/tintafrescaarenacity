@@ -22,14 +22,20 @@ _global_script_class_icons={
 
 config/name="Tinta Fresca Arena"
 run/main_scene="res://scenes/title.tscn"
+run/low_processor_mode=true
+boot_splash/fullsize=false
 config/icon="res://icon.png"
-name_es="Plataformero"
+name_es="Tinta Fresca Arena"
 target_fps="10"
 
 [autoload]
 
 global="*res://scripts/global.gd"
 pixelperfect="*res://scripts/pixelperfect.gd"
+
+[debug]
+
+settings/crash_handler/message=""
 
 [display]
 
@@ -40,7 +46,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=[ "vnen.tiled_importer" ]
+enabled=PoolStringArray(  )
 
 [image_loader]
 
@@ -79,6 +85,7 @@ shoot={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":2,"pressure":0.0,"pressed":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null)
  ]
 }
 spawn={
@@ -104,5 +111,9 @@ use_pixel_snap=true
 
 [rendering]
 
+quality/intended_usage/framebuffer_allocation=0
+quality/intended_usage/framebuffer_allocation.mobile=1
 quality/2d/use_pixel_snap=true
+quality/filters/anisotropic_filter_level=1
+quality/filters/use_nearest_mipmap_filter=true
 environment/default_clear_color=Color( 0, 0, 0, 1 )

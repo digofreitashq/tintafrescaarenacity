@@ -13,8 +13,6 @@ const BULLET_VELOCITY = 800
 var linear_vel = Vector2()
 var target_speed = 0
 var onair_time = 0
-var wall_touch_time = 0
-var wall_jump_time = 0
 var on_floor = false
 var shoot_time = 99999 #time since last shot
 
@@ -24,8 +22,6 @@ var imgs_health = {}
 var imgs_bullets = {}
 
 var siding_left = false
-var animation_ended = false
-
 var disable_damage = false
 
 onready var sprite = $sprite
@@ -54,9 +50,13 @@ func _ready():
 		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
 
 func _apply_gravity(delta):
+	if !global.allow_movement: return
+	
 	linear_vel.y += delta * GRAVITY
 
 func _apply_movement(delta):
+	if !global.allow_movement: return
+	
 	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
 	
 	if is_on_floor():
@@ -67,10 +67,14 @@ func _apply_movement(delta):
 	linear_vel.x = lerp(linear_vel.x, target_speed, 0.1)
 
 func _gravity_wall_slide():
+	if !global.allow_movement: return
+	
 	var max_vel = 96 if !Input.is_action_pressed("move_down") else 96 * 6
 	linear_vel.y = min(linear_vel.y, max_vel)
 
 func _handle_move_input():
+	if !global.allow_movement: return
+	
 	target_speed = 0
 	
 	if Input.is_action_pressed("move_left"):
@@ -92,6 +96,20 @@ func _handle_move_input():
 			
 			siding_left = false
 			play_anim(anim.current_animation.replace('_left',''))
+	
+	if [player_sm.states.idle, player_sm.states.run].has(player_sm.state):
+		if Input.is_action_pressed("jump"):
+			linear_vel.y = -JUMP_SPEED
+	elif [player_sm.states.wall_slide].has(player_sm.state):
+		if Input.is_action_pressed("jump"):
+			player_sm.set_state(player_sm.states.wall_jump)
+			
+			linear_vel.y = -WALLJUMP_SPEED
+			
+			if siding_left:
+				linear_vel.x += WALLJUMP_SPEED
+			else:
+				linear_vel.x -= WALLJUMP_SPEED
 
 func play_anim(anim_name):
 	if siding_left:
@@ -129,17 +147,6 @@ func wall_direction():
 	var is_near_right = right_wall_raycast.is_colliding()
 	
 	return -int(is_near_left) + int(is_near_right)
-	
-func is_damaged():
-	for damage_raycast in [$left_damage_raycast, $right_damage_raycast]:
-		if not is_instance_valid(damage_raycast): continue
-		if not damage_raycast.is_colliding(): continue
-		
-		for body in damage_raycast.get_incoming_connections():
-			if "enemy" in body.get_name():
-				return true
-	
-	return false
 
 func shoot():
 	if timer_shoot.is_stopped():
@@ -220,6 +227,7 @@ func shoot_spray_triple():
 	shooted += 1
 
 func update_state_label():
+	return
 	if player_asm.state == player_asm.states.shoot:
 		state_label.set('text', player_asm.states_description[player_asm.states.shoot])
 	else:
@@ -275,11 +283,14 @@ func update_enemies(value):
 	if (global.enemies >= 0):
 		get_node("screen/hud/label_enemies").set('text', "%0*d" % [4, global.enemies])
 
-func got_damage(value):
+func got_damage(value, on_left=null):
 	update_health(value)
 	disable_damage = true
+	player_sm.set_state(player_sm.states.damage)
 	
-	linear_vel = Vector2((PLAYER_SCALE if siding_left else -PLAYER_SCALE)*WALLJUMP_SPEED, -WALLJUMP_SPEED)
+	if on_left == null: on_left = siding_left
+	
+	linear_vel = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED)
 	
 	play_sound(sound_damage)
 	$anim.play("got_damage")
@@ -304,3 +315,5 @@ func _on_anim_animation_finished(anim_name):
 func _on_anim_animation_started(anim_name):
 	pass
 
+func _on_timer_damage_timeout():
+	disable_damage = false
