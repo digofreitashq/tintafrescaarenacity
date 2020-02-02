@@ -25,10 +25,10 @@ onready var detect_player_right = $detect_player_right
 onready var sound_hit = preload("res://sfx/sound_hit.wav")
 
 func _ready():
-	get_tree().get_current_scene().get_node("player").update_enemies(1)
+	global.get_player().update_enemies(1)
 
 func _die():
-	get_tree().get_current_scene().get_node("player").update_enemies(-1)
+	global.get_player().update_enemies(-1)
 	queue_free()
 
 func _physics_process(delta):
@@ -81,7 +81,7 @@ func _on_damage_area_body_entered(body):
 	elif ("player" in body.get_name()):
 		var on_left = self.global_position.x > body.global_position.x
 		
-		get_tree().get_current_scene().get_node("player").got_damage(-1, on_left)
+		global.get_player().got_damage(-1, on_left)
 
 func _on_chase_area_body_entered(body):
 	if ("player" in body.get_name()):

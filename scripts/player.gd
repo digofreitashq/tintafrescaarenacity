@@ -3,8 +3,7 @@ extends KinematicBody2D
 const PLAYER_SCALE = 2
 const GRAVITY = 900
 const FLOOR_NORMAL = Vector2(0, -2)
-const SLOPE_SLIDE_STOP = 25.0
-const MIN_ONAIR_TIME = 0.1
+const MIN_ONAIR_TIME = 0.05
 const WALK_SPEED = 250 # pixels/sec
 const JUMP_SPEED = 480
 const WALLJUMP_SPEED = 600
@@ -23,6 +22,8 @@ var imgs_bullets = {}
 
 var siding_left = false
 var disable_damage = false
+var skip_dialog = false
+var knows_walljump = false
 
 onready var sprite = $sprite
 onready var dust = $dust
@@ -44,25 +45,42 @@ onready var sound_spray2 = preload("res://sfx/sound_spray2.wav")
 
 onready var bullet = preload("res://scenes/bullet.tscn")
 
+signal grounded
+
 func _ready():
+	$screen/hud.set_visible(true)
+	$screen/dialog.set_visible(true)
+	
 	for i in range(11):
 		imgs_health[i] = load("res://sprites/hud_health_%02d.png"%(i))
 		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
 
 func _apply_gravity(delta):
-	if !global.allow_movement: return
+	if !global.allow_movement: 
+		linear_vel.y = 0
+		#print('nah')
+	elif is_on_floor(): 
+		linear_vel.y = 0
+		#print('noh')
+	else: 
+		#print('wut')
+		linear_vel.y += delta * GRAVITY
 	
-	linear_vel.y += delta * GRAVITY
-
 func _apply_movement(delta):
 	if !global.allow_movement: return
 	
-	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
+	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL)
 	
 	if is_on_floor():
 		onair_time = 0
-
+	
+	var on_floor_before = on_floor
+	
 	on_floor = onair_time < MIN_ONAIR_TIME
+	
+	if on_floor and !on_floor_before:
+		emit_signal("grounded")
+	
 	target_speed *= WALK_SPEED
 	linear_vel.x = lerp(linear_vel.x, target_speed, 0.1)
 
@@ -73,6 +91,9 @@ func _gravity_wall_slide():
 	linear_vel.y = min(linear_vel.y, max_vel)
 
 func _handle_move_input():
+	if Input.is_action_pressed("skip") and !skip_dialog:
+		skip_dialog = true
+	
 	if !global.allow_movement: return
 	
 	target_speed = 0
@@ -100,7 +121,7 @@ func _handle_move_input():
 	if [player_sm.states.idle, player_sm.states.run].has(player_sm.state):
 		if Input.is_action_pressed("jump"):
 			linear_vel.y = -JUMP_SPEED
-	elif [player_sm.states.wall_slide].has(player_sm.state):
+	elif knows_walljump and [player_sm.states.wall_slide].has(player_sm.state):
 		if Input.is_action_pressed("jump"):
 			player_sm.set_state(player_sm.states.wall_jump)
 			
@@ -244,7 +265,7 @@ func update_health(value):
 		global.health = 10
 	
 	if (global.health >= 0):
-		get_node("screen/hud/health").set_texture(imgs_health[global.health])
+		$screen/hud/health.set_texture(imgs_health[global.health])
 
 func update_bullets(value):
 	global.bullets += value
@@ -255,15 +276,15 @@ func update_bullets(value):
 		global.bullets = 10	
 	
 	if (global.bullets >= 0):
-		get_node("screen/hud/bullets").set_texture(imgs_bullets[global.bullets])
+		$screen/hud/bullets.set_texture(imgs_bullets[global.bullets])
 
 func update_bullet_type(type):
 	global.bullet_type = type
 	
 	if (global.bullet_type == global.BULLET_NORMAL):
-		get_node("screen/hud/spray").visible = !(true)
+		$screen/hud/spray.visible = !(true)
 	elif (global.bullet_type == global.BULLET_TRIPLE):
-		get_node("screen/hud/spray").visible = !(false)
+		$screen/hud/spray.visible = !(false)
 
 func update_sprays(value):
 	global.sprays += value
@@ -272,7 +293,7 @@ func update_sprays(value):
 		global.sprays = 0
 	
 	if (global.sprays >= 0):
-		get_node("screen/hud/label_sprays").set('text', "%0*d" % [4, global.sprays])
+		$screen/hud/label_sprays.set('text', "%0*d" % [4, global.sprays])
 
 func update_enemies(value):
 	global.enemies += value
@@ -281,7 +302,7 @@ func update_enemies(value):
 		global.enemies = 0
 	
 	if (global.enemies >= 0):
-		get_node("screen/hud/label_enemies").set('text', "%0*d" % [4, global.enemies])
+		$screen/hud/label_enemies.set('text', "%0*d" % [4, global.enemies])
 
 func got_damage(value, on_left=null):
 	update_health(value)
@@ -294,14 +315,14 @@ func got_damage(value, on_left=null):
 	
 	play_sound(sound_damage)
 	$anim.play("got_damage")
-	get_node("timer_damage").start()
+	$timer_damage.start()
 
 func enable_dust(position=Vector2(0,10)):
 	if (not dust.is_emitting()):
 		dust.set_emitting(true)
 	
 	if position:
-		dust.set_position($CollisionPolygon2D.get_position()+position)
+		dust.set_position($sprite.get_position()+position)
 	
 	$timer_dust.start()
 

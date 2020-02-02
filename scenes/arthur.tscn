@@ -121,6 +121,4 @@ cast_to = Vector2( -10, 0 )
 position = Vector2( 20, -30 )
 enabled = true
 cast_to = Vector2( 10, 0 )
-
-[node name="timer" type="Timer" parent="."]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

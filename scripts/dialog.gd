@@ -62,6 +62,8 @@ func show(messages):
 
 	current_phrase_index = 0
 	current_pos = 0
+	
+	global.get_player().skip_dialog = false
 
 	$anim.play("open")
 	yield($anim, "animation_finished")
@@ -72,14 +74,19 @@ func show(messages):
 	timer_letter.set_wait_time(0.1)
 	timer_letter.start()
 
+func finish():
+	global.get_player().skip_dialog = false
+	$anim.play("close")
+	yield($anim, "animation_finished")
+	timer_interaction.stop()
+	$speaker.set_text("")
+	$text.set_text("")
+	clear()
+	emit_signal("finished")
+
 func update_text():
-	if (current_phrase_index >= phrases.size()):
-		$anim.play("close")
-		yield($anim, "animation_finished")
-		timer_interaction.stop()
-		emit_signal("finished")
-		$speaker.set_text("")
-		$text.set_text("")
+	if global.get_player().skip_dialog or (current_phrase_index >= phrases.size()):
+		finish()
 		return
 	elif (current_pos <= phrases[current_phrase_index][1].length()):
 		current_pos += 1
@@ -101,10 +108,13 @@ func update_text():
 	timer_letter.start()
 
 func wait_button():
-	var press_start = Input.is_action_pressed("shoot")
 	timer_interaction.set_wait_time(0.01)
+	
+	if Input.is_action_pressed("skip"):
+		update_text()
+		return
 
-	if (press_start):
+	if Input.is_action_pressed("shoot"):
 		if (waiting_next):
 			waiting_next = false
 			current_pos = 0

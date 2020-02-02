@@ -33,6 +33,13 @@ func _get_transition(delta):
 		states.fall:
 			if parent.is_on_floor():
 				return states.idle
+		
+		states.eating:
+			if not parent.on_floor:
+				if round(parent.linear_vel.y) > 0:
+					return states.fall
+			elif round(parent.linear_vel.x) != 0:
+				return states.run
 	
 	return null
 
@@ -41,7 +48,7 @@ func _enter_state(new_state, old_state):
 		states.idle:
 			parent.play_anim("idle")
 		states.run:
-			parent.play_anim("run")
+			parent.play_anim("walk")
 		states.fall:
 			parent.play_anim("fall")
 		states.eating:

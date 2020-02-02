@@ -7,14 +7,14 @@ var player_class = preload("res://scripts/player.gd")
 
 func _on_body_enter( body ):
 	if (not taken and body is player_class):
-		get_tree().get_current_scene().get_node("player").update_sprays(-1)
-		get_node("anim").play("taken")
-		get_node("sound").play(0)
-		get_tree().get_current_scene().get_node("player").update_bullets(1)
+		global.get_player().update_sprays(-1)
+		$anim.play("taken")
+		$sound.play(0)
+		global.get_player().update_bullets(1)
 		taken = true
 		
 		if (global.bullet_type != global.BULLET_TRIPLE):
-			get_tree().get_current_scene().get_node("player").update_bullet_type(global.BULLET_TRIPLE)
+			global.get_player().update_bullet_type(global.BULLET_TRIPLE)
 
 func _ready():
-	get_tree().get_current_scene().get_node("player").update_sprays(1)
+	global.get_player().update_sprays(1)

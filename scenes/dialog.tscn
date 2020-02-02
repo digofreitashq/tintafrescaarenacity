@@ -371,7 +371,7 @@ tracks/3/keys = {
 "values": [ 1.0, 1.0 ]
 }
 
-[node name="dialog" type="Node"]
+[node name="dialog" type="Node2D"]
 pause_mode = 2
 script = ExtResource( 1 )
 
@@ -410,10 +410,10 @@ __meta__ = {
 }
 
 [node name="text" type="Label" parent="."]
-margin_left = 49.0
-margin_top = 355.0
-margin_right = 593.0
-margin_bottom = 451.0
+margin_left = 32.0
+margin_top = 364.0
+margin_right = 618.0
+margin_bottom = 460.0
 mouse_filter = 1
 size_flags_vertical = 0
 custom_fonts/font = ExtResource( 6 )
@@ -427,10 +427,10 @@ __meta__ = {
 
 [node name="speaker" type="Label" parent="."]
 modulate = Color( 1, 0.623529, 0.145098, 1 )
-margin_left = 49.0
-margin_top = 300.0
-margin_right = 593.0
-margin_bottom = 451.0
+margin_left = 32.0
+margin_top = 342.0
+margin_right = 594.0
+margin_bottom = 493.0
 mouse_filter = 1
 size_flags_vertical = 0
 custom_fonts/font = ExtResource( 6 )

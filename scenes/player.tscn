@@ -13,7 +13,6 @@
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=11]
 [ext_resource path="res://sprites/blackscreen.png" type="Texture" id=12]
 [ext_resource path="res://scenes/dialog.tscn" type="PackedScene" id=13]
-[ext_resource path="res://scripts/dialog.gd" type="Script" id=14]
 
 [sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0, 0.325714, 0.657143, 1 )
@@ -536,6 +535,9 @@ tracks/0/keys = {
 "values": [ 40, 41 ]
 }
 
+[sub_resource type="RectangleShape2D" id=32]
+extents = Vector2( 5.90092, 19.2378 )
+
 [node name="player" type="KinematicBody2D"]
 script = ExtResource( 1 )
 
@@ -610,15 +612,10 @@ position = Vector2( 0, -10 )
 stream = ExtResource( 6 )
 volume_db = -23.0
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-position = Vector2( 8.58307e-006, -3 )
-scale = Vector2( 1.47904, 1 )
-build_mode = 1
-polygon = PoolVector2Array( 0, 25, -10, 6, -10, -22, 10, -22, 10, 6 )
-one_way_collision_margin = 0.0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 32 )
 
 [node name="ui" type="CanvasLayer" parent="."]
-editor/display_folded = true
 layer = 0
 
 [node name="left" type="TouchScreenButton" parent="ui"]
@@ -655,6 +652,7 @@ visibility_mode = 1
 layer = 0
 
 [node name="hud" parent="screen" instance=ExtResource( 11 )]
+visible = false
 
 [node name="blackscreen" type="Sprite" parent="screen"]
 visible = false
@@ -664,7 +662,7 @@ scale = Vector2( 10, 10 )
 texture = ExtResource( 12 )
 
 [node name="dialog" parent="screen" instance=ExtResource( 13 )]
-script = ExtResource( 14 )
+visible = false
 
 [node name="timer_damage" type="Timer" parent="."]
 wait_time = 0.3

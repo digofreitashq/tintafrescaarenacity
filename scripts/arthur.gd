@@ -3,15 +3,19 @@ extends KinematicBody2D
 const PLAYER_SCALE = 2
 const GRAVITY = 900
 const FLOOR_NORMAL = Vector2(0, -2)
-const SLOPE_SLIDE_STOP = 25.0
 const MIN_ONAIR_TIME = 0.1
-const WALK_SPEED = 250 # pixels/sec
+const WALK_SPEED = 100 # pixels/sec
 
 var linear_vel = Vector2()
 var target_speed = 0
 var onair_time = 0
 var on_floor = false
-var the_body = null
+
+var times_talked = 0
+var walk_pixels = 0
+var initial_position_x = 0
+var last_position_x = 0
+var position_repeated = 0
 
 var siding_left = false
 
@@ -20,12 +24,18 @@ onready var anim = $anim
 onready var left_wall_raycast = $left_wall_raycast
 onready var right_wall_raycast = $right_wall_raycast
 onready var arthur_sm = $arthur_sm
+onready var dialog = global.get_dialog()
+
+signal walked
+
+func _ready():
+	arthur_talks()
 
 func _apply_gravity(delta):
 	linear_vel.y += delta * GRAVITY
 
 func _apply_movement(delta):
-	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
+	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL)
 	
 	if is_on_floor():
 		onair_time = 0
@@ -33,23 +43,45 @@ func _apply_movement(delta):
 	on_floor = onair_time < MIN_ONAIR_TIME
 	target_speed *= WALK_SPEED
 	linear_vel.x = lerp(linear_vel.x, target_speed, 0.1)
+	$sprite.scale = Vector2(-PLAYER_SCALE if siding_left else PLAYER_SCALE, 2.0)
+	
+	if abs(initial_position_x - $sprite.global_position.x) > abs(walk_pixels):
+		walk_pixels = 0
+		last_position_x = 0
+		emit_signal("walked")
+	elif last_position_x == $sprite.global_position.x:
+		position_repeated += 1
+		
+		if position_repeated > 10:
+			position_repeated = 0
+			walk_pixels = 0
+			last_position_x = 0
+			emit_signal("walked")
+	
+	last_position_x = $sprite.global_position.x
 
 func _handle_move_input():
 	target_speed = 0
 	
-	if 1==0:
+	if walk_pixels == 0:
+		position_repeated = 0
+		walk_pixels = 0
+		last_position_x = 0
+		
+		if initial_position_x != $sprite.global_position.x:
+			initial_position_x = $sprite.global_position.x
+	
+	if walk_pixels < 0:
 		target_speed += -1
 		
 		if not siding_left:
 			siding_left = true
-			play_anim(anim.current_animation)
 		
-	if 1==0:
+	if walk_pixels > 0:
 		target_speed += 1
 		
 		if siding_left:
 			siding_left = false
-			play_anim(anim.current_animation)
 
 func play_anim(anim_name):
 	if siding_left:
@@ -65,61 +97,84 @@ func wall_direction():
 	
 	return -int(is_near_left) + int(is_near_right)
 
-func _on_anim_animation_finished(anim_name):
-	pass
-
-func _on_anim_animation_started(anim_name):
-	pass
-
 func _on_Area2D_body_entered(body):
-	the_body = body
-	
 	if "player" in body.get_name():
-		siding_left = body.global_position.x < global_position.x
-		play_anim("eating")
+		walk_pixels = 0
 		
-		var player = get_tree().get_current_scene().get_node("player")
+		siding_left = body.global_position.x < global_position.x
+		
+		var player = global.get_player()
 		
 		if body.global_position.x > global_position.x:
 			player.siding_left = true
-			player.anim.play("idle_left")
 		else:
 			player.siding_left = false
-			player.anim.play("idle_right")
 		
-		if !get_tree().get_current_scene().get_node("player").on_floor:
-			var t = $timer
-			t.connect("timeout", self, "call_body_entered")
-			t.set_wait_time(0.5)
-			t.set_one_shot(true)
-			t.start()
-		else:
-			arthur_talks_1(body)
+		if !player.on_floor:
+			yield(player, "grounded")
+		
+		return
 
 func call_body_entered():
-	_on_Area2D_body_entered(the_body)
+	_on_Area2D_body_entered($sprite)
 
-func arthur_talks_1(body):
+func arthur_talks():
+	return
+	var player = global.get_player()
+	
 	global.disable_player_control()
-	var dialog = get_tree().get_current_scene().get_node("player").get_node("screen").get_node("dialog")
+	player.player_sm.set_state(player.player_sm.states.idle)
+	
+	global.wait_until_signal(3)
+	yield(global, "waited")
+	
 	dialog.show([
-		["Ícaro","E aí, velhote!"],
-		["Arthur","Mais respeito aí, moleque."],
-		["Ícaro","Boa tarde..."],
-		["Ícaro","Velhote!"],
-		["Arthur","Hunf! Como deve ter percebido, a cidade está infestada de Podres."],
-		["Ícaro","Podres...?"],
-		["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
-		["Ícaro","Eita. E eu vou ter que impedí-los?"],
-		["Arthur","Mais respeito aí, moleque."],
+		["Ícaro","Eu já cheguei faz quinze minutos e nada daquele velho..."],
 		])
 	yield(dialog, "finished")
 	
+	walk_pixels = -1000
+	yield(self, "walked")
+	
+	dialog.show([
+		["Ícaro","E aí, velhote! Tá atrasado..."],
+		["Arthur","Mais respeito, por favor, rapaz."],
+		["Ícaro","Tá bom! Boa tarde..."],
+		["Ícaro","Velhote!"],
+		])
+	yield(dialog, "finished")
+	
+	arthur_sm.set_state(arthur_sm.states.eating)
+	
+	global.wait_until_signal(1)
+	yield(global, "waited")
+	
+	dialog.show([
+		["Arthur","Hunf!"],
+		["Arthur","Hoje seu treino será em campo."],
+		["Arthur","Como deve ter percebido, a cidade está infestada desses tais Podres."],
+		["Ícaro","Podres...?"],
+		["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
+		["Ícaro","Eita. E eu vou ter que fazer o quê? Pintura facial neles...?"],
+		["Arthur","Você vai usar seus poderes de transformar os desenhos em realidade para vencê-los."],
+		["Arthur","Sozinho, sim, mas fique tranquilo que vou ficar olhando de longe."],
+		["Arthur","E de vez em quando vou dar uns palpites."],
+		["Ícaro","Ótimo... Se eu morrer, tudo bem, né?"],
+		["Arthur","Ahm... Eu... Confio em você!"],
+		])
+	yield(dialog, "finished")
+	$Area2D/CollisionShape2D.scale.x = 0.5
+	
+	walk_pixels = 400
+	yield(self, "walked")
+	self.set_visible(false)
+	$CollisionShape2D.set_disabled(true)
+	
+	dialog.show([
+		["Ícaro","Vamos lá, né? Afinal, o que pode acontecer de ruim?"],
+		])
+	yield(dialog, "finished")
+	
+	times_talked += 1
+	
 	global.enable_player_control()
-
-func arthur_moves():
-	linear_vel.x = 10000
-
-
-func _physics_process(delta):
-    move_and_collide(linear_vel * delta)

@@ -17,7 +17,7 @@ texture = ExtResource( 1 )
 centered = false
 
 [node name="mount_ 2" type="ParallaxLayer" parent="."]
-motion_scale = Vector2( 0.8, 0.8 )
+motion_scale = Vector2( 0.6, 0.6 )
 motion_mirroring = Vector2( 800, 0 )
 
 [node name="Sprite" type="Sprite" parent="mount_ 2"]
@@ -26,6 +26,7 @@ texture = ExtResource( 2 )
 centered = false
 
 [node name="mount_1" type="ParallaxLayer" parent="."]
+motion_scale = Vector2( 0.8, 1 )
 motion_mirroring = Vector2( 800, 0 )
 
 [node name="Sprite" type="Sprite" parent="mount_1"]

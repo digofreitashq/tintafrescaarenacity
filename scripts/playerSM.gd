@@ -58,7 +58,7 @@ func _get_transition(delta):
 		states.fall:
 			if parent.is_on_floor():
 				return states.idle
-			elif parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
+			elif parent.knows_walljump and parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
 				parent.siding_left = parent.wall_direction() == -1
 				return states.wall_slide
 			elif parent.linear_vel.y < 0:
@@ -71,7 +71,7 @@ func _get_transition(delta):
 		states.wall_jump:
 			if parent.is_on_floor():
 				return states.idle
-			elif parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
+			elif parent.knows_walljump and parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
 				parent.siding_left = parent.wall_direction() == -1
 				return states.wall_slide
 			elif parent.linear_vel.y >= 0:
@@ -79,7 +79,7 @@ func _get_transition(delta):
 		states.damage:
 			if parent.is_on_floor():
 				return states.idle
-			elif parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
+			elif parent.knows_walljump and parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
 				parent.siding_left = parent.wall_direction() == -1
 				return states.wall_slide
 	
@@ -95,6 +95,7 @@ func _enter_state(new_state, old_state):
 			parent.play_anim("run")
 		states.jump:
 			if old_state == states.damage: return
+			parent.on_floor = false
 			parent.disable_dust()
 			parent.play_anim("jump")
 		states.fall:
@@ -102,14 +103,17 @@ func _enter_state(new_state, old_state):
 			parent.disable_dust()
 			parent.play_anim("fall")
 		states.wall_slide:
+			parent.on_floor = false
 			parent.enable_dust(Vector2(parent.wall_direction()*20,0))
 			parent.play_sound(parent.sound_grounded)
 			parent.play_anim("wall_slide")
 		states.wall_jump:
+			parent.on_floor = false
 			parent.disable_dust()
 			parent.play_sound(parent.sound_jump)
 			parent.play_anim("wall_jump")
 		states.damage:
+			parent.on_floor = false
 			parent.disable_dust()
 			parent.play_sound(parent.sound_damage)
 			parent.play_anim("damage")

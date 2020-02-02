@@ -10,13 +10,33 @@ var sprays = 0
 var enemies = 0
 var allow_movement = true
 
+signal waited
+
 func _ready():
 	pass
+
+func get_player():
+	return get_tree().get_current_scene().get_node("player")
+
+func get_dialog():
+	return get_player().get_node("screen/dialog")
 
 func enable_player_control():
 	allow_movement = true
 
 func disable_player_control():
 	allow_movement = false
-	get_tree().get_current_scene().get_node("player").linear_vel =  Vector2(0,0)
-	get_tree().get_current_scene().get_node("player").play_anim("idle")
+	var player = get_player()
+	player.linear_vel =  Vector2(0,0)
+	player.play_anim("idle")
+	yield(player.anim, "animation_finished")
+
+func do_timer_signal():
+	print('DONE!')
+	emit_signal("waited")
+
+func wait_until_signal(seconds):
+	var timer = get_tree().get_current_scene().get_node("stage_timer")
+	timer.set_wait_time(seconds)
+	timer.connect("timeout", self, "do_timer_signal")
+	timer.start()
