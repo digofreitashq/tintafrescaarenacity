@@ -98,7 +98,7 @@ func wall_direction():
 	return -int(is_near_left) + int(is_near_right)
 
 func _on_Area2D_body_entered(body):
-	if "player" in body.get_name():
+	if global.is_player(body):
 		walk_pixels = 0
 		
 		siding_left = body.global_position.x < global_position.x

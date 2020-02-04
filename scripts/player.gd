@@ -23,7 +23,7 @@ var imgs_bullets = {}
 var siding_left = false
 var disable_damage = false
 var skip_dialog = false
-var knows_walljump = false
+var knows_walljump = true
 
 onready var sprite = $sprite
 onready var dust = $dust
@@ -34,6 +34,7 @@ onready var right_wall_raycast = $right_wall_raycast
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
+onready var timer_push = $timer_push
 onready var timer_wallslide_cooldown = $timer_wallslide_cooldown
 
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
@@ -58,12 +59,7 @@ func _ready():
 func _apply_gravity(delta):
 	if !global.allow_movement: 
 		linear_vel.y = 0
-		#print('nah')
-	elif is_on_floor(): 
-		linear_vel.y = 0
-		#print('noh')
 	else: 
-		#print('wut')
 		linear_vel.y += delta * GRAVITY
 	
 func _apply_movement(delta):
@@ -104,7 +100,10 @@ func _handle_move_input():
 		if not siding_left: 
 			if player_sm.state == player_sm.states.wall_slide:
 				player_sm.set_state(player_sm.states.fall)
-				
+			
+			if player_sm.state == player_sm.states.push:
+				player_sm.revert_state()
+			
 			siding_left = true
 			play_anim(anim.current_animation.replace('_right',''))
 		
@@ -115,10 +114,17 @@ func _handle_move_input():
 			if player_sm.state == player_sm.states.wall_slide:
 				player_sm.set_state(player_sm.states.fall)
 			
+			if player_sm.state == player_sm.states.push:
+				player_sm.revert_state()
+			
 			siding_left = false
 			play_anim(anim.current_animation.replace('_left',''))
 	
-	if [player_sm.states.idle, player_sm.states.run].has(player_sm.state):
+	if Input.is_action_pressed("shoot"):
+		shoot()
+		player_asm.set_state(player_asm.states.shoot)
+	
+	if [player_sm.states.idle, player_sm.states.run, player_sm.states.push].has(player_sm.state):
 		if Input.is_action_pressed("jump"):
 			linear_vel.y = -JUMP_SPEED
 	elif knows_walljump and [player_sm.states.wall_slide].has(player_sm.state):
@@ -248,11 +254,7 @@ func shoot_spray_triple():
 	shooted += 1
 
 func update_state_label():
-	return
-	if player_asm.state == player_asm.states.shoot:
-		state_label.set('text', player_asm.states_description[player_asm.states.shoot])
-	else:
-		state_label.set('text', player_sm.states_description[player_sm.state])
+	state_label.set('text', player_sm.get_state_desc())
 
 func update_health(value):
 	if (disable_damage): return
@@ -304,17 +306,20 @@ func update_enemies(value):
 	if (global.enemies >= 0):
 		$screen/hud/label_enemies.set('text', "%0*d" % [4, global.enemies])
 
-func got_damage(value, on_left=null):
+func got_damage(value, on_top=false, on_left=null):
 	update_health(value)
 	disable_damage = true
 	player_sm.set_state(player_sm.states.damage)
 	
 	if on_left == null: on_left = siding_left
 	
-	linear_vel = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED)
+	if on_top:
+		linear_vel = Vector2(0, -JUMP_SPEED/2)
+	else:
+		linear_vel = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED/2)
 	
 	play_sound(sound_damage)
-	$anim.play("got_damage")
+	play_anim("got_damage")
 	$timer_damage.start()
 
 func enable_dust(position=Vector2(0,10)):
@@ -330,6 +335,10 @@ func disable_dust():
 	if (dust.is_emitting()):
 		dust.set_emitting(false)
 
+func set_pushing():
+	$timer_push.stop()
+	player_sm.set_state(player_sm.states.push)
+
 func _on_anim_animation_finished(anim_name):
 	pass
 
@@ -338,3 +347,7 @@ func _on_anim_animation_started(anim_name):
 
 func _on_timer_damage_timeout():
 	disable_damage = false
+	anim.play("modulate_normal")
+
+func _on_timer_push_timeout():
+	player_sm.revert_state()

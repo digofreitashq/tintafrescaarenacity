@@ -21,6 +21,12 @@ func get_player():
 func get_dialog():
 	return get_player().get_node("screen/dialog")
 
+func is_player(body):
+	return "player" in body.get_name()
+
+func is_sewer(body):
+	return "sewer" in body.get_name()
+
 func enable_player_control():
 	allow_movement = true
 

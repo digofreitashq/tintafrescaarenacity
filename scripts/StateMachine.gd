@@ -29,6 +29,8 @@ func _exit_state(old_state, new_state):
 	pass
 
 func set_state(new_state):
+	if new_state == state: return
+	
 	previous_state = state
 	state = new_state
 
@@ -36,6 +38,12 @@ func set_state(new_state):
 		_exit_state(previous_state, new_state)
 	if new_state != null:
 		_enter_state(new_state, previous_state)
+
+func get_state_desc():
+	return states_description[state]
+
+func revert_state():
+	set_state(previous_state)
 
 func add_state(state_name):
 	var i = states.size()

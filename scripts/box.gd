@@ -11,6 +11,7 @@ var direction = 0
 var on_floor = false
 
 var siding_left = false
+var floating = false
 
 onready var box_sm = $box_sm
 
@@ -24,15 +25,39 @@ func _apply_movement(delta):
 	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL)
 	linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.1)
 
+func check_surface():
+	var in_sewer = false
+	
+	for abody in $Area2D_bottom.get_overlapping_bodies():
+		if global.is_sewer(abody):
+			in_sewer = true
+			break
+	
+	if in_sewer and not floating:
+		floating = true
+		$anim.play("floating")
+	
+	if not in_sewer and floating:
+		floating = false
+		$anim.play("idle")
+
 func _on_Area2D_body_entered(body):
-	if "player" in body.get_name():
+	if global.is_player(body):
 		direction = 1 if body.global_position.x < global_position.x else -1
-		#walk_pixels = 50
+		global.get_player().set_pushing()
+	
+	check_surface()
 
 func _on_Area2D_body_exited(body):
 	direction = 0
-
+	
+	check_surface()
 
 func _on_Area2D_bottom_body_entered(body):
-	if "player" in body.get_name():
-		direction = 0.5 if body.global_position.x < global_position.x else -0.5
+	#if global.is_player(body):
+	#	direction = -0.5 if body.global_position.x < global_position.x else 0.5
+	
+	check_surface()
+
+func _on_Area2D_bottom_body_exited(body):
+	check_surface()

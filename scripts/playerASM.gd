@@ -5,13 +5,6 @@ func _ready():
 	add_state("shoot")
 	call_deferred("set_state", states.none)
 
-func _input(event):
-	if event.is_action_pressed("shoot"):
-		if !global.allow_movement: return
-		
-		parent.shoot()
-		set_state(states.shoot)
-
 func _enter_state(new_state, old_state):
 	if new_state != states.shoot: return
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/stage.gd" type="Script" id=1]
 [ext_resource path="res://scenes/parallax_bg.tscn" type="PackedScene" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://bgm/TintaFrescaArena.ogg" type="AudioStream" id=8]
 [ext_resource path="res://scenes/player.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/arthur.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/sewer.tscn" type="PackedScene" id=11]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 125.761, 231.104 )
@@ -17,10 +18,13 @@ extents = Vector2( 125.761, 231.104 )
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 351.033, 57.2793 )
 
-[sub_resource type="RectangleShape2D" id=4]
+[sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 113.9, 23.6812 )
 
-[sub_resource type="RectangleShape2D" id=3]
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 96, 32 )
+
+[sub_resource type="RectangleShape2D" id=4]
 
 [node name="stage" type="Node"]
 pause_mode = 2
@@ -43,7 +47,7 @@ scale = Vector2( 2, 2 )
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 16, 16 )
 format = 1
-tile_data = PoolIntArray( -65532, 165, 0, 4, 165, 0, 65540, 165, 0, 131076, 138, 0, 131077, 79, 0, 262145, 193, 0, 262146, 114, 0, 262147, 146, 0, 262148, 146, 1, 262149, 146, 1, 262150, 146, 5, 327681, 117, 0, 327682, 126, 0, 327683, 146, 65536, 327684, 146, 65539, 327685, 146, 65540, 327686, 146, 65541, 393217, 122, 0, 393218, 113, 0, 458753, 193, 0, 458754, 127, 0, 458757, 25, 0, 524289, 109, 0, 524290, 111, 0, 589826, 109, 0, 589828, 42, 0, 655367, 55, 0, 720897, 83, 0, 720899, 7, 0, 720901, 59, 0, 720902, 6, 0, 720905, 30, 0, 720908, 29, 0, 720911, 7, 0, 786437, 6, 0, 786438, 7, 0, 851971, 6, 0, 851972, 6, 0, 851973, 6, 0, 917507, 6, 0, 917508, 6, 0, 917509, 6, 0, 917516, 7, 0, 917522, 7, 0, 983043, 6, 0, 983044, 7, 0, 983045, 7, 0, 983046, 6, 0 )
+tile_data = PoolIntArray( -65532, 165, 0, 4, 165, 0, 65540, 165, 0, 131076, 138, 0, 131077, 79, 0, 262145, 193, 0, 262146, 114, 0, 327681, 117, 0, 327682, 126, 0, 393217, 122, 0, 393218, 113, 0, 458753, 193, 0, 458754, 127, 0, 458757, 25, 0, 524289, 109, 0, 524290, 111, 0, 589826, 109, 0, 589828, 42, 0, 655367, 55, 0, 720897, 83, 0, 720899, 7, 0, 720901, 59, 0, 720902, 6, 0, 720905, 30, 0, 720908, 29, 0, 720911, 7, 0, 786437, 6, 0, 786438, 7, 0, 851971, 6, 0, 851972, 6, 0, 851973, 6, 0, 917507, 6, 0, 917508, 6, 0, 917509, 6, 0, 917516, 7, 0, 917522, 7, 0, 983043, 6, 0, 983044, 7, 0, 983045, 7, 0, 983046, 6, 0 )
 
 [node name="extra_collisions" type="StaticBody2D" parent="."]
 
@@ -58,12 +62,18 @@ shape = SubResource( 2 )
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="extra_collisions"]
 position = Vector2( 244.016, 350.644 )
 scale = Vector2( 5, 1 )
-shape = SubResource( 4 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="extra_collisions"]
+position = Vector2( 128, 192 )
+shape = SubResource( 5 )
+one_way_collision = true
+one_way_collision_margin = 0.0
 
 [node name="walljump_collisions" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="walljump_collisions"]
-shape = SubResource( 3 )
+shape = SubResource( 4 )
 
 [node name="others" type="Node" parent="."]
 
@@ -78,19 +88,13 @@ position = Vector2( 607.698, -68.0758 )
 [node name="props" type="Node" parent="."]
 
 [node name="box" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 300.123, 210.387 )
+position = Vector2( 992, 230 )
 
 [node name="box2" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 302.079, 134.647 )
+position = Vector2( 349, 292 )
 
 [node name="box3" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 382.051, 177.708 )
-
-[node name="box4" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 382.051, 101.838 )
-
-[node name="box5" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 377.949, 19.8158 )
+position = Vector2( 179, 128 )
 
 [node name="enemies" type="Node" parent="."]
 pause_mode = 1
@@ -107,7 +111,7 @@ position = Vector2( 413.162, 412.248 )
 sprite_texture = "res://sprites/enemy_cachorro.png"
 
 [node name="enemy11" parent="enemies" instance=ExtResource( 7 )]
-position = Vector2( 905.338, 438.976 )
+position = Vector2( 937, 419 )
 sprite_texture = "res://sprites/enemy_rato.png"
 
 [node name="enemy12" parent="enemies" instance=ExtResource( 7 )]
@@ -124,10 +128,10 @@ autoplay = true
 
 [node name="player" parent="." instance=ExtResource( 9 )]
 pause_mode = 1
-position = Vector2( 124.891, 290.432 )
+position = Vector2( 128, 292 )
 
 [node name="arthur" parent="." instance=ExtResource( 10 )]
-position = Vector2( 679.006, 291.87 )
+position = Vector2( 704, 292 )
 
 [node name="TileMapOverAll" type="TileMap" parent="."]
 scale = Vector2( 2, 2 )
@@ -143,4 +147,20 @@ z_index = 1
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 16, 16 )
 format = 1
-tile_data = PoolIntArray( 327699, 99, 0, 393235, 98, 0, 458771, 87, 0, 524307, 101, 0, 589843, 88, 0, 655370, 49, 0, 655379, 102, 0 )
+tile_data = PoolIntArray( 262147, 146, 0, 262148, 146, 3, 262149, 146, 4, 262150, 146, 5, 327683, 146, 65536, 327684, 146, 65537, 327685, 146, 65538, 327686, 146, 65541, 327699, 99, 0, 393235, 98, 0, 458771, 87, 0, 524307, 101, 0, 589843, 88, 0, 655370, 49, 0, 655379, 102, 0 )
+
+[node name="sewer" parent="." instance=ExtResource( 11 )]
+position = Vector2( 1184, 320 )
+z_index = -1
+
+[node name="sewer2" parent="." instance=ExtResource( 11 )]
+position = Vector2( 1248, 320 )
+z_index = -1
+
+[node name="sewer3" parent="." instance=ExtResource( 11 )]
+position = Vector2( 1312, 320 )
+z_index = -1
+
+[node name="sewer4" parent="." instance=ExtResource( 11 )]
+position = Vector2( 1376, 320 )
+z_index = -1
