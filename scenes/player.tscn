@@ -31,8 +31,7 @@ spread = 50.0
 flatness = 1.0
 gravity = Vector3( 0, -20, 0 )
 initial_velocity = 1.0
-angular_velocity = -1.#QNAN
-angular_velocity_random = 1.0
+angular_velocity = -1.0
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 scale = 2.0
@@ -743,6 +742,10 @@ one_shot = true
 wait_time = 0.2
 one_shot = true
 
+[node name="timer_wall_direction_update" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
 [node name="state_label" type="Label" parent="."]
 visible = false
 margin_left = -50.2015
@@ -757,17 +760,16 @@ align = 1
 uppercase = true
 
 [node name="left_wall_raycast" type="RayCast2D" parent="."]
-position = Vector2( -20, -30 )
+position = Vector2( -20, 0 )
 enabled = true
 cast_to = Vector2( -10, 0 )
 
 [node name="right_wall_raycast" type="RayCast2D" parent="."]
-position = Vector2( 20, -30 )
+position = Vector2( 20, 0 )
 enabled = true
 cast_to = Vector2( 10, 0 )
-[connection signal="animation_finished" from="anim" to="." method="_on_anim_animation_finished"]
-[connection signal="animation_started" from="anim" to="." method="_on_anim_animation_started"]
 [connection signal="timeout" from="timer_damage" to="." method="_on_timer_damage_timeout"]
 [connection signal="timeout" from="timer_push" to="." method="_on_timer_push_timeout"]
 [connection signal="timeout" from="timer_sound" to="player_asm" method="_on_timer_shoot_timeout"]
 [connection signal="timeout" from="timer_shoot" to="player_asm" method="_on_timer_shoot_timeout"]
+[connection signal="timeout" from="timer_wall_direction_update" to="." method="_on_timer_wall_direction_update_timeout"]

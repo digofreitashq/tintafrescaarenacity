@@ -27,6 +27,12 @@ func is_player(body):
 func is_sewer(body):
 	return "sewer" in body.get_name()
 
+func is_tilemap(body):
+	return "TileMap" in body.get_name()
+
+func is_walljump_collision(body):
+	return "extra_collisions" in body.get_name() or "walljump_collisions" in body.get_name()
+
 func enable_player_control():
 	allow_movement = true
 

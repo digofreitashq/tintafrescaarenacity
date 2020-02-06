@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://scripts/stage.gd" type="Script" id=1]
 [ext_resource path="res://scenes/parallax_bg.tscn" type="PackedScene" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://scenes/player.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/arthur.tscn" type="PackedScene" id=10]
 [ext_resource path="res://scenes/sewer.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/seesaw.tscn" type="PackedScene" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 125.761, 231.104 )
@@ -21,10 +22,10 @@ extents = Vector2( 351.033, 57.2793 )
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 113.9, 23.6812 )
 
-[sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 96, 32 )
-
 [sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 64, 5 )
+
+[sub_resource type="RectangleShape2D" id=5]
 
 [node name="stage" type="Node"]
 pause_mode = 2
@@ -65,15 +66,15 @@ scale = Vector2( 5, 1 )
 shape = SubResource( 3 )
 
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="extra_collisions"]
-position = Vector2( 128, 192 )
-shape = SubResource( 5 )
+position = Vector2( 161, 166 )
+shape = SubResource( 4 )
 one_way_collision = true
 one_way_collision_margin = 0.0
 
 [node name="walljump_collisions" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="walljump_collisions"]
-shape = SubResource( 4 )
+shape = SubResource( 5 )
 
 [node name="others" type="Node" parent="."]
 
@@ -91,7 +92,7 @@ position = Vector2( 607.698, -68.0758 )
 position = Vector2( 992, 230 )
 
 [node name="box2" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 349, 292 )
+position = Vector2( 320, 144 )
 
 [node name="box3" parent="props" instance=ExtResource( 6 )]
 position = Vector2( 179, 128 )
@@ -128,22 +129,23 @@ autoplay = true
 
 [node name="player" parent="." instance=ExtResource( 9 )]
 pause_mode = 1
-position = Vector2( 128, 292 )
+position = Vector2( 211, 292 )
+z_index = 1
 
 [node name="arthur" parent="." instance=ExtResource( 10 )]
 position = Vector2( 704, 292 )
 
 [node name="TileMapOverAll" type="TileMap" parent="."]
 scale = Vector2( 2, 2 )
-z_index = 1
+z_index = 2
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 16, 16 )
 format = 1
-tile_data = PoolIntArray( 131091, 23, 0, 131092, 23, 5, 196627, 23, 65536, 196628, 23, 65541, 262145, 128, 0, 262146, 114, 0, 262163, 23, 65536, 262164, 23, 262149, 327681, 117, 0, 327682, 126, 0, 327699, 23, 65536, 327700, 23, 196613, 393217, 122, 0, 393218, 113, 0, 393235, 23, 65536, 393236, 23, 131077, 458753, 128, 0, 458754, 127, 0, 458771, 23, 131072, 458772, 23, 196613, 524289, 109, 0, 524290, 111, 0, 524307, 23, 262144, 524308, 23, 196613, 589826, 109, 0, 589843, 23, 196608, 589844, 23, 65541, 655379, 23, 262144, 655380, 23, 131077, 720915, 23, 327680, 720916, 23, 327685 )
+tile_data = PoolIntArray( 131091, 23, 0, 131092, 23, 5, 196627, 23, 65536, 196628, 23, 65541, 262145, 128, 0, 262163, 23, 65536, 262164, 23, 262149, 327699, 23, 65536, 327700, 23, 196613, 393235, 23, 65536, 393236, 23, 131077, 458771, 23, 131072, 458772, 23, 196613, 524307, 23, 262144, 524308, 23, 196613, 589843, 23, 196608, 589844, 23, 65541, 655379, 23, 262144, 655380, 23, 131077, 720915, 23, 327680, 720916, 23, 327685 )
 
 [node name="TileMapOverAllDetails" type="TileMap" parent="."]
 scale = Vector2( 2, 2 )
-z_index = 1
+z_index = 2
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 16, 16 )
 format = 1
@@ -164,3 +166,6 @@ z_index = -1
 [node name="sewer4" parent="." instance=ExtResource( 11 )]
 position = Vector2( 1376, 320 )
 z_index = -1
+
+[node name="seesaw" parent="." instance=ExtResource( 12 )]
+position = Vector2( 480, 256 )

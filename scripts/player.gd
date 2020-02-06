@@ -14,6 +14,8 @@ var target_speed = 0
 var onair_time = 0
 var on_floor = false
 var shoot_time = 99999 #time since last shot
+var stock_wall_direction = 0
+var previous_wall_direction = 0
 
 var shooted = 1
 
@@ -172,8 +174,25 @@ func check_is_valid_wall(some_wall_raycasts):
 func wall_direction():
 	var is_near_left = left_wall_raycast.is_colliding()
 	var is_near_right = right_wall_raycast.is_colliding()
+	var n;
 	
-	return -int(is_near_left) + int(is_near_right)
+	if is_near_left:
+		n = left_wall_raycast.get_collider()
+		is_near_left = global.is_walljump_collision(n)
+	
+	if is_near_right:
+		n = right_wall_raycast.get_collider()
+		is_near_right = global.is_walljump_collision(n)
+	
+	var result = -int(is_near_left) + int(is_near_right)
+	
+	if previous_wall_direction == 0 and result != stock_wall_direction:
+		stock_wall_direction = result
+		$timer_wall_direction_update.start()
+	else:
+		previous_wall_direction = result
+	
+	return previous_wall_direction
 
 func shoot():
 	if timer_shoot.is_stopped():
@@ -339,15 +358,12 @@ func set_pushing():
 	$timer_push.stop()
 	player_sm.set_state(player_sm.states.push)
 
-func _on_anim_animation_finished(anim_name):
-	pass
-
-func _on_anim_animation_started(anim_name):
-	pass
-
 func _on_timer_damage_timeout():
 	disable_damage = false
 	anim.play("modulate_normal")
 
 func _on_timer_push_timeout():
 	player_sm.revert_state()
+
+func _on_timer_wall_direction_update_timeout():
+	previous_wall_direction = stock_wall_direction
