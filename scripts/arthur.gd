@@ -2,7 +2,8 @@ extends KinematicBody2D
 
 const PLAYER_SCALE = 2
 const GRAVITY = 900
-const FLOOR_NORMAL = Vector2(0, -2)
+const FLOOR_NORMAL = Vector2(0, -1)
+const SLOPE_SLIDE_STOP = 25.0
 const MIN_ONAIR_TIME = 0.1
 const WALK_SPEED = 100 # pixels/sec
 
@@ -35,7 +36,7 @@ func _apply_gravity(delta):
 	linear_vel.y += delta * GRAVITY
 
 func _apply_movement(delta):
-	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL)
+	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
 	
 	if is_on_floor():
 		onair_time = 0

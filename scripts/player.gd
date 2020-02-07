@@ -2,8 +2,9 @@ extends KinematicBody2D
 
 const PLAYER_SCALE = 2
 const GRAVITY = 900
-const FLOOR_NORMAL = Vector2(0, -2)
-const MIN_ONAIR_TIME = 0.05
+const FLOOR_NORMAL = Vector2(0, -1)
+const SLOPE_SLIDE_STOP = 25.0
+const MIN_ONAIR_TIME = 0.1
 const WALK_SPEED = 250 # pixels/sec
 const JUMP_SPEED = 480
 const WALLJUMP_SPEED = 600
@@ -12,6 +13,7 @@ const BULLET_VELOCITY = 800
 var linear_vel = Vector2()
 var target_speed = 0
 var onair_time = 0
+var on_floor_before = false
 var on_floor = false
 var shoot_time = 99999 #time since last shot
 var stock_wall_direction = 0
@@ -67,13 +69,10 @@ func _apply_gravity(delta):
 func _apply_movement(delta):
 	if !global.allow_movement: return
 	
-	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL)
+	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
+	is_on_floor()
 	
-	if is_on_floor():
-		onair_time = 0
-	
-	var on_floor_before = on_floor
-	
+	on_floor_before = on_floor
 	on_floor = onair_time < MIN_ONAIR_TIME
 	
 	if on_floor and !on_floor_before:
@@ -107,7 +106,7 @@ func _handle_move_input():
 				player_sm.revert_state()
 			
 			siding_left = true
-			play_anim(anim.current_animation.replace('_right',''))
+			play_anim()
 		
 	if Input.is_action_pressed("move_right"):
 		target_speed += 1
@@ -120,7 +119,7 @@ func _handle_move_input():
 				player_sm.revert_state()
 			
 			siding_left = false
-			play_anim(anim.current_animation.replace('_left',''))
+			play_anim()
 	
 	if Input.is_action_pressed("shoot"):
 		shoot()
@@ -140,7 +139,11 @@ func _handle_move_input():
 			else:
 				linear_vel.x -= WALLJUMP_SPEED
 
-func play_anim(anim_name):
+func play_anim(anim_name=""):
+	if anim_name == "":
+		if anim.current_animation == "": return
+		anim_name = anim.current_animation.replace('_left','').replace('_right','')
+	
 	if siding_left:
 		anim_name += "_left"
 	else:

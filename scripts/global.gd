@@ -26,6 +26,9 @@ func is_player(body):
 
 func is_sewer(body):
 	return "sewer" in body.get_name()
+	
+func is_box(body):
+	return "box" in body.get_name()
 
 func is_tilemap(body):
 	return "TileMap" in body.get_name()

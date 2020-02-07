@@ -11,7 +11,7 @@
 [ext_resource path="res://scenes/player.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/arthur.tscn" type="PackedScene" id=10]
 [ext_resource path="res://scenes/sewer.tscn" type="PackedScene" id=11]
-[ext_resource path="res://scenes/seesaw.tscn" type="PackedScene" id=12]
+[ext_resource path="res://scenes/moving_platform.tscn" type="PackedScene" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 125.761, 231.104 )
@@ -81,12 +81,17 @@ shape = SubResource( 5 )
 [node name="sprays" type="Node" parent="."]
 
 [node name="spray_normal" parent="sprays" instance=ExtResource( 4 )]
-position = Vector2( 649.011, -43.2407 )
+position = Vector2( 480, 128 )
 
 [node name="spray_triple" parent="sprays" instance=ExtResource( 5 )]
-position = Vector2( 607.698, -68.0758 )
+position = Vector2( 544, 128 )
 
 [node name="props" type="Node" parent="."]
+
+[node name="moving_platform" parent="props" instance=ExtResource( 12 )]
+position = Vector2( 800, 128 )
+motion = Vector2( 0, 80 )
+cycle = 10.0
 
 [node name="box" parent="props" instance=ExtResource( 6 )]
 position = Vector2( 992, 230 )
@@ -166,6 +171,3 @@ z_index = -1
 [node name="sewer4" parent="." instance=ExtResource( 11 )]
 position = Vector2( 1376, 320 )
 z_index = -1
-
-[node name="seesaw" parent="." instance=ExtResource( 12 )]
-position = Vector2( 480, 256 )

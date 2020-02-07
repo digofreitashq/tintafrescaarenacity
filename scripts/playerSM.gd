@@ -12,7 +12,11 @@ func _ready():
 	call_deferred("set_state", states.idle)
 
 func _state_logic(delta):
-	parent.onair_time += delta
+	if !parent.is_on_floor():
+		parent.onair_time += delta
+	else:
+		parent.onair_time = 0
+	
 	parent.shoot_time += delta
 	
 	parent._handle_move_input()
