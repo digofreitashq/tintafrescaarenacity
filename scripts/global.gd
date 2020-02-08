@@ -1,5 +1,7 @@
 extends Node
 
+const GRAVITY = 900
+
 var BULLET_NORMAL = 0
 var BULLET_TRIPLE = 1
 

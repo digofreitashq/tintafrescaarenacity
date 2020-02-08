@@ -2,7 +2,6 @@ extends KinematicBody2D
 
 export var sprite_texture = "res://sprites/enemy_tigre.png" setget setSpriteTexture, getSpriteTexture
 
-const GRAVITY_VEC = Vector2(0, 900)
 const FLOOR_NORMAL = Vector2(0, -2)
 
 const WALK_SPEED = 70
@@ -15,6 +14,7 @@ var anim=""
 
 var state = STATE_WALKING
 
+onready var GRAVITY_VEC = Vector2(0, global.GRAVITY)
 onready var detect_floor_left = $detect_floor_left
 onready var detect_floor_right = $detect_floor_right
 onready var detect_wall_left = $detect_wall_left

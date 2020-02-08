@@ -1,13 +1,12 @@
 extends KinematicBody2D
 
 const PLAYER_SCALE = 2
-const GRAVITY = 900
 const FLOOR_NORMAL = Vector2(0, -1)
 const SLOPE_SLIDE_STOP = 25.0
 const MIN_ONAIR_TIME = 0.1
 const WALK_SPEED = 250 # pixels/sec
-const JUMP_SPEED = 480
-const WALLJUMP_SPEED = 600
+const JUMP_SPEED = 350
+const WALLJUMP_SPEED = 350
 const BULLET_VELOCITY = 800
 
 var linear_vel = Vector2()
@@ -64,7 +63,7 @@ func _apply_gravity(delta):
 	if !global.allow_movement: 
 		linear_vel.y = 0
 	else: 
-		linear_vel.y += delta * GRAVITY
+		linear_vel.y += delta * global.GRAVITY
 	
 func _apply_movement(delta):
 	if !global.allow_movement: return
@@ -125,7 +124,7 @@ func _handle_move_input():
 		shoot()
 		player_asm.set_state(player_asm.states.shoot)
 	
-	if [player_sm.states.idle, player_sm.states.run, player_sm.states.push].has(player_sm.state):
+	if on_floor and [player_sm.states.idle, player_sm.states.run, player_sm.states.push].has(player_sm.state):
 		if Input.is_action_pressed("jump"):
 			linear_vel.y = -JUMP_SPEED
 	elif knows_walljump and [player_sm.states.wall_slide].has(player_sm.state):

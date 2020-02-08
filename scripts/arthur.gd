@@ -1,7 +1,6 @@
 extends KinematicBody2D
 
 const PLAYER_SCALE = 2
-const GRAVITY = 900
 const FLOOR_NORMAL = Vector2(0, -1)
 const SLOPE_SLIDE_STOP = 25.0
 const MIN_ONAIR_TIME = 0.1
@@ -33,7 +32,7 @@ func _ready():
 	arthur_talks()
 
 func _apply_gravity(delta):
-	linear_vel.y += delta * GRAVITY
+	linear_vel.y += delta * global.GRAVITY
 
 func _apply_movement(delta):
 	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
