@@ -49,3 +49,10 @@ func add_state(state_name):
 	var i = states.size()
 	states[state_name] = i
 	states_description[i] = state_name
+
+func is_on(some_state):
+	if some_state is Array:
+		return some_state.has(state)
+	else:
+		return state == some_state
+	

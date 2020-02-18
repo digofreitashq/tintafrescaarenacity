@@ -10,7 +10,7 @@ const WALLJUMP_SPEED = 350
 const BULLET_VELOCITY = 800
 
 var linear_vel = Vector2()
-var target_speed = 0
+var direction = 0
 var onair_time = 0
 var on_floor_before = false
 var on_floor = false
@@ -37,7 +37,6 @@ onready var right_wall_raycast = $right_wall_raycast
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
-onready var timer_push = $timer_push
 onready var timer_wallslide_cooldown = $timer_wallslide_cooldown
 
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
@@ -77,8 +76,7 @@ func _apply_movement(delta):
 	if on_floor and !on_floor_before:
 		emit_signal("grounded")
 	
-	target_speed *= WALK_SPEED
-	linear_vel.x = lerp(linear_vel.x, target_speed, 0.1)
+	linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.5)
 
 func _gravity_wall_slide():
 	if !global.allow_movement: return
@@ -92,30 +90,30 @@ func _handle_move_input():
 	
 	if !global.allow_movement: return
 	
-	target_speed = 0
+	direction = 0
 	
 	if Input.is_action_pressed("move_left"):
-		target_speed += -1
+		direction += -1
 		
 		if not siding_left: 
-			if player_sm.state == player_sm.states.wall_slide:
+			if player_sm.is_on(player_sm.states.wall_slide):
 				player_sm.set_state(player_sm.states.fall)
 			
-			if player_sm.state == player_sm.states.push:
-				player_sm.revert_state()
+			if player_sm.is_on(player_sm.states.push):
+				player_sm.set_state(player_sm.states.idle)
 			
 			siding_left = true
 			play_anim()
 		
 	if Input.is_action_pressed("move_right"):
-		target_speed += 1
+		direction += 1
 		
 		if siding_left:
-			if player_sm.state == player_sm.states.wall_slide:
+			if player_sm.is_on(player_sm.states.wall_slide):
 				player_sm.set_state(player_sm.states.fall)
 			
-			if player_sm.state == player_sm.states.push:
-				player_sm.revert_state()
+			if player_sm.is_on(player_sm.states.push):
+				player_sm.set_state(player_sm.states.idle)
 			
 			siding_left = false
 			play_anim()
@@ -124,10 +122,10 @@ func _handle_move_input():
 		shoot()
 		player_asm.set_state(player_asm.states.shoot)
 	
-	if on_floor and [player_sm.states.idle, player_sm.states.run, player_sm.states.push].has(player_sm.state):
+	if on_floor and player_sm.is_on([player_sm.states.idle, player_sm.states.run, player_sm.states.push]):
 		if Input.is_action_pressed("jump"):
 			linear_vel.y = -JUMP_SPEED
-	elif knows_walljump and [player_sm.states.wall_slide].has(player_sm.state):
+	elif knows_walljump and player_sm.is_on([player_sm.states.wall_slide]):
 		if Input.is_action_pressed("jump"):
 			player_sm.set_state(player_sm.states.wall_jump)
 			
@@ -158,9 +156,6 @@ func play_sound(stream):
 	$sound.stream = stream
 	$sound.play()
 
-func is_shooting():
-	return player_asm.state == player_asm.states.shoot
-
 func check_is_valid_wall(some_wall_raycasts):
 	if not some_wall_raycasts: return false
 	
@@ -176,15 +171,12 @@ func check_is_valid_wall(some_wall_raycasts):
 func wall_direction():
 	var is_near_left = left_wall_raycast.is_colliding()
 	var is_near_right = right_wall_raycast.is_colliding()
-	var n;
 	
 	if is_near_left:
-		n = left_wall_raycast.get_collider()
-		is_near_left = global.is_walljump_collision(n)
+		is_near_left = global.is_walljump_collision(left_wall_raycast.get_collider())
 	
 	if is_near_right:
-		n = right_wall_raycast.get_collider()
-		is_near_right = global.is_walljump_collision(n)
+		is_near_right = global.is_walljump_collision(right_wall_raycast.get_collider())
 	
 	var result = -int(is_near_left) + int(is_near_right)
 	
@@ -195,6 +187,20 @@ func wall_direction():
 		previous_wall_direction = result
 	
 	return previous_wall_direction
+
+func push_direction():
+	var is_near_left = left_wall_raycast.is_colliding()
+	var is_near_right = right_wall_raycast.is_colliding()
+	
+	if is_near_left:
+		is_near_left = global.is_push_collision(left_wall_raycast.get_collider())
+	
+	if is_near_right:
+		is_near_right = global.is_push_collision(right_wall_raycast.get_collider())
+	
+	var result = -int(is_near_left) + int(is_near_right)
+	
+	return result
 
 func shoot():
 	if timer_shoot.is_stopped():
@@ -219,7 +225,7 @@ func shoot_spray_normal():
 	
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
-	if player_sm.state == player_sm.states.wall_slide: direction *= -1
+	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
 	
 	bi.sprite.scale.x = -direction
 	bi.particles.scale.x = -direction
@@ -243,7 +249,7 @@ func shoot_spray_triple():
 	
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
-	if player_sm.state == player_sm.states.wall_slide: direction *= -1
+	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
 	
 	bi1.sprite.scale.x = -direction
 	bi2.sprite.scale.x = -direction
@@ -342,6 +348,7 @@ func got_damage(value, on_top=false, on_left=null):
 	play_sound(sound_damage)
 	play_anim("got_damage")
 	$timer_damage.start()
+	$timer_flashing.start()
 
 func enable_dust(position=Vector2(0,10)):
 	if (not dust.is_emitting()):
@@ -357,15 +364,18 @@ func disable_dust():
 		dust.set_emitting(false)
 
 func set_pushing():
-	$timer_push.stop()
 	player_sm.set_state(player_sm.states.push)
 
 func _on_timer_damage_timeout():
 	disable_damage = false
-	anim.play("modulate_normal")
-
-func _on_timer_push_timeout():
-	player_sm.revert_state()
+	sprite.modulate = Color(1,1,1,1)
+	$timer_flashing.stop()
 
 func _on_timer_wall_direction_update_timeout():
 	previous_wall_direction = stock_wall_direction
+
+func _on_timer_flashing_timeout():
+	if sprite.modulate == Color(1,1,1,1):
+		sprite.modulate = Color(1,1,1,0)
+	else:
+		sprite.modulate = Color(1,1,1,1)

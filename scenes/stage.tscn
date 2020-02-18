@@ -14,10 +14,10 @@
 [ext_resource path="res://scenes/moving_platform.tscn" type="PackedScene" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 125.761, 231.104 )
+extents = Vector2( 125.761, 261.867 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 351.033, 57.2793 )
+extents = Vector2( 317, 82 )
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 113.9, 23.6812 )
@@ -53,11 +53,11 @@ tile_data = PoolIntArray( -65532, 165, 0, 4, 165, 0, 65540, 165, 0, 131076, 138,
 [node name="extra_collisions" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="extra_collisions"]
-position = Vector2( -31.1683, 229.867 )
+position = Vector2( -32, 218 )
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="extra_collisions"]
-position = Vector2( 231.815, -48.7006 )
+position = Vector2( 0, -64 )
 shape = SubResource( 2 )
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="extra_collisions"]
@@ -93,14 +93,20 @@ position = Vector2( 800, 128 )
 motion = Vector2( 0, 80 )
 cycle = 10.0
 
-[node name="box" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 992, 230 )
-
 [node name="box2" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 320, 268 )
+position = Vector2( 365, 276 )
+
+[node name="box6" parent="props" instance=ExtResource( 6 )]
+position = Vector2( 594, 268 )
+
+[node name="box4" parent="props" instance=ExtResource( 6 )]
+position = Vector2( 755, 4 )
+
+[node name="box5" parent="props" instance=ExtResource( 6 )]
+position = Vector2( 365, 224 )
 
 [node name="box3" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 320, 210 )
+position = Vector2( 191, 96 )
 
 [node name="enemies" type="Node" parent="."]
 pause_mode = 1
@@ -138,7 +144,7 @@ position = Vector2( 211, 292 )
 z_index = 1
 
 [node name="arthur" parent="." instance=ExtResource( 10 )]
-position = Vector2( 704, 292 )
+position = Vector2( 755, -64 )
 
 [node name="TileMapOverAll" type="TileMap" parent="."]
 scale = Vector2( 2, 2 )

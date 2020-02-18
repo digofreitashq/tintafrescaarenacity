@@ -38,6 +38,9 @@ func is_tilemap(body):
 func is_walljump_collision(body):
 	return "extra_collisions" in body.get_name() or "walljump_collisions" in body.get_name()
 
+func is_push_collision(body):
+	return "box" in body.get_name()
+
 func enable_player_control():
 	allow_movement = true
 

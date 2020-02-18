@@ -183,18 +183,6 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 10 ]
 }
-tracks/1/type = "value"
-tracks/1/path = NodePath("sprite:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.25, 0.5, 0.75 ),
-"transitions": PoolRealArray( 1.07177, 1, 1, 1 ),
-"update": 2,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0.00392157 ), Color( 1, 1, 1, 1 ) ]
-}
 
 [sub_resource type="Animation" id=11]
 step = 0.25
@@ -209,18 +197,6 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ 14 ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("sprite:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.25, 0.5, 0.75 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 2,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 
 [sub_resource type="Animation" id=12]
@@ -555,7 +531,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="RectangleShape2D" id=33]
-extents = Vector2( 5.90092, 19.2378 )
+extents = Vector2( 10, 28 )
 
 [node name="player" type="KinematicBody2D"]
 collision/safe_margin = 1.0
@@ -585,7 +561,7 @@ z_index = 1
 texture = ExtResource( 5 )
 vframes = 4
 hframes = 16
-frame = 60
+frame = 14
 
 [node name="anim" type="AnimationPlayer" parent="."]
 playback_speed = 2.0
@@ -634,6 +610,8 @@ stream = ExtResource( 6 )
 volume_db = -23.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -6 )
+z_index = 5
 shape = SubResource( 33 )
 
 [node name="ui" type="CanvasLayer" parent="."]
@@ -686,15 +664,13 @@ texture = ExtResource( 12 )
 visible = false
 
 [node name="timer_damage" type="Timer" parent="."]
-wait_time = 0.5
 one_shot = true
+
+[node name="timer_flashing" type="Timer" parent="."]
+wait_time = 0.1
 
 [node name="timer_dust" type="Timer" parent="."]
 wait_time = 0.2
-one_shot = true
-
-[node name="timer_push" type="Timer" parent="."]
-wait_time = 0.5
 one_shot = true
 
 [node name="timer_sound" type="Timer" parent="."]
@@ -736,7 +712,7 @@ position = Vector2( 20, 0 )
 enabled = true
 cast_to = Vector2( 10, 0 )
 [connection signal="timeout" from="timer_damage" to="." method="_on_timer_damage_timeout"]
-[connection signal="timeout" from="timer_push" to="." method="_on_timer_push_timeout"]
+[connection signal="timeout" from="timer_flashing" to="." method="_on_timer_flashing_timeout"]
 [connection signal="timeout" from="timer_sound" to="player_asm" method="_on_timer_shoot_timeout"]
 [connection signal="timeout" from="timer_shoot" to="player_asm" method="_on_timer_shoot_timeout"]
 [connection signal="timeout" from="timer_wall_direction_update" to="." method="_on_timer_wall_direction_update_timeout"]

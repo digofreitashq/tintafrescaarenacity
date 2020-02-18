@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/box.gd" type="Script" id=1]
 [ext_resource path="res://scripts/box_sm.gd" type="Script" id=2]
@@ -36,12 +36,29 @@ tracks/0/keys = {
 }
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 28, 28 )
+extents = Vector2( 30, 24 )
 
 [sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 16, 8 )
 
 [node name="box" type="KinematicBody2D"]
 script = ExtResource( 1 )
+
+[node name="state_label" type="Label" parent="."]
+margin_left = -96.0
+margin_top = 48.0
+margin_right = -25.0
+margin_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "idle L R T B"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="box_sm" type="Node" parent="."]
 script = ExtResource( 2 )
@@ -57,37 +74,63 @@ anims/floating = SubResource( 1 )
 anims/idle = SubResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 4 )
+position = Vector2( 0, 8 )
 shape = SubResource( 3 )
 
 [node name="Area2D_bottom" type="Area2D" parent="."]
+position = Vector2( 0, 32 )
 
 [node name="CollisionShape2D_bottom" type="CollisionShape2D" parent="Area2D_bottom"]
-position = Vector2( 0, 20 )
 shape = SubResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Area2D_top" type="Area2D" parent="."]
+position = Vector2( 0, -32 )
 
 [node name="CollisionShape2D_top" type="CollisionShape2D" parent="Area2D_top"]
-position = Vector2( 0, -20 )
-shape = SubResource( 4 )
+shape = SubResource( 5 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Area2D_left" type="Area2D" parent="."]
+position = Vector2( -16, 0 )
 
 [node name="CollisionShape2D_left" type="CollisionShape2D" parent="Area2D_left"]
-position = Vector2( -20, 10 )
-shape = SubResource( 4 )
+shape = SubResource( 5 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Area2D_right" type="Area2D" parent="."]
+position = Vector2( 16, 0 )
 
 [node name="CollisionShape2D_right" type="CollisionShape2D" parent="Area2D_right"]
-position = Vector2( 20, 10 )
-shape = SubResource( 4 )
+shape = SubResource( 5 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="left_area_timer" type="Timer" parent="."]
+wait_time = 0.01
+one_shot = true
+
+[node name="right_area_timer" type="Timer" parent="."]
+wait_time = 0.01
+one_shot = true
+
+[node name="bottom_area_timer" type="Timer" parent="."]
+wait_time = 0.01
+one_shot = true
 [connection signal="body_entered" from="Area2D_bottom" to="." method="_on_Area2D_bottom_body_entered"]
-[connection signal="body_exited" from="Area2D_bottom" to="." method="_on_Area2D_bottom_body_exited"]
 [connection signal="body_entered" from="Area2D_top" to="." method="_on_Area2D_top_body_entered"]
 [connection signal="body_exited" from="Area2D_top" to="." method="_on_Area2D_top_body_exited"]
 [connection signal="body_entered" from="Area2D_left" to="." method="_on_Area2D_left_body_entered"]
 [connection signal="body_exited" from="Area2D_left" to="." method="_on_Area2D_left_body_exited"]
 [connection signal="body_entered" from="Area2D_right" to="." method="_on_Area2D_right_body_entered"]
 [connection signal="body_exited" from="Area2D_right" to="." method="_on_Area2D_right_body_exited"]
+[connection signal="timeout" from="left_area_timer" to="." method="_on_left_area_timer_timeout"]
+[connection signal="timeout" from="right_area_timer" to="." method="_on_right_area_timer_timeout"]
+[connection signal="timeout" from="bottom_area_timer" to="." method="_on_bottom_area_timer_timeout"]
