@@ -24,9 +24,10 @@ config/name="Tinta Fresca Arena"
 run/main_scene="res://scenes/title.tscn"
 run/low_processor_mode=true
 boot_splash/fullsize=false
+boot_splash/use_filter=false
 config/icon="res://icon.png"
 name_es="Tinta Fresca Arena"
-target_fps="10"
+target_fps="30"
 
 [autoload]
 
@@ -117,9 +118,11 @@ use_pixel_snap=true
 
 [rendering]
 
+quality/2d/gles2_use_nvidia_rect_flicker_workaround=true
 quality/intended_usage/framebuffer_allocation=0
 quality/intended_usage/framebuffer_allocation.mobile=1
 quality/2d/use_pixel_snap=true
 quality/filters/anisotropic_filter_level=1
-quality/filters/use_nearest_mipmap_filter=true
+quality/reflections/texture_array_reflections=false
+quality/subsurface_scattering/quality=0
 environment/default_clear_color=Color( 0, 0, 0, 1 )

@@ -12,6 +12,8 @@ var sprays = 0
 var enemies = 0
 var allow_movement = true
 
+var boxes = []
+
 signal waited
 
 func _ready():
@@ -60,3 +62,25 @@ func wait_until_signal(seconds):
 	timer.set_wait_time(seconds)
 	timer.connect("timeout", self, "do_timer_signal")
 	timer.start()
+
+func sort_boxes_zindex(a, b):
+	if a[2] != b[2]: return a[2] < b[2] # Y comparison
+	elif a[1] != b[1]: return a[1] < b[1] # X comparison
+	else: return a[0].get_instance_id() < b[0].get_instance_id()
+
+func set_all_zindex():
+	var info = []
+	var index = 0
+	
+	for box in global.boxes:
+		info.append([box, box.position.x, box.position.y])
+	
+	info.sort_custom(self, "sort_boxes_zindex")
+	info.invert()
+	
+	for box in info:
+		box[0].z_index = index
+		index += 1
+	
+	get_player().z_index = index
+		

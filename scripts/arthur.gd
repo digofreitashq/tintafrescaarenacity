@@ -125,7 +125,7 @@ func arthur_talks():
 	global.disable_player_control()
 	player.player_sm.set_state(player.player_sm.states.idle)
 	
-	global.wait_until_signal(3)
+	global.wait_until_signal(2)
 	yield(global, "waited")
 	
 	dialog.show([
@@ -157,15 +157,17 @@ func arthur_talks():
 		["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
 		["Ícaro","Eita. E eu vou ter que fazer o quê? Pintura facial neles...?"],
 		["Arthur","Você vai usar seus poderes de transformar os desenhos em realidade para vencê-los."],
-		["Arthur","Sozinho, sim, mas fique tranquilo que vou ficar olhando de longe."],
+		["Ícaro","Então vamos lá..."],
+		["Arthur","Ahm... Eu disse você! Sozinho."],
+		["Arthur","Mas fique tranquilo que vou ficar olhando de longe."],
 		["Arthur","E de vez em quando vou dar uns palpites."],
 		["Ícaro","Ótimo... Se eu morrer, tudo bem, né?"],
-		["Arthur","Ahm... Eu... Confio em você!"],
+		["Arthur","Eu... Confio em você!"],
 		])
 	yield(dialog, "finished")
 	$Area2D/CollisionShape2D.scale.x = 0.5
 	
-	walk_pixels = 400
+	walk_pixels = 300
 	yield(self, "walked")
 	self.set_visible(false)
 	$CollisionShape2D.set_disabled(true)

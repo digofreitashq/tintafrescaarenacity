@@ -19,8 +19,6 @@ onready var detect_floor_left = $detect_floor_left
 onready var detect_floor_right = $detect_floor_right
 onready var detect_wall_left = $detect_wall_left
 onready var detect_wall_right = $detect_wall_right
-onready var detect_player_left = $detect_player_left
-onready var detect_player_right = $detect_player_right
 
 onready var sound_hit = preload("res://sfx/sound_hit.wav")
 

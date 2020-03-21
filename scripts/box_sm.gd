@@ -18,7 +18,3 @@ func _enter_state(new_state, old_state):
 			parent.anim.play("floating")
 		states.idle:
 			parent.anim.play("idle")
-		
-func update_label():
-	#return
-	parent.state_label.set_text('%s'%parent.linear_vel.x)

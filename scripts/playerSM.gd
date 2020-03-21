@@ -29,6 +29,11 @@ func _state_logic(delta):
 	parent.update_state_label()
 
 func _get_transition(delta):
+	var wall_direction = parent.wall_direction()
+	var valid_wall_direction = (wall_direction == -1 and Input.is_action_pressed("move_left")) or (wall_direction == 1 and Input.is_action_pressed("move_right"))
+	var wall_slide_conditions = parent.knows_walljump and parent.linear_vel.y >= 0 and valid_wall_direction
+	var push_conditions = round(parent.linear_vel.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
+	
 	match state:
 		states.idle:
 			if not parent.on_floor:
@@ -36,7 +41,7 @@ func _get_transition(delta):
 					return states.jump
 				elif round(parent.linear_vel.y) > 0:
 					return states.fall
-			elif round(parent.linear_vel.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
+			elif push_conditions:
 				var push_direction = parent.push_direction()
 				if (parent.siding_left and push_direction == -1) or (not parent.siding_left and push_direction == 1):
 					return states.push
@@ -48,14 +53,14 @@ func _get_transition(delta):
 					return states.jump
 				elif round(parent.linear_vel.y) > 0:
 					return states.fall
-			elif round(parent.linear_vel.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
+			elif push_conditions:
 				var push_direction = parent.push_direction()
 				if (parent.siding_left and push_direction == -1) or (not parent.siding_left and push_direction == 1):
 					return states.push
-			elif round(parent.linear_vel.x) == 0 or (!Input.is_action_pressed("move_right") and !Input.is_action_pressed("move_left")):
+			elif not push_conditions:
 				return states.idle
-			elif parent.linear_vel.x != 0 and parent.wall_direction() != 0:
-				if (parent.siding_left and parent.wall_direction() == -1) or (not parent.siding_left and parent.wall_direction() == 1):
+			elif parent.linear_vel.x != 0 and wall_direction != 0:
+				if (parent.siding_left and wall_direction == -1) or (not parent.siding_left and wall_direction == 1):
 					return states.idle
 		states.jump:
 			if parent.on_floor:
@@ -64,7 +69,7 @@ func _get_transition(delta):
 				return states.fall
 		states.fall:
 			if parent.on_floor:
-				if round(parent.linear_vel.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
+				if push_conditions:
 					var push_direction = parent.push_direction()
 					if (parent.siding_left and push_direction == -1) or (not parent.siding_left and push_direction == 1):
 						return states.push
@@ -72,8 +77,8 @@ func _get_transition(delta):
 					return states.run
 				
 				return states.idle
-			elif parent.knows_walljump and parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
-				parent.siding_left = parent.wall_direction() == -1
+			elif wall_slide_conditions:
+				parent.siding_left = wall_direction == -1
 				return states.wall_slide
 			elif parent.linear_vel.y < 0:
 				return states.jump
@@ -89,21 +94,21 @@ func _get_transition(delta):
 		states.wall_slide:
 			if parent.on_floor:
 				return states.idle
-			elif parent.linear_vel.y >= 0 and parent.wall_direction() == 0:
+			elif parent.linear_vel.y >= 0 and wall_direction == 0:
 				return states.fall
 		states.wall_jump:
 			if parent.on_floor:
 				return states.idle
-			elif parent.knows_walljump and parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
-				parent.siding_left = parent.wall_direction() == -1
+			elif wall_slide_conditions:
+				parent.siding_left = wall_direction == -1
 				return states.wall_slide
 			elif parent.linear_vel.y >= 0:
 				return states.fall
 		states.damage:
 			if parent.on_floor:
 				return states.idle
-			elif parent.knows_walljump and parent.linear_vel.y >= 0 and parent.wall_direction() != 0 and parent.timer_wallslide_cooldown.is_stopped():
-				parent.siding_left = parent.wall_direction() == -1
+			elif wall_slide_conditions:
+				parent.siding_left = wall_direction == -1
 				return states.wall_slide
 	
 	return null
@@ -112,7 +117,10 @@ func _enter_state(new_state, old_state):
 	match new_state:
 		states.idle:
 			parent.disable_dust()
-			parent.play_anim("idle")
+			if old_state in [states.fall, states.wall_jump, states.wall_slide]:
+				parent.play_anim("grounded")
+			else:
+				parent.play_anim("idle")
 		states.run:
 			parent.disable_dust()
 			parent.play_anim("run")
@@ -120,13 +128,14 @@ func _enter_state(new_state, old_state):
 			if old_state == states.damage: return
 			parent.on_floor = false
 			parent.disable_dust()
-			parent.play_anim("jump")
+			#parent.play_anim("jump")
 		states.fall:
 			if old_state == states.damage: return
 			parent.disable_dust()
 			parent.play_anim("fall")
 		states.push:
 			parent.disable_dust()
+			parent.play_sound(parent.sound_grounded)
 			parent.play_anim("push")
 		states.wall_slide:
 			parent.on_floor = false
@@ -147,10 +156,5 @@ func _enter_state(new_state, old_state):
 func _exit_state(old_state, new_state):
 	match old_state:
 		states.wall_slide:
-			if [states.idle, states.fall].has(new_state):
-				parent.siding_left = !parent.siding_left
-			
-			parent.timer_wallslide_cooldown.start()
-		states.wall_jump:
 			if [states.idle, states.fall].has(new_state):
 				parent.siding_left = !parent.siding_left

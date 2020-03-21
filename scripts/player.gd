@@ -4,6 +4,7 @@ const PLAYER_SCALE = 2
 const FLOOR_NORMAL = Vector2(0, -1)
 const SLOPE_SLIDE_STOP = 25.0
 const MIN_ONAIR_TIME = 0.1
+const MAX_ONAIR_TIME = 0.2
 const WALK_SPEED = 250 # pixels/sec
 const JUMP_SPEED = 350
 const WALLJUMP_SPEED = 350
@@ -27,6 +28,7 @@ var siding_left = false
 var disable_damage = false
 var skip_dialog = false
 var knows_walljump = true
+var jump_released = true
 
 onready var sprite = $sprite
 onready var dust = $dust
@@ -37,7 +39,6 @@ onready var right_wall_raycast = $right_wall_raycast
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
-onready var timer_wallslide_cooldown = $timer_wallslide_cooldown
 
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
 onready var sound_jump = preload("res://sfx/sound_jump.wav")
@@ -76,7 +77,10 @@ func _apply_movement(delta):
 	if on_floor and !on_floor_before:
 		emit_signal("grounded")
 	
-	linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.5)
+	if on_floor:
+		linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.5)
+	else:
+		linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.1)
 
 func _gravity_wall_slide():
 	if !global.allow_movement: return
@@ -95,10 +99,7 @@ func _handle_move_input():
 	if Input.is_action_pressed("move_left"):
 		direction += -1
 		
-		if not siding_left: 
-			if player_sm.is_on(player_sm.states.wall_slide):
-				player_sm.set_state(player_sm.states.fall)
-			
+		if not siding_left and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
 			if player_sm.is_on(player_sm.states.push):
 				player_sm.set_state(player_sm.states.idle)
 			
@@ -108,10 +109,7 @@ func _handle_move_input():
 	if Input.is_action_pressed("move_right"):
 		direction += 1
 		
-		if siding_left:
-			if player_sm.is_on(player_sm.states.wall_slide):
-				player_sm.set_state(player_sm.states.fall)
-			
+		if siding_left and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
 			if player_sm.is_on(player_sm.states.push):
 				player_sm.set_state(player_sm.states.idle)
 			
@@ -122,19 +120,30 @@ func _handle_move_input():
 		shoot()
 		player_asm.set_state(player_asm.states.shoot)
 	
-	if on_floor and player_sm.is_on([player_sm.states.idle, player_sm.states.run, player_sm.states.push]):
-		if Input.is_action_pressed("jump"):
-			linear_vel.y = -JUMP_SPEED
+	var opposite_wall = (wall_direction() == 1 and Input.is_action_pressed("move_left")) or (wall_direction() == -1 and Input.is_action_pressed("move_right"))
+	
+	if player_sm.is_on([player_sm.states.idle, player_sm.states.run, player_sm.states.push]):
+		if Input.is_action_pressed("jump") and jump_released:
+			play_anim("jump")
+			jump()
+		elif not Input.is_action_pressed("jump") and not jump_released:
+			jump_released = true
+	elif player_sm.is_on(player_sm.states.fall):
+		if Input.is_action_pressed("jump") and opposite_wall:
+			wall_jump()
+		elif not Input.is_action_pressed("jump") and not jump_released:
+			jump_released = true
+	elif player_sm.is_on([player_sm.states.jump, player_sm.states.wall_jump]) and onair_time < MAX_ONAIR_TIME:
+		if Input.is_action_pressed("jump") and opposite_wall:
+			wall_jump()
+		elif Input.is_action_pressed("jump"):
+			jump()
 	elif knows_walljump and player_sm.is_on([player_sm.states.wall_slide]):
-		if Input.is_action_pressed("jump"):
-			player_sm.set_state(player_sm.states.wall_jump)
-			
-			linear_vel.y = -WALLJUMP_SPEED
-			
-			if siding_left:
-				linear_vel.x += WALLJUMP_SPEED
-			else:
-				linear_vel.x -= WALLJUMP_SPEED
+		if Input.is_action_pressed("jump") and opposite_wall:
+			wall_jump()
+		
+		if not (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
+			player_sm.set_state(player_sm.states.fall)
 
 func play_anim(anim_name=""):
 	if anim_name == "":
@@ -188,17 +197,41 @@ func wall_direction():
 	
 	return previous_wall_direction
 
+func jump():
+	linear_vel.y = -JUMP_SPEED
+	jump_released = false
+
+func wall_jump():
+	if Input.is_action_pressed("jump") and jump_released:
+		player_sm.set_state(player_sm.states.wall_jump)
+		jump_released = false
+		
+		linear_vel.y = -WALLJUMP_SPEED
+		
+		if siding_left:
+			linear_vel.x = WALLJUMP_SPEED
+		else:
+			linear_vel.x = -WALLJUMP_SPEED
+	elif not Input.is_action_pressed("jump") and not jump_released:
+		jump_released = true
+
 func push_direction():
+	var result = 0
 	var is_near_left = left_wall_raycast.is_colliding()
 	var is_near_right = right_wall_raycast.is_colliding()
 	
-	if is_near_left:
+	if is_near_left and siding_left:
 		is_near_left = global.is_push_collision(left_wall_raycast.get_collider())
+		is_near_right = false
 	
-	if is_near_right:
+	elif is_near_right and !siding_left:
+		is_near_left = false
 		is_near_right = global.is_push_collision(right_wall_raycast.get_collider())
 	
-	var result = -int(is_near_left) + int(is_near_right)
+	if is_near_left:
+		result = -1
+	elif is_near_right:
+		result = 1
 	
 	return result
 
