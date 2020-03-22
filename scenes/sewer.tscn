@@ -5,7 +5,7 @@
 
 [sub_resource type="Animation" id=1]
 resource_name = "loop"
-length = 1.2
+length = 0.8
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
@@ -14,7 +14,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.3, 0.6, 0.9 ),
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 0, 1, 2, 3 ]
@@ -34,7 +34,6 @@ script = ExtResource( 1 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 hframes = 4
-frame = 1
 
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/loop = SubResource( 1 )

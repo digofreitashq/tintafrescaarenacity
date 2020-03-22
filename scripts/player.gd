@@ -99,20 +99,28 @@ func _handle_move_input():
 	if Input.is_action_pressed("move_left"):
 		direction += -1
 		
-		if not siding_left and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
-			if player_sm.is_on(player_sm.states.push):
-				player_sm.set_state(player_sm.states.idle)
-			
+		if not siding_left:
+			if player_sm.is_on(player_sm.states.wall_jump):
+				player_sm.set_state(player_sm.states.fall)
+				
+			elif not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
+				if player_sm.is_on(player_sm.states.push):
+					player_sm.set_state(player_sm.states.idle)
+				
 			siding_left = true
 			play_anim()
 		
 	if Input.is_action_pressed("move_right"):
 		direction += 1
 		
-		if siding_left and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
-			if player_sm.is_on(player_sm.states.push):
-				player_sm.set_state(player_sm.states.idle)
-			
+		if siding_left:
+			if player_sm.is_on(player_sm.states.wall_jump):
+				player_sm.set_state(player_sm.states.fall)
+				
+			elif player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
+				if player_sm.is_on(player_sm.states.push):
+					player_sm.set_state(player_sm.states.idle)
+				
 			siding_left = false
 			play_anim()
 	
@@ -210,8 +218,10 @@ func wall_jump():
 		
 		if siding_left:
 			linear_vel.x = WALLJUMP_SPEED
+			siding_left = true
 		else:
 			linear_vel.x = -WALLJUMP_SPEED
+			siding_left = false
 	elif not Input.is_action_pressed("jump") and not jump_released:
 		jump_released = true
 

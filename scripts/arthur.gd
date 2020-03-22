@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+export var  ID = 0
+
 const PLAYER_SCALE = 2
 const FLOOR_NORMAL = Vector2(0, -1)
 const SLOPE_SLIDE_STOP = 25.0
@@ -25,10 +27,16 @@ onready var left_wall_raycast = $left_wall_raycast
 onready var right_wall_raycast = $right_wall_raycast
 onready var arthur_sm = $arthur_sm
 onready var dialog = global.get_dialog()
+onready var player = global.get_player()
 
 signal walked
 
 func _ready():
+	if ID == 0:
+		self.set_visible(false)
+		$CollisionShape2D.set_disabled(true)
+		return
+		
 	arthur_talks()
 
 func _apply_gravity(delta):
@@ -119,64 +127,62 @@ func call_body_entered():
 	_on_Area2D_body_entered($sprite)
 
 func arthur_talks():
-	return
-	var player = global.get_player()
-	
-	global.disable_player_control()
-	player.player_sm.set_state(player.player_sm.states.idle)
-	
-	global.wait_until_signal(2)
-	yield(global, "waited")
-	
-	dialog.show([
-		["Ícaro","Eu já cheguei faz quinze minutos e nada daquele velho..."],
-		])
-	yield(dialog, "finished")
-	
-	walk_pixels = -1000
-	yield(self, "walked")
-	
-	dialog.show([
-		["Ícaro","E aí, velhote! Tá atrasado..."],
-		["Arthur","Mais respeito, por favor, rapaz."],
-		["Ícaro","Tá bom! Boa tarde..."],
-		["Ícaro","Velhote!"],
-		])
-	yield(dialog, "finished")
-	
-	arthur_sm.set_state(arthur_sm.states.eating)
-	
-	global.wait_until_signal(1)
-	yield(global, "waited")
-	
-	dialog.show([
-		["Arthur","Hunf!"],
-		["Arthur","Hoje seu treino será em campo."],
-		["Arthur","Como deve ter percebido, a cidade está infestada desses tais Podres."],
-		["Ícaro","Podres...?"],
-		["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
-		["Ícaro","Eita. E eu vou ter que fazer o quê? Pintura facial neles...?"],
-		["Arthur","Você vai usar seus poderes de transformar os desenhos em realidade para vencê-los."],
-		["Ícaro","Então vamos lá..."],
-		["Arthur","Ahm... Eu disse você! Sozinho."],
-		["Arthur","Mas fique tranquilo que vou ficar olhando de longe."],
-		["Arthur","E de vez em quando vou dar uns palpites."],
-		["Ícaro","Ótimo... Se eu morrer, tudo bem, né?"],
-		["Arthur","Eu... Confio em você!"],
-		])
-	yield(dialog, "finished")
-	$Area2D/CollisionShape2D.scale.x = 0.5
-	
-	walk_pixels = 300
-	yield(self, "walked")
-	self.set_visible(false)
-	$CollisionShape2D.set_disabled(true)
-	
-	dialog.show([
-		["Ícaro","Vamos lá, né? Afinal, o que pode acontecer de ruim?"],
-		])
-	yield(dialog, "finished")
-	
-	times_talked += 1
-	
-	global.enable_player_control()
+	if ID == 1:
+		global.disable_player_control()
+		player.player_sm.set_state(player.player_sm.states.idle)
+		
+		global.wait_until_signal(2)
+		yield(global, "waited")
+		
+		dialog.show([
+			["Ícaro","Eu já cheguei faz quinze minutos e nada daquele velho..."],
+			])
+		yield(dialog, "finished")
+		
+		walk_pixels = -1000
+		yield(self, "walked")
+		
+		dialog.show([
+			["Ícaro","E aí, velhote! Tá atrasado..."],
+			["Arthur","Mais respeito, por favor, rapaz."],
+			["Ícaro","Tá bom! Boa tarde..."],
+			["Ícaro","Velhote!"],
+			])
+		yield(dialog, "finished")
+		
+		arthur_sm.set_state(arthur_sm.states.eating)
+		
+		global.wait_until_signal(1)
+		yield(global, "waited")
+		
+		dialog.show([
+			["Arthur","Hunf!"],
+			["Arthur","Hoje seu treino será em campo."],
+			["Arthur","Como deve ter percebido, a cidade está infestada desses tais Podres."],
+			["Ícaro","Podres...?"],
+			["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
+			["Ícaro","Eita. E eu vou ter que fazer o quê? Pintura facial neles...?"],
+			["Arthur","Você vai usar seus poderes de transformar os desenhos em realidade para vencê-los."],
+			["Ícaro","Então vamos lá..."],
+			["Arthur","Ahm... Eu disse você! Sozinho."],
+			["Arthur","Mas fique tranquilo que vou ficar olhando de longe."],
+			["Arthur","E de vez em quando vou dar uns palpites."],
+			["Ícaro","Ótimo... Se eu morrer, tudo bem, né?"],
+			["Arthur","Eu... Confio em você!"],
+			])
+		yield(dialog, "finished")
+		$Area2D/CollisionShape2D.scale.x = 0.5
+		
+		walk_pixels = 300
+		yield(self, "walked")
+		self.set_visible(false)
+		$CollisionShape2D.set_disabled(true)
+		
+		dialog.show([
+			["Ícaro","Vamos lá, né? Afinal, o que pode acontecer de ruim?"],
+			])
+		yield(dialog, "finished")
+		
+		times_talked += 1
+		
+		global.enable_player_control()

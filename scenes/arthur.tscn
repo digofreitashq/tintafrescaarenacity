@@ -79,6 +79,7 @@ extents = Vector2( 112, 36 )
 
 [node name="arthur" type="KinematicBody2D"]
 script = ExtResource( 1 )
+ID = 1
 
 [node name="arthur_sm" type="Node" parent="."]
 script = ExtResource( 2 )

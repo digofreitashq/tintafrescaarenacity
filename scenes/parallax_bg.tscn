@@ -33,3 +33,8 @@ motion_mirroring = Vector2( 800, 0 )
 position = Vector2( 0, 80 )
 texture = ExtResource( 3 )
 centered = false
+
+[node name="Sprite2" type="Sprite" parent="mount_1"]
+position = Vector2( 0, 320 )
+texture = ExtResource( 3 )
+centered = false
