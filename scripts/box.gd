@@ -13,6 +13,7 @@ const RIGHT = 3
 var linear_vel = Vector2()
 var direction = 0
 var on_floor = false
+var can_play_sound = true
 
 var top_area_bodies = []
 var bottom_area_bodies = []
@@ -22,6 +23,9 @@ var right_area_bodies = []
 onready var box_sm = $box_sm
 onready var anim = $anim
 onready var player = global.get_player()
+
+onready var sound_push = preload("res://sfx/sound_push.wav")
+onready var sound_splash = preload("res://sfx/sound_splash.wav")
 
 func _ready():
 	global.boxes.append(self)
@@ -56,6 +60,10 @@ func _apply_movement(delta):
 	
 	if player.player_sm.is_on(player.player_sm.states.push) and direction == 0 and previous_direction != 0:
 		direction = previous_direction
+		if box_sm.is_on(box_sm.states.floating):
+			play_sound(sound_splash)
+		else:
+			play_sound(sound_push)
 	
 	if linear_vel.x != 0:
 		if linear_vel.x < 0:
@@ -122,6 +130,16 @@ func check_surface(area):
 				if !in_sewer:
 					box_sm.set_state(box_sm.states.idle)
 
+func play_sound(stream, force=false):
+	if not force and not can_play_sound: return
+	
+	can_play_sound = false
+	$sound.stream = stream
+	$sound.play()
+
 func _on_Area2D_top_body_entered(body):
 	if global.is_box(body):
 		global.set_all_zindex()
+
+func _on_sound_finished():
+	can_play_sound = true

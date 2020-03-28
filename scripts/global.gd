@@ -27,6 +27,9 @@ func get_dialog():
 
 func is_player(body):
 	return "player" in body.get_name()
+	
+func is_bullet(body):
+	return "bullet" in body.get_name()
 
 func is_sewer(body):
 	return "sewer" in body.get_name()
@@ -38,7 +41,7 @@ func is_tilemap(body):
 	return "TileMap" in body.get_name()
 
 func is_walljump_collision(body):
-	return "extra_collisions" in body.get_name() or "walljump_collisions" in body.get_name()
+	return "TileMapCollision" in body.get_name()
 
 func is_push_collision(body):
 	return "box" in body.get_name()

@@ -16,8 +16,6 @@ var onair_time = 0
 var on_floor_before = false
 var on_floor = false
 var shoot_time = 99999 #time since last shot
-var stock_wall_direction = 0
-var previous_wall_direction = 0
 
 var shooted = 1
 
@@ -34,8 +32,6 @@ onready var sprite = $sprite
 onready var dust = $dust
 onready var state_label = $state_label
 onready var anim = $anim
-onready var left_wall_raycast = $left_wall_raycast
-onready var right_wall_raycast = $right_wall_raycast
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
@@ -88,6 +84,15 @@ func _gravity_wall_slide():
 	var max_vel = 96 if !Input.is_action_pressed("move_down") else 96 * 6
 	linear_vel.y = min(linear_vel.y, max_vel)
 
+func is_opposite_wall():
+	return (wall_direction() == 1 and Input.is_action_pressed("move_left")) or (wall_direction() == -1 and Input.is_action_pressed("move_right"))
+
+func is_same_wall():
+	return (wall_direction() == -1 and Input.is_action_pressed("move_left")) or (wall_direction() == 1 and Input.is_action_pressed("move_right"))
+
+func is_pushing():
+	return round(linear_vel.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
+
 func _handle_move_input():
 	if Input.is_action_pressed("skip") and !skip_dialog:
 		skip_dialog = true
@@ -128,8 +133,6 @@ func _handle_move_input():
 		shoot()
 		player_asm.set_state(player_asm.states.shoot)
 	
-	var opposite_wall = (wall_direction() == 1 and Input.is_action_pressed("move_left")) or (wall_direction() == -1 and Input.is_action_pressed("move_right"))
-	
 	if player_sm.is_on([player_sm.states.idle, player_sm.states.run, player_sm.states.push]):
 		if Input.is_action_pressed("jump") and jump_released:
 			play_anim("jump")
@@ -137,20 +140,20 @@ func _handle_move_input():
 		elif not Input.is_action_pressed("jump") and not jump_released:
 			jump_released = true
 	elif player_sm.is_on(player_sm.states.fall):
-		if Input.is_action_pressed("jump") and opposite_wall:
+		if Input.is_action_pressed("jump") and is_opposite_wall():
 			wall_jump()
 		elif not Input.is_action_pressed("jump") and not jump_released:
 			jump_released = true
 	elif player_sm.is_on([player_sm.states.jump, player_sm.states.wall_jump]) and onair_time < MAX_ONAIR_TIME:
-		if Input.is_action_pressed("jump") and opposite_wall:
+		if Input.is_action_pressed("jump") and is_opposite_wall():
 			wall_jump()
 		elif Input.is_action_pressed("jump"):
 			jump()
 	elif knows_walljump and player_sm.is_on([player_sm.states.wall_slide]):
-		if Input.is_action_pressed("jump") and opposite_wall:
-			wall_jump()
-		
-		if not (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
+		if is_opposite_wall():
+			if Input.is_action_pressed("jump"):
+				wall_jump()
+		elif not is_same_wall():
 			player_sm.set_state(player_sm.states.fall)
 
 func play_anim(anim_name=""):
@@ -173,37 +176,27 @@ func play_sound(stream):
 	$sound.stream = stream
 	$sound.play()
 
-func check_is_valid_wall(some_wall_raycasts):
-	if not some_wall_raycasts: return false
-	
-	for raycast in some_wall_raycasts.get_children():
-		if raycast.is_colliding():
-			var dot = acos(Vector2.UP.dot(raycast.get_colision_normal()))
-			
-			if dot > PI * 0.35 and dot > PI * 0.55:
-				return true
-	
-	return false
-	
 func wall_direction():
-	var is_near_left = left_wall_raycast.is_colliding()
-	var is_near_right = right_wall_raycast.is_colliding()
+	var is_near_left = false
+	var is_near_right = false
+	var left_body = null
+	var right_body = null
 	
-	if is_near_left:
-		is_near_left = global.is_walljump_collision(left_wall_raycast.get_collider())
+	for body in $left_wall.get_overlapping_bodies():
+		if global.is_walljump_collision(body):
+			is_near_left = true
+			left_body = body
+			break
 	
-	if is_near_right:
-		is_near_right = global.is_walljump_collision(right_wall_raycast.get_collider())
+	for body in $right_wall.get_overlapping_bodies():
+		if global.is_walljump_collision(body):
+			is_near_right = true
+			right_body = body
+			break
 	
 	var result = -int(is_near_left) + int(is_near_right)
 	
-	if previous_wall_direction == 0 and result != stock_wall_direction:
-		stock_wall_direction = result
-		$timer_wall_direction_update.start()
-	else:
-		previous_wall_direction = result
-	
-	return previous_wall_direction
+	return result
 
 func jump():
 	linear_vel.y = -JUMP_SPEED
@@ -227,16 +220,30 @@ func wall_jump():
 
 func push_direction():
 	var result = 0
-	var is_near_left = left_wall_raycast.is_colliding()
-	var is_near_right = right_wall_raycast.is_colliding()
+	var is_near_left = false
+	var is_near_right = false
+	var left_body = null
+	var right_body = null
+	
+	for body in $left_wall.get_overlapping_bodies():
+		if global.is_push_collision(body):
+			is_near_left = true
+			left_body = body
+			break
+	
+	for body in $right_wall.get_overlapping_bodies():
+		if global.is_push_collision(body):
+			is_near_right = true
+			right_body = body
+			break
 	
 	if is_near_left and siding_left:
-		is_near_left = global.is_push_collision(left_wall_raycast.get_collider())
+		is_near_left = global.is_push_collision(left_body)
 		is_near_right = false
 	
 	elif is_near_right and !siding_left:
 		is_near_left = false
-		is_near_right = global.is_push_collision(right_wall_raycast.get_collider())
+		is_near_right = global.is_push_collision(right_body)
 	
 	if is_near_left:
 		result = -1
@@ -266,6 +273,9 @@ func shoot_spray_normal():
 	var bi = bullet.instance()
 	bi._ready()
 	
+	#bi.timer_wait.start()
+	#yield(bi.timer_wait, "timeout")
+	
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
 	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
@@ -290,6 +300,9 @@ func shoot_spray_triple():
 	bi2._ready()
 	bi3._ready()
 	
+	#bi1.timer_wait.start()
+	#yield(bi1.timer_wait, "timeout")
+		
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
 	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
@@ -376,6 +389,15 @@ func update_enemies(value):
 	if (global.enemies >= 0):
 		$screen/hud/label_enemies.set('text', "%0*d" % [4, global.enemies])
 
+func update_grafitti(value):
+	global.grafittis += value
+	
+	if (global.grafittis < 0):
+		global.grafittis = 0
+	
+	#if (global.enemies >= 0):
+	#	$screen/hud/label_enemies.set('text', "%0*d" % [4, global.enemies])
+
 func got_damage(value, on_top=false, on_left=null):
 	update_health(value)
 	disable_damage = true
@@ -406,16 +428,10 @@ func disable_dust():
 	if (dust.is_emitting()):
 		dust.set_emitting(false)
 
-func set_pushing():
-	player_sm.set_state(player_sm.states.push)
-
 func _on_timer_damage_timeout():
 	disable_damage = false
 	sprite.modulate = Color(1,1,1,1)
 	$timer_flashing.stop()
-
-func _on_timer_wall_direction_update_timeout():
-	previous_wall_direction = stock_wall_direction
 
 func _on_timer_flashing_timeout():
 	if sprite.modulate == Color(1,1,1,1):

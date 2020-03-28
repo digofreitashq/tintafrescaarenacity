@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/sound_siren_ambulance.wav-f60d067855785e94b3b8d9d8fcbd813d.sample"
+
+[deps]
+
+source_file="res://sfx/sound_siren_ambulance.wav"
+dest_files=[ "res://.import/sound_siren_ambulance.wav-f60d067855785e94b3b8d9d8fcbd813d.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

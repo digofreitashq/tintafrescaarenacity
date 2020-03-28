@@ -99,4 +99,8 @@ shape = SubResource( 5 )
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="sound" type="AudioStreamPlayer" parent="."]
+volume_db = -15.0
 [connection signal="body_entered" from="Area2D_top" to="." method="_on_Area2D_top_body_entered"]
+[connection signal="finished" from="sound" to="." method="_on_sound_finished"]
