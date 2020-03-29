@@ -123,6 +123,7 @@ func _enter_state(new_state, old_state):
 		states.jump:
 			if old_state == states.damage: return
 			parent.on_floor = false
+			parent.play_sound(parent.sound_jump)
 			parent.disable_dust()
 			#parent.play_anim("jump")
 		states.fall:
@@ -131,17 +132,17 @@ func _enter_state(new_state, old_state):
 			parent.play_anim("fall")
 		states.push:
 			parent.disable_dust()
-			parent.play_sound(parent.sound_grounded)
+			parent.play_sound(parent.sound_wallslide)
 			parent.play_anim("push")
 		states.wall_slide:
 			parent.on_floor = false
 			parent.enable_dust(Vector2(parent.wall_direction()*20,0))
-			parent.play_sound(parent.sound_grounded)
+			parent.play_sound(parent.sound_wallslide)
 			parent.play_anim("wall_slide")
 		states.wall_jump:
 			parent.on_floor = false
 			parent.disable_dust()
-			parent.play_sound(parent.sound_jump)
+			parent.play_sound(parent.sound_walljump)
 			parent.play_anim("wall_jump")
 		states.damage:
 			parent.on_floor = false

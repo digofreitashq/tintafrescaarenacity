@@ -13,6 +13,7 @@ func _ready():
 	$extra_collisions/TileMapCollision.visible = false
 	$wall_jump_collisions/TileMapCollision.visible = false
 	$timer_sfx.start()
+	$music.pause_mode = true
 	
 
 func random_sound():

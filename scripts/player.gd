@@ -38,6 +38,8 @@ onready var timer_shoot = $timer_shoot
 
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
 onready var sound_jump = preload("res://sfx/sound_jump.wav")
+onready var sound_walljump = preload("res://sfx/sound_walljump.wav")
+onready var sound_wallslide = preload("res://sfx/sound_wallslide.wav")
 onready var sound_grounded = preload("res://sfx/sound_grounded.wav")
 onready var sound_shake = preload("res://sfx/sound_shake.wav")
 onready var sound_spray1 = preload("res://sfx/sound_spray1.wav")
@@ -392,9 +394,6 @@ func update_enemies(value):
 func update_grafitti(value):
 	global.grafittis += value
 	
-	if (global.grafittis < 0):
-		global.grafittis = 0
-	
 	#if (global.enemies >= 0):
 	#	$screen/hud/label_enemies.set('text', "%0*d" % [4, global.enemies])
 
@@ -408,7 +407,7 @@ func got_damage(value, on_top=false, on_left=null):
 	if on_top:
 		linear_vel = Vector2(0, -JUMP_SPEED/2)
 	else:
-		linear_vel = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED/2)
+		linear_vel = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED)
 	
 	play_sound(sound_damage)
 	play_anim("got_damage")

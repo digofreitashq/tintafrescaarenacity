@@ -10,6 +10,7 @@ var bullets = 0
 var bullet_type = BULLET_NORMAL
 var sprays = 0
 var enemies = 0
+var grafittis = 0
 var allow_movement = true
 
 var boxes = []
@@ -22,8 +23,17 @@ func _ready():
 func get_player():
 	return get_tree().get_current_scene().get_node("player")
 
+func get_stage():
+	return get_tree().get_current_scene()
+
 func get_dialog():
 	return get_player().get_node("screen/dialog")
+
+func pause_bgm():
+	get_tree().get_current_scene().get_node("music").stream_paused = true
+
+func play_bgm():
+	get_tree().get_current_scene().get_node("music").stream_paused = false
 
 func is_player(body):
 	return "player" in body.get_name()
@@ -65,6 +75,10 @@ func wait_until_signal(seconds):
 	timer.set_wait_time(seconds)
 	timer.connect("timeout", self, "do_timer_signal")
 	timer.start()
+
+func show_grafitti(id):
+	var grafitti = get_tree().get_current_scene().get_node("grafittis").get_node("TileMapGrafitti%s" % id)
+	grafitti.visible = true
 
 func sort_boxes_zindex(a, b):
 	if a[2] != b[2]: return a[2] < b[2] # Y comparison

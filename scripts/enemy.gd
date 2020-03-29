@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-export var sprite_texture = "res://sprites/enemy_tigre.png" setget setSpriteTexture, getSpriteTexture
+export var sprite_texture = "cachorro" setget setSpriteTexture, getSpriteTexture
 
 const FLOOR_NORMAL = Vector2(0, -2)
 
@@ -33,13 +33,6 @@ func _physics_process(delta):
 	var new_anim = "idle"
 
 	if state == STATE_WALKING:
-		"""
-		if direction == -2.0 and (not detect_floor_left.is_colliding() or detect_wall_left.is_colliding()):
-			direction = 2.0
-		
-		if direction == 2.0 and (not detect_floor_right.is_colliding() or detect_wall_right.is_colliding()):
-			direction = -2.0
-		"""
 		set_direction(delta)
 		new_anim = "walk"
 	else:
@@ -61,7 +54,7 @@ func getSpriteTexture():
 func setSpriteTexture(newSpriteTexture):
 	sprite_texture = newSpriteTexture
 	if newSpriteTexture:
-		$sprite.set_texture(load(newSpriteTexture))
+		$sprite.set_texture(load("res://sprites/enemy_%s.png" % newSpriteTexture))
 
 func hit_by_bullet():
 	state = STATE_KILLED

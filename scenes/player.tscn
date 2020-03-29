@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=2]
+[gd_scene load_steps=54 format=2]
 
 [ext_resource path="res://scripts/player.gd" type="Script" id=1]
 [ext_resource path="res://scripts/playerSM.gd" type="Script" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://scenes/hud.tscn" type="PackedScene" id=11]
 [ext_resource path="res://sprites/blackscreen.png" type="Texture" id=12]
 [ext_resource path="res://scenes/dialog.tscn" type="PackedScene" id=13]
+[ext_resource path="res://sfx/sound_wallslide.wav" type="AudioStream" id=14]
 
 [sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0, 0.325714, 0.657143, 1 )
@@ -69,7 +70,7 @@ tracks/0/keys = {
 "values": [ 18, 19 ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 resource_name = "fall_weapon_left"
 length = 0.01
 step = 0.25
@@ -86,8 +87,7 @@ tracks/0/keys = {
 "values": [ 54 ]
 }
 
-[sub_resource type="Animation" id=6]
-resource_name = "fall_weapon_right"
+[sub_resource type="Animation" id=7]
 length = 0.01
 step = 0.25
 tracks/0/type = "value"
@@ -612,6 +612,20 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 12, 13 ]
 }
+tracks/1/type = "audio"
+tracks/1/path = NodePath("sound")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 14 )
+} ],
+"times": PoolRealArray( 0.6 )
+}
 
 [sub_resource type="Animation" id=34]
 length = 0.6
@@ -627,6 +641,20 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 8, 9 ]
+}
+tracks/1/type = "audio"
+tracks/1/path = NodePath("sound")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 14 )
+} ],
+"times": PoolRealArray( 0.6 )
 }
 
 [sub_resource type="Animation" id=35]
@@ -695,15 +723,15 @@ z_index = 1
 texture = ExtResource( 5 )
 vframes = 4
 hframes = 16
-frame = 54
+frame = 22
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle_right"
 playback_speed = 2.0
 anims/fall_left = SubResource( 4 )
 anims/fall_right = SubResource( 5 )
-anims/fall_weapon_left = SubResource( 7 )
-anims/fall_weapon_right = SubResource( 6 )
+anims/fall_weapon_left = SubResource( 6 )
+anims/fall_weapon_right = SubResource( 7 )
 anims/got_damage_left = SubResource( 8 )
 anims/got_damage_right = SubResource( 9 )
 anims/grounded_idle_left = SubResource( 10 )
@@ -749,7 +777,6 @@ stream = ExtResource( 6 )
 volume_db = -15.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-z_index = 5
 shape = SubResource( 37 )
 
 [node name="ui" type="CanvasLayer" parent="."]
@@ -793,7 +820,6 @@ visible = false
 
 [node name="blackscreen" type="Sprite" parent="screen"]
 visible = false
-modulate = Color( 1, 1, 1, 0 )
 position = Vector2( -1.67004, -0.785294 )
 scale = Vector2( 10, 10 )
 texture = ExtResource( 12 )

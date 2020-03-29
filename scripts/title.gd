@@ -3,7 +3,7 @@ extends Node
 var timer_start = null
 var pressed_start = false
 
-var sound_click = preload("res://sfx/sound_click.wav")
+var sound_grafitti = preload("res://sfx/sound_grafitti.wav")
 var sound_beep = preload("res://sfx/sound_beep.wav")
 
 func _ready():
@@ -25,10 +25,13 @@ func start():
 		
 		if (press_start):
 			pressed_start = true
-			$anim.play("fadeout")
 			
-			$sound.stream = sound_click
+			$sound.stream = sound_grafitti
 			$sound.play(0)
 
 func start_game():
 	get_tree().change_scene("res://scenes/stage.tscn")
+
+func _on_sound_finished():
+	if pressed_start:
+		$anim.play("fadeout")

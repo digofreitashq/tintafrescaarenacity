@@ -5,7 +5,7 @@
 [ext_resource path="res://sprites/title_start.png" type="Texture" id=3]
 [ext_resource path="res://sprites/title_credits_01.png" type="Texture" id=4]
 [ext_resource path="res://bgm/TintaFrescaTitle.ogg" type="AudioStream" id=5]
-[ext_resource path="res://sfx/sound_beep.wav" type="AudioStream" id=6]
+[ext_resource path="res://sfx/sound_logo.wav" type="AudioStream" id=6]
 [ext_resource path="res://sprites/title_credits_02.png" type="Texture" id=7]
 [ext_resource path="res://sprites/title_credits_03.png" type="Texture" id=8]
 [ext_resource path="res://sprites/title_credits_04.png" type="Texture" id=9]
@@ -223,7 +223,6 @@ centered = false
 [node name="start" type="Sprite" parent="."]
 visible = false
 modulate = Color( 1, 1, 1, 0 )
-position = Vector2( 0, -2.76638 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 centered = false
@@ -242,7 +241,6 @@ stream = ExtResource( 5 )
 
 [node name="sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 6 )
-volume_db = -20.0
 
 [node name="anim_start" type="AnimationPlayer" parent="."]
 anims/updown = SubResource( 1 )
@@ -250,3 +248,4 @@ anims/updown = SubResource( 1 )
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/disclaimer = SubResource( 2 )
 anims/fadeout = SubResource( 3 )
+[connection signal="finished" from="sound" to="." method="_on_sound_finished"]
