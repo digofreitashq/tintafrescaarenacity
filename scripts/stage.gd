@@ -14,7 +14,7 @@ func _ready():
 	$wall_jump_collisions/TileMapCollision.visible = false
 	$timer_sfx.start()
 	$music.pause_mode = true
-	
+	global.show_player_ui()
 
 func random_sound():
 	rng.randomize()

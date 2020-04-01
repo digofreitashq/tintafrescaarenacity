@@ -21,7 +21,3 @@ func _enter_state(new_state, old_state):
 			parent.play_anim("wall_slide_weapon")
 		parent.player_sm.states.wall_jump:
 			parent.play_anim("fall_weapon")
-
-func _on_timer_shoot_timeout():
-	set_state(states.none)
-	parent.update_state_label()

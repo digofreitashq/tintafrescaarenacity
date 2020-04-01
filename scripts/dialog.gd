@@ -25,7 +25,9 @@ func clear():
 	$dialog_brace_left.visible = !(true)
 	$dialog_brace_right.visible = !(true)
 	$dialog_next.visible = !(true)
-
+	$fire.visible = !(true)
+	$skip.visible = !(true)
+	
 	text = $text
 	speaker = $speaker
 	timer_letter = $timer_letter
@@ -64,6 +66,8 @@ func show(messages):
 	current_pos = 0
 	
 	global.get_player().skip_dialog = false
+	
+	global.show_player_ui(false)
 
 	$anim.play("open")
 	yield($anim, "animation_finished")
@@ -83,6 +87,8 @@ func finish():
 	$text.set_text("")
 	clear()
 	emit_signal("finished")
+	
+	global.show_player_ui()
 
 func update_text():
 	if global.get_player().skip_dialog or (current_phrase_index >= phrases.size()):
@@ -139,3 +145,9 @@ func _on_timer_interaction_timeout():
 
 func _on_timer_letter_timeout():
 	update_text()
+
+func _on_button_pressed():
+	self.self_modulate = Color(1,1,1,1)
+
+func _on_button_released():
+	self.self_modulate = Color(1,1,1,0.5)

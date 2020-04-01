@@ -45,6 +45,9 @@ onready var sound_shake = preload("res://sfx/sound_shake.wav")
 onready var sound_spray1 = preload("res://sfx/sound_spray1.wav")
 onready var sound_spray2 = preload("res://sfx/sound_spray2.wav")
 
+onready var sprite_spray_1 = preload("res://sprites/spray_1.png")
+onready var sprite_spray_2 = preload("res://sprites/spray_2.png")
+
 onready var bullet = preload("res://scenes/bullet.tscn")
 
 signal grounded
@@ -113,8 +116,10 @@ func _handle_move_input():
 			elif not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
 				if player_sm.is_on(player_sm.states.push):
 					player_sm.set_state(player_sm.states.idle)
-				
-			siding_left = true
+			
+			if not Input.is_action_pressed("move_right"):
+				siding_left = true
+			
 			play_anim()
 		
 	if Input.is_action_pressed("move_right"):
@@ -128,12 +133,13 @@ func _handle_move_input():
 				if player_sm.is_on(player_sm.states.push):
 					player_sm.set_state(player_sm.states.idle)
 				
-			siding_left = false
+			if not Input.is_action_pressed("move_left"):
+				siding_left = false
+			
 			play_anim()
 	
 	if Input.is_action_pressed("shoot"):
 		shoot()
-		player_asm.set_state(player_asm.states.shoot)
 	
 	if player_sm.is_on([player_sm.states.idle, player_sm.states.run, player_sm.states.push]):
 		if Input.is_action_pressed("jump") and jump_released:
@@ -171,12 +177,12 @@ func play_anim(anim_name=""):
 	anim.play(anim_name)
 
 func play_sound(stream):
-	if not $timer_sound.is_stopped():
-		return
-	
-	$timer_sound.start()
-	$sound.stream = stream
-	$sound.play()
+	if not $sound.playing:
+		$sound.stream = stream
+		$sound.play()
+	else:
+		$sound_bonus.stream = stream
+		$sound_bonus.play()
 
 func wall_direction():
 	var is_near_left = false
@@ -203,11 +209,15 @@ func wall_direction():
 func jump():
 	linear_vel.y = -JUMP_SPEED
 	jump_released = false
+	
+	if not player_sm.is_on(player_sm.states.jump):
+		play_sound(sound_jump)
 
 func wall_jump():
 	if Input.is_action_pressed("jump") and jump_released:
 		player_sm.set_state(player_sm.states.wall_jump)
 		jump_released = false
+		play_sound(sound_walljump)
 		
 		linear_vel.y = -WALLJUMP_SPEED
 		
@@ -256,6 +266,8 @@ func push_direction():
 
 func shoot():
 	if timer_shoot.is_stopped():
+		player_asm.set_state(player_asm.states.shoot)
+		
 		timer_shoot.start()
 		
 		if (global.bullets):
@@ -281,6 +293,8 @@ func shoot_spray_normal():
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
 	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
+	
+	$bullet_shoot.position.x = 16 * direction
 	
 	bi.sprite.scale.x = -direction
 	bi.particles.scale.x = -direction
@@ -308,6 +322,8 @@ func shoot_spray_triple():
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
 	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
+	
+	$bullet_shoot.position.x = 16 * direction
 	
 	bi1.sprite.scale.x = -direction
 	bi2.sprite.scale.x = -direction
@@ -369,18 +385,15 @@ func update_bullet_type(type):
 	global.bullet_type = type
 	
 	if (global.bullet_type == global.BULLET_NORMAL):
-		$screen/hud/spray.visible = !(true)
+		$screen/hud/spray.texture = sprite_spray_1
 	elif (global.bullet_type == global.BULLET_TRIPLE):
-		$screen/hud/spray.visible = !(false)
+		$screen/hud/spray.texture = sprite_spray_2
 
 func update_sprays(value):
 	global.sprays += value
 	
 	if (global.sprays < 0):
 		global.sprays = 0
-	
-	if (global.sprays >= 0):
-		$screen/hud/label_sprays.set('text', "%0*d" % [4, global.sprays])
 
 func update_enemies(value):
 	global.enemies += value
@@ -389,13 +402,13 @@ func update_enemies(value):
 		global.enemies = 0
 	
 	if (global.enemies >= 0):
-		$screen/hud/label_enemies.set('text', "%0*d" % [4, global.enemies])
+		$screen/hud/label_enemies.set('text', "%0*d" % [3, global.enemies])
 
 func update_grafitti(value):
 	global.grafittis += value
 	
-	#if (global.enemies >= 0):
-	#	$screen/hud/label_enemies.set('text', "%0*d" % [4, global.enemies])
+	if (global.grafittis >= 0):
+		$screen/hud/label_sprays.set('text', "%0*d" % [2, global.grafittis])
 
 func got_damage(value, on_top=false, on_left=null):
 	update_health(value)
@@ -437,3 +450,6 @@ func _on_timer_flashing_timeout():
 		sprite.modulate = Color(1,1,1,0)
 	else:
 		sprite.modulate = Color(1,1,1,1)
+
+func _on_timer_shoot_timeout():
+	player_asm.set_state(player_asm.states.none)

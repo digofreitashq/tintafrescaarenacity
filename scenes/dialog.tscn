@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scripts/dialog.gd" type="Script" id=1]
 [ext_resource path="res://sprites/dialog_bg.png" type="Texture" id=2]
@@ -6,8 +6,10 @@
 [ext_resource path="res://sprites/dialog_brace_right.png" type="Texture" id=4]
 [ext_resource path="res://sprites/dialog_next.png" type="Texture" id=5]
 [ext_resource path="res://fonts/pressstart2p.font" type="BitmapFont" id=6]
+[ext_resource path="res://sprites/osb_fire.png" type="Texture" id=7]
+[ext_resource path="res://sprites/osb_skip.png" type="Texture" id=8]
 
-[sub_resource type="Animation" id=1]
+[sub_resource type="Animation" id=6]
 resource_name = "close"
 length = 0.1
 step = 0.01
@@ -156,7 +158,7 @@ tracks/11/keys = {
 "values": [ Color( 1, 0.623529, 0.145098, 1 ), Color( 1, 0.623529, 0.145098, 0 ) ]
 }
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=7]
 resource_name = "hide_next"
 length = 0.5
 tracks/0/type = "value"
@@ -196,7 +198,7 @@ tracks/2/keys = {
 "values": [ 1.0, 1.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=8]
 length = 0.5
 step = 0.01
 tracks/0/type = "value"
@@ -320,7 +322,7 @@ tracks/9/keys = {
 "values": [ Color( 1, 0.623529, 0.145098, 0 ), Color( 1, 0.623529, 0.145098, 1 ) ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=9]
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("dialog_next:position")
@@ -371,6 +373,9 @@ tracks/3/keys = {
 "values": [ 1.0, 1.0 ]
 }
 
+[sub_resource type="CircleShape2D" id=5]
+radius = 30.0
+
 [node name="dialog" type="Node2D"]
 pause_mode = 2
 script = ExtResource( 1 )
@@ -400,8 +405,6 @@ __meta__ = {
 }
 
 [node name="dialog_next" type="Sprite" parent="."]
-modulate = Color( 1, 1, 1, 0 )
-position = Vector2( 0, 4 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 5 )
 centered = false
@@ -446,10 +449,10 @@ __meta__ = {
 }
 
 [node name="anim" type="AnimationPlayer" parent="."]
-anims/close = SubResource( 1 )
-anims/hide_next = SubResource( 2 )
-anims/open = SubResource( 3 )
-anims/show_next = SubResource( 4 )
+anims/close = SubResource( 6 )
+anims/hide_next = SubResource( 7 )
+anims/open = SubResource( 8 )
+anims/show_next = SubResource( 9 )
 
 [node name="sound" type="AudioStreamPlayer" parent="."]
 volume_db = -16.93
@@ -460,5 +463,29 @@ one_shot = true
 
 [node name="timer_interaction" type="Timer" parent="."]
 wait_time = 0.01
+
+[node name="fire" type="TouchScreenButton" parent="."]
+modulate = Color( 1, 1, 1, 0.501961 )
+position = Vector2( 560, 390 )
+scale = Vector2( 2, 2 )
+z_index = 4096
+normal = ExtResource( 7 )
+shape = SubResource( 5 )
+action = "shoot"
+visibility_mode = 1
+
+[node name="skip" type="TouchScreenButton" parent="."]
+modulate = Color( 1, 1, 1, 0.501961 )
+position = Vector2( 560, 20 )
+scale = Vector2( 2, 2 )
+z_index = 4096
+normal = ExtResource( 8 )
+shape = SubResource( 5 )
+action = "skip"
+visibility_mode = 1
 [connection signal="timeout" from="timer_letter" to="." method="_on_timer_letter_timeout"]
 [connection signal="timeout" from="timer_interaction" to="." method="_on_timer_interaction_timeout"]
+[connection signal="pressed" from="fire" to="." method="_on_button_pressed"]
+[connection signal="released" from="fire" to="." method="_on_button_released"]
+[connection signal="pressed" from="skip" to="." method="_on_button_pressed"]
+[connection signal="released" from="skip" to="." method="_on_button_released"]

@@ -123,7 +123,6 @@ func _enter_state(new_state, old_state):
 		states.jump:
 			if old_state == states.damage: return
 			parent.on_floor = false
-			parent.play_sound(parent.sound_jump)
 			parent.disable_dust()
 			#parent.play_anim("jump")
 		states.fall:
@@ -142,7 +141,6 @@ func _enter_state(new_state, old_state):
 		states.wall_jump:
 			parent.on_floor = false
 			parent.disable_dust()
-			parent.play_sound(parent.sound_walljump)
 			parent.play_anim("wall_jump")
 		states.damage:
 			parent.on_floor = false

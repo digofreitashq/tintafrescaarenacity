@@ -128,7 +128,7 @@ func call_body_entered():
 
 func arthur_talks():
 	if ID == 1:
-		global.disable_player_control()
+		global.set_player_control(false)
 		player.player_sm.set_state(player.player_sm.states.idle)
 		
 		global.wait_until_signal(2)
@@ -185,4 +185,4 @@ func arthur_talks():
 		
 		times_talked += 1
 		
-		global.enable_player_control()
+		global.set_player_control(true)

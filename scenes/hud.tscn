@@ -1,10 +1,10 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/hud_base.png" type="Texture" id=2]
 [ext_resource path="res://sprites/hud_health_10.png" type="Texture" id=3]
 [ext_resource path="res://sprites/hud_bullets_00.PNG" type="Texture" id=4]
-[ext_resource path="res://sprites/spray_2.png" type="Texture" id=5]
+[ext_resource path="res://sprites/spray_1.png" type="Texture" id=5]
 [ext_resource path="res://sprites/hud_health_01.png" type="Texture" id=6]
 [ext_resource path="res://sprites/hud_health_02.png" type="Texture" id=7]
 [ext_resource path="res://sprites/hud_health_03.png" type="Texture" id=8]
@@ -14,7 +14,23 @@
 [ext_resource path="res://sprites/hud_health_07.png" type="Texture" id=12]
 [ext_resource path="res://sprites/hud_health_08.png" type="Texture" id=13]
 [ext_resource path="res://sprites/hud_health_09.png" type="Texture" id=14]
+[ext_resource path="res://sprites/osb_fire.png" type="Texture" id=15]
 [ext_resource path="res://fonts/gbb.font" type="BitmapFont" id=16]
+[ext_resource path="res://sprites/osb_left.png" type="Texture" id=17]
+[ext_resource path="res://sprites/osb_right.png" type="Texture" id=18]
+[ext_resource path="res://sprites/osb_jump.png" type="Texture" id=19]
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 30.0
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 30.0
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 30.0
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 30.0
 
 [sub_resource type="Animation" id=1]
 resource_name = "fill"
@@ -43,18 +59,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [ ExtResource( 4 ) ]
 }
-tracks/2/type = "value"
-tracks/2/path = NodePath("spray:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ false ]
-}
 
 [node name="hud" type="Node2D"]
 script = ExtResource( 1 )
@@ -75,17 +79,56 @@ texture = ExtResource( 4 )
 centered = false
 
 [node name="spray" type="Sprite" parent="."]
-visible = false
 scale = Vector2( 2, 2 )
 texture = ExtResource( 5 )
 centered = false
+
+[node name="ui" type="Node2D" parent="."]
+
+[node name="left" type="TouchScreenButton" parent="ui"]
+modulate = Color( 1, 1, 1, 0.501961 )
+position = Vector2( 20, 390 )
+scale = Vector2( 2, 2 )
+normal = ExtResource( 17 )
+shape = SubResource( 2 )
+passby_press = true
+action = "move_left"
+visibility_mode = 1
+
+[node name="right" type="TouchScreenButton" parent="ui"]
+modulate = Color( 1, 1, 1, 0.501961 )
+position = Vector2( 140, 390 )
+scale = Vector2( 2, 2 )
+normal = ExtResource( 18 )
+shape = SubResource( 3 )
+passby_press = true
+action = "move_right"
+visibility_mode = 1
+
+[node name="jump" type="TouchScreenButton" parent="ui"]
+modulate = Color( 1, 1, 1, 0.501961 )
+position = Vector2( 560, 390 )
+scale = Vector2( 2, 2 )
+normal = ExtResource( 19 )
+shape = SubResource( 4 )
+action = "jump"
+visibility_mode = 1
+
+[node name="fire" type="TouchScreenButton" parent="ui"]
+modulate = Color( 1, 1, 1, 0.501961 )
+position = Vector2( 450, 350 )
+scale = Vector2( 2, 2 )
+normal = ExtResource( 15 )
+shape = SubResource( 5 )
+action = "shoot"
+visibility_mode = 1
 
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/fill = SubResource( 1 )
 
 [node name="label_sprays" type="Label" parent="."]
 margin_left = 4.0
-margin_top = 45.0
+margin_top = 66.0
 margin_right = 224.0
 margin_bottom = 75.0
 mouse_filter = 1
@@ -96,13 +139,16 @@ custom_colors/font_color = Color( 0.0627451, 0.772549, 0.364706, 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_x = 2
 custom_constants/shadow_offset_y = 2
-text = "0000"
+text = "00"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="label_enemies" type="Label" parent="."]
 margin_left = 4.0
-margin_top = 66.0
+margin_top = 46.0
 margin_right = 224.0
-margin_bottom = 96.0
+margin_bottom = 100.0
 mouse_filter = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -112,4 +158,15 @@ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_x = 2
 custom_constants/line_spacing = 0
 custom_constants/shadow_offset_y = 2
-text = "0000"
+text = "000"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="ui/left" to="." method="_on_button_pressed"]
+[connection signal="released" from="ui/left" to="." method="_on_button_released"]
+[connection signal="pressed" from="ui/right" to="." method="_on_button_pressed"]
+[connection signal="released" from="ui/right" to="." method="_on_button_released"]
+[connection signal="pressed" from="ui/jump" to="." method="_on_button_pressed"]
+[connection signal="released" from="ui/jump" to="." method="_on_button_released"]
+[connection signal="pressed" from="ui/fire" to="." method="_on_button_pressed"]
+[connection signal="released" from="ui/fire" to="." method="_on_button_released"]

@@ -6,7 +6,7 @@ var BULLET_NORMAL = 0
 var BULLET_TRIPLE = 1
 
 var health = 10
-var bullets = 0
+var bullets = 1000
 var bullet_type = BULLET_NORMAL
 var sprays = 0
 var enemies = 0
@@ -56,15 +56,22 @@ func is_walljump_collision(body):
 func is_push_collision(body):
 	return "box" in body.get_name()
 
-func enable_player_control():
-	allow_movement = true
-
-func disable_player_control():
-	allow_movement = false
+func show_player_ui(show=true):
 	var player = get_player()
-	player.linear_vel =  Vector2(0,0)
-	player.play_anim("idle")
-	yield(player.anim, "animation_finished")
+	if player != null: 
+		var ui = player.get_node("screen/hud/ui")
+		if ui != null: 
+			ui.visible = show
+
+func set_player_control(enable):
+	if enable:
+		allow_movement = true
+	else:
+		allow_movement = false
+		var player = get_player()
+		player.linear_vel =  Vector2(0,0)
+		player.play_anim("idle")
+		yield(player.anim, "animation_finished")
 
 func do_timer_signal():
 	print('DONE!')
