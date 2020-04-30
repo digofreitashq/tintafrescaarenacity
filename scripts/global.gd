@@ -5,8 +5,8 @@ const GRAVITY = 900
 var BULLET_NORMAL = 0
 var BULLET_TRIPLE = 1
 
-var health = 10
-var bullets = 1000
+var health = 1
+var bullets = 0
 var bullet_type = BULLET_NORMAL
 var sprays = 0
 var enemies = 0
@@ -18,7 +18,7 @@ var boxes = []
 signal waited
 
 func _ready():
-	pass
+	reset_stage()
 
 func get_player():
 	return get_tree().get_current_scene().get_node("player")
@@ -96,7 +96,9 @@ func set_all_zindex():
 	var info = []
 	var index = 0
 	
-	for box in global.boxes:
+	if boxes.empty(): return
+	
+	for box in boxes:
 		info.append([box, box.position.x, box.position.y])
 	
 	info.sort_custom(self, "sort_boxes_zindex")
@@ -107,4 +109,23 @@ func set_all_zindex():
 		index += 1
 	
 	get_player().z_index = index
-		
+
+func reset_stage():
+	health = 10
+	bullets = 0
+	bullet_type = BULLET_NORMAL
+	sprays = 0
+	enemies = 0
+	grafittis = 0
+	allow_movement = true
+	
+	boxes.clear()
+	
+	var player = get_player()
+	
+	if player:
+		player.player_sm.set_state(player.player_sm.states.alive)
+
+func reload_stage():
+	reset_stage()
+	get_tree().reload_current_scene()

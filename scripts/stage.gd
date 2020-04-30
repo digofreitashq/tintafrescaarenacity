@@ -15,6 +15,7 @@ func _ready():
 	$timer_sfx.start()
 	$music.pause_mode = true
 	global.show_player_ui()
+	global.get_player().can_reload = false
 
 func random_sound():
 	rng.randomize()

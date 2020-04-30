@@ -30,6 +30,8 @@ func _die():
 	queue_free()
 
 func _physics_process(delta):
+	if not global.allow_movement: return
+	
 	var new_anim = "idle"
 
 	if state == STATE_WALKING:

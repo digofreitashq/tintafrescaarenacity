@@ -7,7 +7,7 @@ var sound_grafitti = preload("res://sfx/sound_grafitti.wav")
 var sound_beep = preload("res://sfx/sound_beep.wav")
 
 func _ready():
-	#start_game() # PULA
+	start_game() # PULA
 	global.show_player_ui(false)
 	$music.play(0)
 	$anim.play("disclaimer")

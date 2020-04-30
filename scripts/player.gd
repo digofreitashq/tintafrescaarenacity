@@ -27,14 +27,17 @@ var disable_damage = false
 var skip_dialog = false
 var knows_walljump = true
 var jump_released = true
+var can_reload = false
 
 onready var sprite = $sprite
 onready var dust = $dust
 onready var state_label = $state_label
 onready var anim = $anim
+onready var front_anim = $front_anim
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
+onready var timer_idle = $timer_idle
 
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
 onready var sound_jump = preload("res://sfx/sound_jump.wav")
@@ -44,6 +47,7 @@ onready var sound_grounded = preload("res://sfx/sound_grounded.wav")
 onready var sound_shake = preload("res://sfx/sound_shake.wav")
 onready var sound_spray1 = preload("res://sfx/sound_spray1.wav")
 onready var sound_spray2 = preload("res://sfx/sound_spray2.wav")
+onready var sound_dead = preload("res://sfx/sound_dead.wav")
 
 onready var sprite_spray_1 = preload("res://sprites/spray_1.png")
 onready var sprite_spray_2 = preload("res://sprites/spray_2.png")
@@ -52,13 +56,17 @@ onready var bullet = preload("res://scenes/bullet.tscn")
 
 signal grounded
 
-func _ready():
-	$screen/hud.set_visible(true)
-	$screen/dialog.set_visible(true)
-	
+func _init():
 	for i in range(11):
 		imgs_health[i] = load("res://sprites/hud_health_%02d.png"%(i))
 		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
+
+func _ready():
+	anim.play("reset")
+	front_anim.play("reset")
+	yield(anim, "animation_finished")
+	$screen/hud.set_visible(true)
+	$screen/dialog.set_visible(true)
 
 func _apply_gravity(delta):
 	if !global.allow_movement: 
@@ -101,6 +109,10 @@ func is_pushing():
 func _handle_move_input():
 	if Input.is_action_pressed("skip") and !skip_dialog:
 		skip_dialog = true
+	
+	if Input.is_action_pressed("shoot") and can_reload:
+		global.reload_stage()
+		return
 	
 	if !global.allow_movement: return
 	
@@ -165,6 +177,8 @@ func _handle_move_input():
 			player_sm.set_state(player_sm.states.fall)
 
 func play_anim(anim_name=""):
+	if player_sm.is_on(player_sm.states.dead): return
+	
 	if anim_name == "":
 		if anim.current_animation == "": return
 		anim_name = anim.current_animation.replace('_left','').replace('_right','')
@@ -175,6 +189,10 @@ func play_anim(anim_name=""):
 		anim_name += "_right"
 	
 	anim.play(anim_name)
+
+func stop_sound():
+	$sound.stop()
+	$sound_bonus.stop()
 
 func play_sound(stream):
 	if not $sound.playing:
@@ -369,6 +387,9 @@ func update_health(value):
 	
 	if (global.health >= 0):
 		$screen/hud/health.set_texture(imgs_health[global.health])
+	
+	if global.health == 0:
+		set_dead()
 
 func update_bullets(value):
 	global.bullets += value
@@ -412,6 +433,9 @@ func update_grafitti(value):
 
 func got_damage(value, on_top=false, on_left=null):
 	update_health(value)
+	
+	if player_sm.is_on(player_sm.states.dead): return
+	
 	disable_damage = true
 	player_sm.set_state(player_sm.states.damage)
 	
@@ -427,6 +451,16 @@ func got_damage(value, on_top=false, on_left=null):
 	$timer_damage.start()
 	$timer_flashing.start()
 
+func set_dead():
+	global.pause_bgm()
+	stop_sound()
+	play_sound(sound_dead)
+	abort_flashing()
+	player_sm.set_state(player_sm.states.dead)
+	anim.play("die")
+	yield(anim, "animation_finished")
+	can_reload = true
+
 func enable_dust(position=Vector2(0,10)):
 	if (not dust.is_emitting()):
 		dust.set_emitting(true)
@@ -440,10 +474,13 @@ func disable_dust():
 	if (dust.is_emitting()):
 		dust.set_emitting(false)
 
-func _on_timer_damage_timeout():
+func abort_flashing():
 	disable_damage = false
 	sprite.modulate = Color(1,1,1,1)
 	$timer_flashing.stop()
+
+func _on_timer_damage_timeout():
+	abort_flashing()
 
 func _on_timer_flashing_timeout():
 	if sprite.modulate == Color(1,1,1,1):
@@ -453,3 +490,6 @@ func _on_timer_flashing_timeout():
 
 func _on_timer_shoot_timeout():
 	player_asm.set_state(player_asm.states.none)
+
+func _on_timer_idle_timeout():
+	play_anim('start_cross_arms')

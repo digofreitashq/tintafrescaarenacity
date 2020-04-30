@@ -9,6 +9,8 @@ func _ready():
 	add_state("wall_slide")
 	add_state("wall_jump")
 	add_state("damage")
+	add_state("dead")
+	add_state("alive")
 	call_deferred("set_state", states.idle)
 
 func _state_logic(delta):
@@ -20,6 +22,9 @@ func _state_logic(delta):
 	parent.shoot_time += delta
 	
 	parent._handle_move_input()
+	
+	if state == states.dead: return
+	
 	parent._apply_gravity(delta)
 	parent._apply_movement(delta)
 	
@@ -105,8 +110,13 @@ func _get_transition(delta):
 	return null
 
 func _enter_state(new_state, old_state):
+	if old_state == states.dead and new_state != states.alive:
+		state = states.dead
+		return
+	
 	match new_state:
 		states.idle:
+			parent.timer_idle.start()
 			parent.disable_dust()
 			if old_state in [states.fall, states.wall_jump, states.wall_slide]:
 				parent.play_sound(parent.sound_grounded)
@@ -124,7 +134,6 @@ func _enter_state(new_state, old_state):
 			if old_state == states.damage: return
 			parent.on_floor = false
 			parent.disable_dust()
-			#parent.play_anim("jump")
 		states.fall:
 			if old_state == states.damage: return
 			parent.disable_dust()

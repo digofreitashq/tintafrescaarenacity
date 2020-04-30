@@ -27,7 +27,7 @@ boot_splash/fullsize=false
 boot_splash/use_filter=false
 config/icon="res://icon.png"
 name_es="Tinta Fresca Arena"
-target_fps="30"
+target_fps="15"
 
 [autoload]
 
@@ -125,6 +125,6 @@ quality/intended_usage/framebuffer_allocation.mobile=1
 quality/2d/use_pixel_snap=true
 vram_compression/import_etc=true
 quality/reflections/texture_array_reflections=false
-environment/default_clear_color=Color( 0, 0, 0, 1 )
+environment/default_clear_color=Color( 0.372549, 0.372549, 0.372549, 1 )
 quality/filters/anisotropic_filter_level=1
 quality/subsurface_scattering/quality=0

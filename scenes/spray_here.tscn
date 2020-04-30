@@ -104,7 +104,7 @@ modulate = Color( 1, 1, 0.988235, 1 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 hframes = 4
-frame = 2
+frame = 3
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "spin"
@@ -130,7 +130,6 @@ pause_particles = false
 material = SubResource( 5 )
 rotation = 3.13794
 z_index = 1
-emitting = false
 amount = 100
 one_shot = true
 explosiveness = 1.0
