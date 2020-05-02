@@ -23,7 +23,7 @@ var imgs_health = {}
 var imgs_bullets = {}
 
 var siding_left = false
-var disable_damage = false
+var damage_enabled = true
 var skip_dialog = false
 var knows_walljump = true
 var jump_released = true
@@ -39,6 +39,7 @@ onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
 onready var timer_idle = $timer_idle
 
+onready var sound_fill = preload("res://sfx/sound_fill.wav")
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
 onready var sound_jump = preload("res://sfx/sound_jump.wav")
 onready var sound_walljump = preload("res://sfx/sound_walljump.wav")
@@ -179,9 +180,15 @@ func _handle_move_input():
 func play_anim(anim_name=""):
 	if player_sm.is_on(player_sm.states.dead): return
 	
-	if anim_name == "":
+	var clean_anim_name = anim.current_animation.replace('_left','').replace('_right','')
+	
+	if anim_name == clean_anim_name: 
+		return
+	elif anim_name == "start_cross_arms" and clean_anim_name == "cross_arms": 
+		return	
+	elif anim_name == "":
 		if anim.current_animation == "": return
-		anim_name = anim.current_animation.replace('_left','').replace('_right','')
+		anim_name = clean_anim_name
 	
 	if siding_left:
 		anim_name += "_left"
@@ -376,8 +383,6 @@ func update_state_label():
 	state_label.set('text', player_sm.get_state_desc())
 
 func update_health(value):
-	if (disable_damage): return
-	
 	global.health += value
 	
 	if (global.health < 0):
@@ -425,31 +430,30 @@ func update_enemies(value):
 	if (global.enemies >= 0):
 		$screen/hud/label_enemies.set('text', "%0*d" % [3, global.enemies])
 
-func update_grafitti(value):
-	global.grafittis += value
+func update_graffiti(value):
+	global.graffitis += value
 	
-	if (global.grafittis >= 0):
-		$screen/hud/label_sprays.set('text', "%0*d" % [2, global.grafittis])
+	if (global.graffitis >= 0):
+		$screen/hud/label_sprays.set('text', "%0*d" % [2, global.graffitis])
 
 func got_damage(value, on_top=false, on_left=null):
-	update_health(value)
-	
 	if player_sm.is_on(player_sm.states.dead): return
 	
-	disable_damage = true
-	player_sm.set_state(player_sm.states.damage)
-	
-	if on_left == null: on_left = siding_left
-	
-	if on_top:
-		linear_vel = Vector2(0, -JUMP_SPEED/2)
-	else:
-		linear_vel = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED)
-	
-	play_sound(sound_damage)
-	play_anim("got_damage")
-	$timer_damage.start()
-	$timer_flashing.start()
+	if damage_enabled:
+		update_health(-value)
+		
+		damage_enabled = false
+		player_sm.set_state(player_sm.states.damage)
+		
+		if on_left == null: on_left = siding_left
+		
+		if on_top:
+			linear_vel = Vector2(0, -JUMP_SPEED/2)
+		else:
+			linear_vel = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED)
+		
+		$timer_damage.start()
+		$timer_flashing.start()
 
 func set_dead():
 	global.pause_bgm()
@@ -475,12 +479,9 @@ func disable_dust():
 		dust.set_emitting(false)
 
 func abort_flashing():
-	disable_damage = false
+	damage_enabled = true
 	sprite.modulate = Color(1,1,1,1)
 	$timer_flashing.stop()
-
-func _on_timer_damage_timeout():
-	abort_flashing()
 
 func _on_timer_flashing_timeout():
 	if sprite.modulate == Color(1,1,1,1):

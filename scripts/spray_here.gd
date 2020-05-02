@@ -15,8 +15,8 @@ func _on_body_enter( body ):
 		
 		if force == 0:
 			$anim.play("activated")
-			global.get_player().update_grafitti(1)
-			global.show_grafitti(ID)
+			global.get_player().update_graffiti(1)
+			global.show_graffiti(ID)
 			global.pause_bgm()
 			$sound.stream = sound_success
 			$sound.play(0)

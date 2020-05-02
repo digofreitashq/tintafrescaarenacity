@@ -8,6 +8,8 @@ const WALK_SPEED = 70
 const STATE_WALKING = 0
 const STATE_KILLED = 1
 
+const DAMAGE = 1
+
 var linear_velocity = Vector2()
 var direction = 2 if randi() % 2 == 0 else -2
 var anim=""
@@ -19,8 +21,6 @@ onready var detect_floor_left = $detect_floor_left
 onready var detect_floor_right = $detect_floor_right
 onready var detect_wall_left = $detect_wall_left
 onready var detect_wall_right = $detect_wall_right
-
-onready var sound_hit = preload("res://sfx/sound_hit.wav")
 
 func _ready():
 	global.get_player().update_enemies(1)
@@ -62,8 +62,6 @@ func hit_by_bullet():
 	state = STATE_KILLED
 	linear_velocity.x = 0
 	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
-	$sound.stream = sound_hit
-	$sound.play()
 	$anim.play("explode")
 
 func _on_damage_area_body_entered(body):
@@ -74,7 +72,7 @@ func _on_damage_area_body_entered(body):
 	elif ("player" in body.get_name()):
 		var on_left = self.global_position.x > body.global_position.x
 		
-		global.get_player().got_damage(-1, on_left)
+		global.get_player().got_damage(DAMAGE, on_left)
 
 func _on_chase_area_body_entered(body):
 	if ("player" in body.get_name()):

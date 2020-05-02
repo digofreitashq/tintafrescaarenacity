@@ -2,12 +2,12 @@
 
 importer="wav"
 type="AudioStreamSample"
-path="res://.import/sound_grafitti.wav-da8362c885e64b37045c925429727732.sample"
+path="res://.import/sound_enemy.wav-2896d1b670171f641f696f1f26b9d40a.sample"
 
 [deps]
 
-source_file="res://sfx/sound_grafitti.wav"
-dest_files=[ "res://.import/sound_grafitti.wav-da8362c885e64b37045c925429727732.sample" ]
+source_file="res://sfx/sound_enemy.wav"
+dest_files=[ "res://.import/sound_enemy.wav-2896d1b670171f641f696f1f26b9d40a.sample" ]
 
 [params]
 

@@ -155,7 +155,7 @@ func _enter_state(new_state, old_state):
 			parent.on_floor = false
 			parent.disable_dust()
 			parent.play_sound(parent.sound_damage)
-			parent.play_anim("damage")
+			parent.play_anim("got_damage")
 
 func _exit_state(old_state, new_state):
 	match old_state:

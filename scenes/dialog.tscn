@@ -74,19 +74,19 @@ tracks/4/keys = {
 "values": [ true, false ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath("dialog_bg:modulate:a")
+tracks/5/path = NodePath("dialog_next:visible")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 0, 0.1 ),
-"transitions": PoolRealArray( 0.25, 0 ),
+"times": PoolRealArray( 0, 0.09 ),
+"transitions": PoolRealArray( 0, 1 ),
 "update": 0,
-"values": [ 1.0, 0.0 ]
+"values": [ true, false ]
 }
 tracks/6/type = "value"
-tracks/6/path = NodePath("dialog_next:visible")
+tracks/6/path = NodePath("text:visible")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/imported = false
@@ -98,19 +98,19 @@ tracks/6/keys = {
 "values": [ true, false ]
 }
 tracks/7/type = "value"
-tracks/7/path = NodePath("text:visible")
+tracks/7/path = NodePath("text:modulate")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/imported = false
 tracks/7/enabled = true
 tracks/7/keys = {
-"times": PoolRealArray( 0, 0.09 ),
-"transitions": PoolRealArray( 0, 1 ),
+"times": PoolRealArray( 0, 0.05 ),
+"transitions": PoolRealArray( 1, 4 ),
 "update": 0,
-"values": [ true, false ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 tracks/8/type = "value"
-tracks/8/path = NodePath("text:modulate")
+tracks/8/path = NodePath("dialog_next:self_modulate")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/imported = false
@@ -119,34 +119,34 @@ tracks/8/keys = {
 "times": PoolRealArray( 0, 0.05 ),
 "transitions": PoolRealArray( 1, 4 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 0, 0, 0, 0 ) ]
 }
 tracks/9/type = "value"
-tracks/9/path = NodePath("dialog_next:modulate.a")
+tracks/9/path = NodePath("speaker:visible")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/imported = false
 tracks/9/enabled = true
 tracks/9/keys = {
-"times": PoolRealArray( 0, 0.1 ),
-"transitions": PoolRealArray( 1, 4 ),
-"update": 0,
-"values": [ 1.0, 0.0 ]
-}
-tracks/10/type = "value"
-tracks/10/path = NodePath("speaker:visible")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/keys = {
 "times": PoolRealArray( 0, 0.09 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
 }
+tracks/10/type = "value"
+tracks/10/path = NodePath("speaker:modulate")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0, 0.05 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 0.623529, 0.145098, 1 ), Color( 1, 0.623529, 0.145098, 0 ) ]
+}
 tracks/11/type = "value"
-tracks/11/path = NodePath("speaker:modulate")
+tracks/11/path = NodePath("dialog_bg:self_modulate")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/imported = false
@@ -155,7 +155,7 @@ tracks/11/keys = {
 "times": PoolRealArray( 0, 0.05 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 0.623529, 0.145098, 1 ), Color( 1, 0.623529, 0.145098, 0 ) ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -186,7 +186,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("dialog_next:modulate:a")
+tracks/2/path = NodePath("dialog_next:self_modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -195,7 +195,7 @@ tracks/2/keys = {
 "times": PoolRealArray( 0, 0.2, 0.5 ),
 "transitions": PoolRealArray( 0, 1, 1 ),
 "update": 0,
-"values": [ 1.0, 1.0, 0.0 ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -262,16 +262,16 @@ tracks/4/keys = {
 "values": [ true, true ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath("dialog_bg:modulate:a")
+tracks/5/path = NodePath("dialog_bg:self_modulate")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 0, 0.2, 0.5 ),
+"times": PoolRealArray( 0, 0.2, 0.36 ),
 "transitions": PoolRealArray( 0, 0.25, 0 ),
 "update": 0,
-"values": [ 0.0, 0.0, 1.0 ]
+"values": [ Color( 0, 0, 0, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 tracks/6/type = "value"
 tracks/6/path = NodePath("text:visible")
@@ -361,7 +361,7 @@ tracks/2/keys = {
 "values": [ true ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("dialog_next:modulate:a")
+tracks/3/path = NodePath("dialog_next:self_modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
@@ -370,7 +370,7 @@ tracks/3/keys = {
 "times": PoolRealArray( 0, 1 ),
 "transitions": PoolRealArray( 0, 0 ),
 "update": 0,
-"values": [ 1.0, 1.0 ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
 [sub_resource type="CircleShape2D" id=5]
@@ -381,6 +381,8 @@ pause_mode = 2
 script = ExtResource( 1 )
 
 [node name="dialog_bg" type="Sprite" parent="."]
+visible = false
+self_modulate = Color( 1, 1, 1, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 centered = false
@@ -389,6 +391,8 @@ __meta__ = {
 }
 
 [node name="dialog_brace_left" type="Sprite" parent="."]
+visible = false
+position = Vector2( -64, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 centered = false
@@ -397,6 +401,8 @@ __meta__ = {
 }
 
 [node name="dialog_brace_right" type="Sprite" parent="."]
+visible = false
+position = Vector2( 64, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 centered = false
@@ -405,6 +411,7 @@ __meta__ = {
 }
 
 [node name="dialog_next" type="Sprite" parent="."]
+position = Vector2( 0, 4 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 5 )
 centered = false
@@ -413,6 +420,8 @@ __meta__ = {
 }
 
 [node name="text" type="Label" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
 margin_left = 32.0
 margin_top = 364.0
 margin_right = 618.0
@@ -429,7 +438,9 @@ __meta__ = {
 }
 
 [node name="speaker" type="Label" parent="."]
-modulate = Color( 1, 0.623529, 0.145098, 1 )
+visible = false
+modulate = Color( 1, 0.623529, 0.145098, 0 )
+self_modulate = Color( 1, 0.623529, 0.145098, 1 )
 margin_left = 32.0
 margin_top = 342.0
 margin_right = 594.0

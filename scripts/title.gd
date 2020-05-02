@@ -3,7 +3,7 @@ extends Node
 var timer_start = null
 var pressed_start = false
 
-var sound_grafitti = preload("res://sfx/sound_grafitti.wav")
+var sound_graffiti = preload("res://sfx/sound_graffiti.wav")
 var sound_beep = preload("res://sfx/sound_beep.wav")
 
 func _ready():
@@ -31,7 +31,7 @@ func start():
 			
 			$disclaimer.visible = false
 			
-			$sound.stream = sound_grafitti
+			$sound.stream = sound_graffiti
 			$sound.play()
 
 func start_game():

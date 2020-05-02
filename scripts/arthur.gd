@@ -35,6 +35,7 @@ func _ready():
 	if ID == 0:
 		self.set_visible(false)
 		$CollisionShape2D.set_disabled(true)
+		global.set_player_control(true)
 		return
 		
 	arthur_talks()
@@ -130,6 +131,7 @@ func arthur_talks():
 	if ID == 1:
 		global.set_player_control(false)
 		player.player_sm.set_state(player.player_sm.states.idle)
+		player.play_anim("start_cross_arms")
 		
 		global.wait_until_signal(2)
 		yield(global, "waited")
@@ -156,32 +158,45 @@ func arthur_talks():
 		yield(global, "waited")
 		
 		dialog.show([
-			["Arthur","Hunf!"],
-			["Arthur","Hoje seu treino será em campo."],
+			["Arthur","Hunf! \nHoje seu treino será em campo."],
 			["Arthur","Como deve ter percebido, a cidade está infestada desses tais Podres."],
+			])
+		yield(dialog, "finished")
+		player.play_anim("start_scratch")
+		dialog.show([
 			["Ícaro","Podres...?"],
 			["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
-			["Ícaro","Eita. E eu vou ter que fazer o quê? Pintura facial neles...?"],
+			["Ícaro","Eita. \nE eu vou ter que fazer o quê? Pintura facial neles...?"],
 			["Arthur","Você vai usar seus poderes de transformar os desenhos em realidade para vencê-los."],
-			["Ícaro","Então vamos lá..."],
-			["Arthur","Ahm... Eu disse você! Sozinho."],
+		])
+		yield(dialog, "finished")
+		player.play_anim("idle")
+		dialog.show([
+			["Ícaro","Então bora lá..."],
+			["Arthur","Ahm... \nEu disse você! \nSozinho."],
+		])
+		yield(dialog, "finished")
+		arthur_sm.set_state(arthur_sm.states.idle)
+		dialog.show([
 			["Arthur","Mas fique tranquilo que vou ficar olhando de longe."],
 			["Arthur","E de vez em quando vou dar uns palpites."],
-			["Ícaro","Ótimo... Se eu morrer, tudo bem, né?"],
-			["Arthur","Eu... Confio em você!"],
+			["Ícaro","Ótimo! \nSe eu morrer, tudo bem, né?"],
+			["Arthur","Eu... \nConfio em você! Boa sorte."],
 			])
 		yield(dialog, "finished")
 		$Area2D/CollisionShape2D.scale.x = 0.5
 		
-		walk_pixels = 300
+		walk_pixels = 500
 		yield(self, "walked")
 		self.set_visible(false)
 		$CollisionShape2D.set_disabled(true)
 		
+		player.play_anim("start_scratch")
 		dialog.show([
-			["Ícaro","Vamos lá, né? Afinal, o que pode acontecer de ruim?"],
+			["Ícaro","Vamos lá, né? \nAfinal, o que pode acontecer de ruim?"],
 			])
 		yield(dialog, "finished")
+		player.play_anim("idle")
 		
 		times_talked += 1
 		

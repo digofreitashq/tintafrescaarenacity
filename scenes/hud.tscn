@@ -1,24 +1,19 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/hud_base.png" type="Texture" id=2]
 [ext_resource path="res://sprites/hud_health_10.png" type="Texture" id=3]
-[ext_resource path="res://sprites/hud_bullets_00.PNG" type="Texture" id=4]
+[ext_resource path="res://sprites/hud_bullets_00.png" type="Texture" id=4]
 [ext_resource path="res://sprites/spray_1.png" type="Texture" id=5]
-[ext_resource path="res://sprites/hud_health_01.png" type="Texture" id=6]
-[ext_resource path="res://sprites/hud_health_02.png" type="Texture" id=7]
-[ext_resource path="res://sprites/hud_health_03.png" type="Texture" id=8]
-[ext_resource path="res://sprites/hud_health_04.png" type="Texture" id=9]
-[ext_resource path="res://sprites/hud_health_05.png" type="Texture" id=10]
-[ext_resource path="res://sprites/hud_health_06.png" type="Texture" id=11]
-[ext_resource path="res://sprites/hud_health_07.png" type="Texture" id=12]
-[ext_resource path="res://sprites/hud_health_08.png" type="Texture" id=13]
-[ext_resource path="res://sprites/hud_health_09.png" type="Texture" id=14]
+[ext_resource path="res://sfx/sound_fill.wav" type="AudioStream" id=6]
 [ext_resource path="res://sprites/osb_fire.png" type="Texture" id=15]
 [ext_resource path="res://fonts/gbb.font" type="BitmapFont" id=16]
 [ext_resource path="res://sprites/osb_left.png" type="Texture" id=17]
 [ext_resource path="res://sprites/osb_right.png" type="Texture" id=18]
 [ext_resource path="res://sprites/osb_jump.png" type="Texture" id=19]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 30.0
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 30.0
@@ -28,37 +23,6 @@ radius = 30.0
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 30.0
-
-[sub_resource type="CircleShape2D" id=5]
-radius = 30.0
-
-[sub_resource type="Animation" id=1]
-resource_name = "fill"
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath("health:texture")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
-"update": 0,
-"values": [ null, ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 3 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("bullets:texture")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ ExtResource( 4 ) ]
-}
 
 [node name="hud" type="Node2D"]
 script = ExtResource( 1 )
@@ -90,7 +54,7 @@ modulate = Color( 1, 1, 1, 0.501961 )
 position = Vector2( 20, 390 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 17 )
-shape = SubResource( 2 )
+shape = SubResource( 1 )
 passby_press = true
 action = "move_left"
 visibility_mode = 1
@@ -100,7 +64,7 @@ modulate = Color( 1, 1, 1, 0.501961 )
 position = Vector2( 140, 390 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 18 )
-shape = SubResource( 3 )
+shape = SubResource( 2 )
 passby_press = true
 action = "move_right"
 visibility_mode = 1
@@ -110,7 +74,7 @@ modulate = Color( 1, 1, 1, 0.501961 )
 position = Vector2( 560, 390 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 19 )
-shape = SubResource( 4 )
+shape = SubResource( 3 )
 action = "jump"
 visibility_mode = 1
 
@@ -119,12 +83,9 @@ modulate = Color( 1, 1, 1, 0.501961 )
 position = Vector2( 450, 350 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 15 )
-shape = SubResource( 5 )
+shape = SubResource( 4 )
 action = "shoot"
 visibility_mode = 1
-
-[node name="anim" type="AnimationPlayer" parent="."]
-anims/fill = SubResource( 1 )
 
 [node name="label_sprays" type="Label" parent="."]
 margin_left = 4.0
@@ -162,6 +123,12 @@ text = "000"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+
+[node name="timer_fill" type="Timer" parent="."]
+wait_time = 0.05
 [connection signal="pressed" from="ui/left" to="." method="_on_button_pressed"]
 [connection signal="released" from="ui/left" to="." method="_on_button_released"]
 [connection signal="pressed" from="ui/right" to="." method="_on_button_pressed"]
@@ -170,3 +137,4 @@ __meta__ = {
 [connection signal="released" from="ui/jump" to="." method="_on_button_released"]
 [connection signal="pressed" from="ui/fire" to="." method="_on_button_pressed"]
 [connection signal="released" from="ui/fire" to="." method="_on_button_released"]
+[connection signal="timeout" from="timer_fill" to="." method="fill"]

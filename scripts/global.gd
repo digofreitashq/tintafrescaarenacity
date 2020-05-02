@@ -10,7 +10,7 @@ var bullets = 0
 var bullet_type = BULLET_NORMAL
 var sprays = 0
 var enemies = 0
-var grafittis = 0
+var graffitis = 0
 var allow_movement = true
 
 var boxes = []
@@ -66,6 +66,13 @@ func show_player_ui(show=true):
 func set_player_control(enable):
 	if enable:
 		allow_movement = true
+		
+		var hud = get_player().get_node("screen/hud")
+		var filled = hud.filled
+		
+		if not filled:
+			hud.start_fill()
+			
 	else:
 		allow_movement = false
 		var player = get_player()
@@ -74,7 +81,6 @@ func set_player_control(enable):
 		yield(player.anim, "animation_finished")
 
 func do_timer_signal():
-	print('DONE!')
 	emit_signal("waited")
 
 func wait_until_signal(seconds):
@@ -83,9 +89,9 @@ func wait_until_signal(seconds):
 	timer.connect("timeout", self, "do_timer_signal")
 	timer.start()
 
-func show_grafitti(id):
-	var grafitti = get_tree().get_current_scene().get_node("grafittis").get_node("TileMapGrafitti%s" % id)
-	grafitti.visible = true
+func show_graffiti(id):
+	var graffiti = get_tree().get_current_scene().get_node("graffitis").get_node("TileMapGraffiti%s" % id)
+	graffiti.visible = true
 
 func sort_boxes_zindex(a, b):
 	if a[2] != b[2]: return a[2] < b[2] # Y comparison
@@ -112,11 +118,11 @@ func set_all_zindex():
 
 func reset_stage():
 	health = 10
-	bullets = 0
+	bullets = 10
 	bullet_type = BULLET_NORMAL
 	sprays = 0
 	enemies = 0
-	grafittis = 0
+	graffitis = 0
 	allow_movement = true
 	
 	boxes.clear()
