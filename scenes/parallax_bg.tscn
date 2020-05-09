@@ -9,7 +9,7 @@ scroll_base_scale = Vector2( 0.7, 0 )
 
 [node name="sky" type="ParallaxLayer" parent="."]
 motion_scale = Vector2( 0.4, 1 )
-motion_mirroring = Vector2( 800, 0 )
+motion_mirroring = Vector2( 1024, 0 )
 
 [node name="Sprite" type="Sprite" parent="sky"]
 light_mask = 0
@@ -18,7 +18,7 @@ centered = false
 
 [node name="mount_ 2" type="ParallaxLayer" parent="."]
 motion_scale = Vector2( 0.6, 0.6 )
-motion_mirroring = Vector2( 800, 0 )
+motion_mirroring = Vector2( 1024, 0 )
 
 [node name="Sprite" type="Sprite" parent="mount_ 2"]
 light_mask = 0
@@ -27,7 +27,7 @@ centered = false
 
 [node name="mount_1" type="ParallaxLayer" parent="."]
 motion_scale = Vector2( 0.8, 1 )
-motion_mirroring = Vector2( 800, 0 )
+motion_mirroring = Vector2( 1024, 0 )
 
 [node name="Sprite" type="Sprite" parent="mount_1"]
 position = Vector2( 0, 80 )

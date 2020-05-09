@@ -134,6 +134,7 @@ func _enter_state(new_state, old_state):
 			if old_state == states.damage: return
 			parent.on_floor = false
 			parent.disable_dust()
+			parent.play_anim("jump")
 		states.fall:
 			if old_state == states.damage: return
 			parent.disable_dust()
@@ -162,3 +163,5 @@ func _exit_state(old_state, new_state):
 		states.wall_slide:
 			if [states.idle, states.fall].has(new_state):
 				parent.siding_left = !parent.siding_left
+		states.idle:
+			parent.timer_idle.stop()

@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/moving_platform.gd" type="Script" id=1]
-[ext_resource path="res://tilesets/tileset_16.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 128, 16 )
@@ -12,56 +11,6 @@ cycle = 1.0
 
 [node name="platform" type="RigidBody2D" parent="."]
 mode = 3
-
-[node name="Sprite" type="Sprite" parent="platform"]
-position = Vector2( 0, 16 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 2 )
-region_enabled = true
-region_rect = Rect2( 0, 96, 128, 16 )
-__meta__ = {
-"_editor_description_": ""
-}
-
-[node name="Sprite4" type="Sprite" parent="platform"]
-position = Vector2( -96, -16 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 2 )
-region_enabled = true
-region_rect = Rect2( 0, 112, 32, 16 )
-__meta__ = {
-"_editor_description_": ""
-}
-
-[node name="Sprite2" type="Sprite" parent="platform"]
-position = Vector2( -32, -16 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 2 )
-region_enabled = true
-region_rect = Rect2( 32, 112, 32, 16 )
-__meta__ = {
-"_editor_description_": ""
-}
-
-[node name="Sprite5" type="Sprite" parent="platform"]
-position = Vector2( 32, -16 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 2 )
-region_enabled = true
-region_rect = Rect2( 32, 112, 32, 16 )
-__meta__ = {
-"_editor_description_": ""
-}
-
-[node name="Sprite3" type="Sprite" parent="platform"]
-position = Vector2( 96, -16 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 2 )
-region_enabled = true
-region_rect = Rect2( 64, 112, 32, 16 )
-__meta__ = {
-"_editor_description_": ""
-}
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="platform"]
 position = Vector2( 0, 16 )

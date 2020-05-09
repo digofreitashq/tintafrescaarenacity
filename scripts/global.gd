@@ -21,7 +21,7 @@ func _ready():
 	reset_stage()
 
 func get_player():
-	return get_tree().get_current_scene().get_node("player")
+	return get_tree().get_current_scene().get_node("chars/player")
 
 func get_stage():
 	return get_tree().get_current_scene()
