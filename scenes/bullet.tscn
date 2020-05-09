@@ -94,7 +94,6 @@ local_coords = false
 process_material = SubResource( 1 )
 
 [node name="sprite" type="Sprite" parent="."]
-visible = false
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 

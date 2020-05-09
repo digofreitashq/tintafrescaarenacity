@@ -8,6 +8,7 @@ onready var collision = $Area2D/collision_check
 onready var timer_wait = $timer_wait
 
 func _ready():
+	print('AAAAAAAAAAAAAAAAAAAAAAA')
 	sprite.visible = true
 	particles.emitting = true
 	$timer_disable.start()

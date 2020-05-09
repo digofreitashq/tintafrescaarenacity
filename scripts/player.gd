@@ -290,30 +290,29 @@ func push_direction():
 	return result
 
 func shoot():
-	if timer_shoot.is_stopped():
-		player_asm.set_state(player_asm.states.shoot)
-		
-		timer_shoot.start()
-		
-		if (global.bullets):
-			if shooted % 2 == 0:
-				play_sound(sound_spray1)
-			else:
-				play_sound(sound_spray2)
-			
-			if (global.bullet_type == global.BULLET_NORMAL):
-				shoot_spray_normal()
-			elif (global.bullet_type == global.BULLET_TRIPLE):
-				shoot_spray_triple()
+	if not timer_shoot.is_stopped():
+		return
+	
+	player_asm.set_state(player_asm.states.shoot)
+	
+	timer_shoot.start()
+	
+	if (global.bullets):
+		if shooted % 2 == 0:
+			play_sound(sound_spray1)
 		else:
-			play_sound(sound_shake)
+			play_sound(sound_spray2)
+		
+		if (global.bullet_type == global.BULLET_NORMAL):
+			shoot_spray_normal()
+		elif (global.bullet_type == global.BULLET_TRIPLE):
+			shoot_spray_triple()
+	else:
+		play_sound(sound_shake)
 
 func shoot_spray_normal():
 	var bi = bullet.instance()
 	bi._ready()
-	
-	#bi.timer_wait.start()
-	#yield(bi.timer_wait, "timeout")
 	
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
@@ -323,10 +322,10 @@ func shoot_spray_normal():
 	
 	bi.sprite.scale.x = -direction
 	bi.particles.scale.x = -direction
-	bi.position = $bullet_shoot.global_position #use node for shoot position
+	bi.position = $bullet_shoot.global_position
 	bi.linear_velocity = Vector2(direction * BULLET_VELOCITY, 0)
-	bi.add_collision_exception_with(self) # don't want player to collide with bullet
-	get_parent().add_child(bi) #don't want bullet to move with me, so add it as child of parent
+	bi.add_collision_exception_with(self)
+	global.get_stage().add_child(bi)
 	shoot_time = 0
 	
 	update_bullets(-1)
@@ -341,9 +340,6 @@ func shoot_spray_triple():
 	bi2._ready()
 	bi3._ready()
 	
-	#bi1.timer_wait.start()
-	#yield(bi1.timer_wait, "timeout")
-		
 	var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
 	
 	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
@@ -358,21 +354,21 @@ func shoot_spray_triple():
 	bi2.particles.scale.x = -direction
 	bi3.particles.scale.x = -direction
 	
-	bi1.position = $bullet_shoot.global_position #use node for shoot position
-	bi2.position = $bullet_shoot.global_position #use node for shoot position
-	bi3.position = $bullet_shoot.global_position #use node for shoot position
+	bi1.position = $bullet_shoot.global_position
+	bi2.position = $bullet_shoot.global_position
+	bi3.position = $bullet_shoot.global_position
 	
 	bi1.linear_velocity = Vector2(direction * BULLET_VELOCITY, -160)
 	bi2.linear_velocity = Vector2(direction * BULLET_VELOCITY, 0)
 	bi3.linear_velocity = Vector2(direction * BULLET_VELOCITY, 160)
 	
-	bi1.add_collision_exception_with(self) # don't want player to collide with bullet
-	bi2.add_collision_exception_with(self) # don't want player to collide with bullet
-	bi3.add_collision_exception_with(self) # don't want player to collide with bullet
+	bi1.add_collision_exception_with(self)
+	bi2.add_collision_exception_with(self)
+	bi3.add_collision_exception_with(self)
 	
-	get_parent().add_child(bi1) #don't want bullet to move with me, so add it as child of parent
-	get_parent().add_child(bi2) #don't want bullet to move with me, so add it as child of parent
-	get_parent().add_child(bi3) #don't want bullet to move with me, so add it as child of parent
+	global.get_stage().add_child(bi1)
+	global.get_stage().add_child(bi2)
+	global.get_stage().add_child(bi3)
 	
 	shoot_time = 0
 	
@@ -380,6 +376,7 @@ func shoot_spray_triple():
 	shooted += 1
 
 func update_state_label():
+	return
 	state_label.set('text', player_sm.get_state_desc())
 
 func update_health(value):

@@ -118,13 +118,16 @@ use_pixel_snap=true
 
 [rendering]
 
-quality/driver/driver_name="GLES2"
-quality/2d/gles2_use_nvidia_rect_flicker_workaround=true
 quality/intended_usage/framebuffer_allocation=0
 quality/intended_usage/framebuffer_allocation.mobile=1
 quality/2d/use_pixel_snap=true
-vram_compression/import_etc=true
-quality/reflections/texture_array_reflections=false
-environment/default_clear_color=Color( 0.372549, 0.372549, 0.372549, 1 )
 quality/filters/anisotropic_filter_level=1
+vram_compression/import_etc=true
+quality/shadow_atlas/quadrant_0_subdiv=0
+quality/shadow_atlas/quadrant_1_subdiv=0
+quality/shadow_atlas/quadrant_2_subdiv=0
+quality/shadow_atlas/quadrant_3_subdiv=0
+quality/shadows/filter_mode=0
+quality/reflections/texture_array_reflections=false
 quality/subsurface_scattering/quality=0
+environment/default_clear_color=Color( 0.372549, 0.372549, 0.372549, 1 )
