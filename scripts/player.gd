@@ -8,7 +8,7 @@ const MAX_ONAIR_TIME = 0.2
 const WALK_SPEED = 250 # pixels/sec
 const JUMP_SPEED = 350
 const WALLJUMP_SPEED = 350
-const BULLET_VELOCITY = 800
+const BULLET_VELOCITY = 400
 
 var linear_vel = Vector2()
 var direction = 0
@@ -18,9 +18,6 @@ var on_floor = false
 var shoot_time = 99999 #time since last shot
 
 var shooted = 1
-
-var imgs_health = {}
-var imgs_bullets = {}
 
 var siding_left = false
 var damage_enabled = true
@@ -33,41 +30,26 @@ onready var sprite = $sprite
 onready var dust = $dust
 onready var state_label = $state_label
 onready var anim = $anim
-onready var front_anim = $front_anim
+onready var spray_particles = $spray_particles
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
 onready var timer_idle = $timer_idle
 
-onready var sound_fill = preload("res://sfx/sound_fill.wav")
-onready var sound_damage = preload("res://sfx/sound_damage.wav")
-onready var sound_jump = preload("res://sfx/sound_jump.wav")
-onready var sound_walljump = preload("res://sfx/sound_walljump.wav")
-onready var sound_wallslide = preload("res://sfx/sound_wallslide.wav")
-onready var sound_grounded = preload("res://sfx/sound_grounded.wav")
-onready var sound_shake = preload("res://sfx/sound_shake.wav")
-onready var sound_spray1 = preload("res://sfx/sound_spray1.wav")
-onready var sound_spray2 = preload("res://sfx/sound_spray2.wav")
-onready var sound_dead = preload("res://sfx/sound_dead.wav")
-
-onready var sprite_spray_1 = preload("res://sprites/spray_1.png")
-onready var sprite_spray_2 = preload("res://sprites/spray_2.png")
-
 onready var bullet = preload("res://scenes/bullet.tscn")
 
 signal grounded
 
-func _init():
-	for i in range(11):
-		imgs_health[i] = load("res://sprites/hud_health_%02d.png"%(i))
-		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
-
 func _ready():
-	anim.play("reset")
-	front_anim.play("reset")
-	yield(anim, "animation_finished")
-	$screen/hud.set_visible(true)
-	$screen/dialog.set_visible(true)
+	reset()
+
+func reset():
+	sprite.set_visible(true)
+	sprite.position.x = 0
+	sprite.position.y = 0
+	player_sm.set_state(player_sm.states.alive)
+	player_sm.set_state(player_sm.states.idle)
+	anim.play("idle")
 
 func _apply_gravity(delta):
 	if !global.allow_movement: 
@@ -236,13 +218,13 @@ func jump():
 	jump_released = false
 	
 	if not player_sm.is_on(player_sm.states.jump):
-		play_sound(sound_jump)
+		play_sound(global.sound_jump)
 
 func wall_jump():
 	if Input.is_action_pressed("jump") and jump_released:
 		player_sm.set_state(player_sm.states.wall_jump)
 		jump_released = false
-		play_sound(sound_walljump)
+		play_sound(global.sound_walljump)
 		
 		linear_vel.y = -WALLJUMP_SPEED
 		
@@ -293,22 +275,31 @@ func shoot():
 	if not timer_shoot.is_stopped():
 		return
 	
-	player_asm.set_state(player_asm.states.shoot)
-	
 	timer_shoot.start()
 	
 	if (global.bullets):
+		var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
+		
+		if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
+		
+		$spray_particles.set_emitting(true)
+		$spray_particles.position.x = 10 * direction
+		$spray_particles.scale.x = direction
+		
+		player_asm.set_state(player_asm.states.shoot)
+		
 		if shooted % 2 == 0:
-			play_sound(sound_spray1)
+			play_sound(global.sound_spray1)
 		else:
-			play_sound(sound_spray2)
+			play_sound(global.sound_spray2)
 		
 		if (global.bullet_type == global.BULLET_NORMAL):
 			shoot_spray_normal()
 		elif (global.bullet_type == global.BULLET_TRIPLE):
 			shoot_spray_triple()
 	else:
-		play_sound(sound_shake)
+		player_asm.set_state(player_asm.states.shoot)
+		play_sound(global.sound_shake)
 
 func shoot_spray_normal():
 	var bi = bullet.instance()
@@ -318,17 +309,15 @@ func shoot_spray_normal():
 	
 	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
 	
-	$bullet_shoot.position.x = 16 * direction
+	$bullet_shoot.position.x = 8 * direction
 	
-	bi.sprite.scale.x = -direction
-	bi.particles.scale.x = -direction
 	bi.position = $bullet_shoot.global_position
 	bi.linear_velocity = Vector2(direction * BULLET_VELOCITY, 0)
 	bi.add_collision_exception_with(self)
 	global.get_stage().add_child(bi)
 	shoot_time = 0
 	
-	update_bullets(-1)
+	global.update_bullets(-1)
 	shooted += 1
 
 func shoot_spray_triple():
@@ -344,7 +333,7 @@ func shoot_spray_triple():
 	
 	if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
 	
-	$bullet_shoot.position.x = 16 * direction
+	$bullet_shoot.position.x = 8 * direction
 	
 	bi1.sprite.scale.x = -direction
 	bi2.sprite.scale.x = -direction
@@ -372,72 +361,18 @@ func shoot_spray_triple():
 	
 	shoot_time = 0
 	
-	update_bullets(-1)
+	global.update_bullets(-1)
 	shooted += 1
 
 func update_state_label():
 	return
 	state_label.set('text', player_sm.get_state_desc())
 
-func update_health(value):
-	global.health += value
-	
-	if (global.health < 0):
-		global.health = 0
-	elif (global.health > 10):
-		global.health = 10
-	
-	if (global.health >= 0):
-		$screen/hud/health.set_texture(imgs_health[global.health])
-	
-	if global.health == 0:
-		set_dead()
-
-func update_bullets(value):
-	global.bullets += value
-	
-	if (global.bullets < 0):
-		global.bullets = 0
-	elif (global.bullets > 10):
-		global.bullets = 10	
-	
-	if (global.bullets >= 0):
-		$screen/hud/bullets.set_texture(imgs_bullets[global.bullets])
-
-func update_bullet_type(type):
-	global.bullet_type = type
-	
-	if (global.bullet_type == global.BULLET_NORMAL):
-		$screen/hud/spray.texture = sprite_spray_1
-	elif (global.bullet_type == global.BULLET_TRIPLE):
-		$screen/hud/spray.texture = sprite_spray_2
-
-func update_sprays(value):
-	global.sprays += value
-	
-	if (global.sprays < 0):
-		global.sprays = 0
-
-func update_enemies(value):
-	global.enemies += value
-	
-	if (global.enemies < 0):
-		global.enemies = 0
-	
-	if (global.enemies >= 0):
-		$screen/hud/label_enemies.set('text', "%0*d" % [3, global.enemies])
-
-func update_graffiti(value):
-	global.graffitis += value
-	
-	if (global.graffitis >= 0):
-		$screen/hud/label_sprays.set('text', "%0*d" % [2, global.graffitis])
-
 func got_damage(value, on_top=false, on_left=null):
 	if player_sm.is_on(player_sm.states.dead): return
 	
 	if damage_enabled:
-		update_health(-value)
+		global.update_health(-value)
 		
 		damage_enabled = false
 		player_sm.set_state(player_sm.states.damage)
@@ -452,10 +387,9 @@ func got_damage(value, on_top=false, on_left=null):
 		$timer_damage.start()
 		$timer_flashing.start()
 
-func set_dead():
-	global.pause_bgm()
+func die():
 	stop_sound()
-	play_sound(sound_dead)
+	play_sound(global.sound_dead)
 	abort_flashing()
 	player_sm.set_state(player_sm.states.dead)
 	anim.play("die")

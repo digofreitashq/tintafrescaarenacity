@@ -3,10 +3,10 @@ extends Node
 var timer_start = null
 var pressed_start = false
 
-var sound_graffiti = preload("res://sfx/sound_graffiti.wav")
-var sound_beep = preload("res://sfx/sound_beep.wav")
-
 func _ready():
+	reset()
+
+func reset():
 	start_game() # PULA
 	global.show_player_ui(false)
 	$music.play(0)
@@ -31,7 +31,7 @@ func start():
 			
 			$disclaimer.visible = false
 			
-			$sound.stream = sound_graffiti
+			$sound.stream = global.sound_graffiti
 			$sound.play()
 
 func start_game():

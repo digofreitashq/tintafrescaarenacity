@@ -16,6 +16,6 @@ func _enter_state(new_state, old_state):
 	match state:
 		states.floating:
 			parent.anim.play("floating")
-			parent.play_sound(parent.sound_splash, true)
+			parent.play_sound(global.sound_splash, true)
 		states.idle:
 			parent.anim.play("idle")

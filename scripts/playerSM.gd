@@ -119,14 +119,14 @@ func _enter_state(new_state, old_state):
 			parent.timer_idle.start()
 			parent.disable_dust()
 			if old_state in [states.fall, states.wall_jump, states.wall_slide]:
-				parent.play_sound(parent.sound_grounded)
+				parent.play_sound(global.sound_grounded)
 				parent.play_anim("grounded_idle")
 			else:
 				parent.play_anim("idle")
 		states.run:
 			parent.disable_dust()
 			if old_state in [states.fall, states.wall_jump, states.wall_slide]:
-				parent.play_sound(parent.sound_grounded)
+				parent.play_sound(global.sound_grounded)
 				parent.play_anim("grounded_run")
 			else:
 				parent.play_anim("run")
@@ -140,13 +140,13 @@ func _enter_state(new_state, old_state):
 			parent.disable_dust()
 			parent.play_anim("fall")
 		states.push:
-			parent.disable_dust()
-			parent.play_sound(parent.sound_wallslide)
+			parent.enable_dust(Vector2(0,16))
+			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("push")
 		states.wall_slide:
 			parent.on_floor = false
 			parent.enable_dust(Vector2(parent.wall_direction()*20,0))
-			parent.play_sound(parent.sound_wallslide)
+			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("wall_slide")
 		states.wall_jump:
 			parent.on_floor = false
@@ -155,7 +155,7 @@ func _enter_state(new_state, old_state):
 		states.damage:
 			parent.on_floor = false
 			parent.disable_dust()
-			parent.play_sound(parent.sound_damage)
+			parent.play_sound(global.sound_damage)
 			parent.play_anim("got_damage")
 
 func _exit_state(old_state, new_state):

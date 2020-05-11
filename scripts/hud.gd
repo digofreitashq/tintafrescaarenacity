@@ -4,13 +4,19 @@ var health = 0
 var bullets = 0
 var filled = false
 
-onready var parent = get_parent().get_parent()
+onready var player = global.get_player()
 
 func _ready():
-	$spray.set_texture(parent.sprite_spray_1)
-	$health.set_texture(parent.imgs_health[0])
-	$bullets.set_texture(parent.imgs_bullets[0])
+	reset()
+
+func reset():
+	health = 0
+	bullets = 0
+	filled = false
 	
+	$bullets.set_texture(global.imgs_bullets[0])
+	$health.set_texture(global.imgs_health[0])
+
 func start_fill():
 	$timer_fill.start()
 
@@ -21,16 +27,16 @@ func fill():
 			filled = true
 		else:
 			if bullets == 1:
-				parent.play_sound(parent.sound_fill)
+				player.play_sound(global.sound_fill)
 			
-			$bullets.set_texture(parent.imgs_bullets[bullets])
+			$bullets.set_texture(global.imgs_bullets[bullets])
 			$bullets.update()
 			bullets += 1
 	else:
 		if health == 1:
-			parent.play_sound(parent.sound_fill)
+			player.play_sound(global.sound_fill)
 		
-		$health.set_texture(parent.imgs_health[health])
+		$health.set_texture(global.imgs_health[health])
 		$health.update()
 		health += 1
 

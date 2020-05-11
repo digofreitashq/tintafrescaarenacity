@@ -24,10 +24,10 @@ onready var box_sm = $box_sm
 onready var anim = $anim
 onready var player = global.get_player()
 
-onready var sound_push = preload("res://sfx/sound_push.wav")
-onready var sound_splash = preload("res://sfx/sound_splash.wav")
-
 func _ready():
+	reset()
+
+func reset():
 	global.boxes.append(self)
 
 func _apply_gravity(delta):
@@ -61,9 +61,9 @@ func _apply_movement(delta):
 	if player.player_sm.is_on(player.player_sm.states.push) and direction == 0 and previous_direction != 0:
 		direction = previous_direction
 		if box_sm.is_on(box_sm.states.floating):
-			play_sound(sound_splash)
+			play_sound(global.sound_splash)
 		else:
-			play_sound(sound_push)
+			play_sound(global.sound_push)
 	
 	if linear_vel.x != 0:
 		if linear_vel.x < 0:

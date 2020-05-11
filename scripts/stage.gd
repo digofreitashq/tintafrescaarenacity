@@ -10,8 +10,10 @@ onready var sound_horn_3 = preload("res://sfx/sound_horn_3.wav")
 onready var sound_horn_4 = preload("res://sfx/sound_horn_4.wav")
 
 func _ready():
-	$extra_collisions/TileMapCollision.visible = false
-	$wall_jump_collisions/TileMapCollision.visible = false
+	reset()
+
+func reset():
+	$collisions/tilemapcollision_1.set_visible(false)
 	$timer_sfx.start()
 	$music.pause_mode = true
 	global.show_player_ui()

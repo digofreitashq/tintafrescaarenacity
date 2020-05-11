@@ -32,6 +32,9 @@ onready var player = global.get_player()
 signal walked
 
 func _ready():
+	reset()
+
+func reset():
 	if ID == 0:
 		self.set_visible(false)
 		$CollisionShape2D.set_disabled(true)

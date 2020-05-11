@@ -5,6 +5,9 @@ var player = null
 const DAMAGE = 2
 
 func _ready():
+	reset()
+
+func reset():
 	$anim.play("loop")
 
 func _on_Area2D_body_entered(body):

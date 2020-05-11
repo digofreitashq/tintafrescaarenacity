@@ -23,10 +23,15 @@ onready var detect_wall_left = $detect_wall_left
 onready var detect_wall_right = $detect_wall_right
 
 func _ready():
-	global.get_player().update_enemies(1)
+	reset()
+	
+func reset():
+	global.update_enemies(1)
+	$sprite.modulate = Color(1,1,1,1)
+	$sprite.set_visible(true)
 
-func _die():
-	global.get_player().update_enemies(-1)
+func die():
+	global.update_enemies(-1)
 	queue_free()
 
 func _physics_process(delta):
@@ -63,6 +68,8 @@ func hit_by_bullet():
 	linear_velocity.x = 0
 	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
 	$anim.play("explode")
+	yield($anim, "animation_finished")
+	die()
 
 func _on_damage_area_body_entered(body):
 	if ("enemy" in body.get_name()): return

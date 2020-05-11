@@ -3,10 +3,10 @@ extends Area2D
 export var ID = 0
 export var force = 0
 
-onready var sound_shake = preload("res://sfx/sound_shake.wav")
-onready var sound_success = preload("res://sfx/sound_success.wav")
-
 func _ready():
+	reset()
+
+func reset():
 	$particles.emitting = false
 
 func _on_body_enter( body ):
@@ -15,13 +15,13 @@ func _on_body_enter( body ):
 		
 		if force == 0:
 			$anim.play("activated")
-			global.get_player().update_graffiti(1)
+			global.update_graffiti(1)
 			global.show_graffiti(ID)
 			global.pause_bgm()
-			$sound.stream = sound_success
+			$sound.stream = global.sound_success
 			$sound.play(0)
 		else:
-			$sound.stream = sound_shake
+			$sound.stream = global.sound_shake
 			$sound.play(0)
 
 func _on_sound_finished():

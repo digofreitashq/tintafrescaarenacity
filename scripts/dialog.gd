@@ -12,15 +12,12 @@ var phrases = ""
 var current_phrase_index = 0
 var current_pos = 0
 
-var sound_letter = preload("res://sfx/sound_letter.wav")
-var sound_next = preload("res://sfx/sound_next.wav")
-
 signal finished
 
 func _ready():
-	clear()
+	reset()
 
-func clear():
+func reset():
 	$dialog_bg.visible = !(true)
 	$dialog_brace_left.visible = !(true)
 	$dialog_brace_right.visible = !(true)
@@ -85,7 +82,7 @@ func finish():
 	timer_interaction.stop()
 	$speaker.set_text("")
 	$text.set_text("")
-	clear()
+	reset()
 	emit_signal("finished")
 	
 	global.show_player_ui()
@@ -108,7 +105,7 @@ func update_text():
 
 	$text.set_text(phrases[current_phrase_index][1].substr(0,current_pos))
 
-	$sound.stream = sound_letter
+	$sound.stream = global.sound_letter
 	$sound.play()
 	timer_letter.set_wait_time(0.01)
 	timer_letter.start()
@@ -126,7 +123,7 @@ func wait_button():
 			current_pos = 0
 
 			$anim.play("hide_next")
-			$sound.stream = sound_next
+			$sound.stream = global.sound_next
 			$sound.play(0)
 
 			timer_interaction.set_wait_time(0.5)
@@ -136,7 +133,7 @@ func wait_button():
 			timer_letter.start()
 		else:
 			current_pos = phrases[current_phrase_index][1].length()-1
-			$sound.stream = sound_next
+			$sound.stream = global.sound_next
 			$sound.play(0)
 			update_text()
 
