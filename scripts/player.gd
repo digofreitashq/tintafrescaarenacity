@@ -9,6 +9,7 @@ const WALK_SPEED = 250 # pixels/sec
 const JUMP_SPEED = 350
 const WALLJUMP_SPEED = 350
 const BULLET_VELOCITY = 400
+const PUSH = 100
 
 var linear_vel = Vector2()
 var direction = 0

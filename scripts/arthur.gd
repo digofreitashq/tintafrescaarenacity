@@ -139,7 +139,7 @@ func arthur_talks():
 		global.wait_until_signal(2)
 		yield(global, "waited")
 		
-		dialog.show([
+		dialog.display([
 			["Ícaro","Eu já cheguei faz quinze minutos e nada daquele velho..."],
 			])
 		yield(dialog, "finished")
@@ -147,7 +147,7 @@ func arthur_talks():
 		walk_pixels = -1000
 		yield(self, "walked")
 		
-		dialog.show([
+		dialog.display([
 			["Ícaro","E aí, velhote! Tá atrasado..."],
 			["Arthur","Mais respeito, por favor, rapaz."],
 			["Ícaro","Tá bom! Boa tarde..."],
@@ -160,13 +160,13 @@ func arthur_talks():
 		global.wait_until_signal(1)
 		yield(global, "waited")
 		
-		dialog.show([
+		dialog.display([
 			["Arthur","Hunf! \nHoje seu treino será em campo."],
 			["Arthur","Como deve ter percebido, a cidade está infestada desses tais Podres."],
 			])
 		yield(dialog, "finished")
 		player.play_anim("start_scratch")
-		dialog.show([
+		dialog.display([
 			["Ícaro","Podres...?"],
 			["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
 			["Ícaro","Eita. \nE eu vou ter que fazer o quê? Pintura facial neles...?"],
@@ -174,13 +174,13 @@ func arthur_talks():
 		])
 		yield(dialog, "finished")
 		player.play_anim("idle")
-		dialog.show([
+		dialog.display([
 			["Ícaro","Então bora lá..."],
 			["Arthur","Ahm... \nEu disse você! \nSozinho."],
 		])
 		yield(dialog, "finished")
 		arthur_sm.set_state(arthur_sm.states.idle)
-		dialog.show([
+		dialog.display([
 			["Arthur","Mas fique tranquilo que vou ficar olhando de longe."],
 			["Arthur","E de vez em quando vou dar uns palpites."],
 			["Ícaro","Ótimo! \nSe eu morrer, tudo bem, né?"],
@@ -195,7 +195,7 @@ func arthur_talks():
 		$CollisionShape2D.set_disabled(true)
 		
 		player.play_anim("start_scratch")
-		dialog.show([
+		dialog.display([
 			["Ícaro","Vamos lá, né? \nAfinal, o que pode acontecer de ruim?"],
 			])
 		yield(dialog, "finished")

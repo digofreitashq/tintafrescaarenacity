@@ -111,16 +111,16 @@ position = Vector2( 160, 352 )
 position = Vector2( 160, 290 )
 
 [node name="spray_triple" parent="props" instance=ExtResource( 5 )]
-position = Vector2( 738, 480 )
+position = Vector2( 624, 470 )
 
 [node name="box2" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 798, 576 )
+position = Vector2( 928, 426 )
 
 [node name="box3" parent="props" instance=ExtResource( 6 )]
 position = Vector2( 736, 576 )
 
 [node name="box5" parent="props" instance=ExtResource( 6 )]
-position = Vector2( 672, 576 )
+position = Vector2( 614, 586 )
 
 [node name="box4" parent="props" instance=ExtResource( 6 )]
 position = Vector2( 736, 512 )
@@ -134,22 +134,22 @@ force = 1
 pause_mode = 1
 
 [node name="enemy 6" parent="enemies" instance=ExtResource( 7 )]
-position = Vector2( 896, 310 )
+position = Vector2( 1120, 298 )
 sprite_texture = "pato"
 
 [node name="enemy9" parent="enemies" instance=ExtResource( 7 )]
-position = Vector2( 960, 330 )
+position = Vector2( 1088, 362 )
 
 [node name="enemy10" parent="enemies" instance=ExtResource( 7 )]
 position = Vector2( 1408, 5 )
 sprite_texture = "tigre"
 
 [node name="enemy11" parent="enemies" instance=ExtResource( 7 )]
-position = Vector2( 834, 310 )
+position = Vector2( 1312, 320 )
 sprite_texture = "rato"
 
 [node name="enemy12" parent="enemies" instance=ExtResource( 7 )]
-position = Vector2( 768, 266 )
+position = Vector2( 1216, 340 )
 sprite_texture = "porco"
 
 [node name="stage_timer" type="Timer" parent="."]

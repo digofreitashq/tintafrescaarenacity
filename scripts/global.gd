@@ -35,6 +35,9 @@ onready var sound_next = preload("res://sfx/sound_next.wav")
 onready var sound_push = preload("res://sfx/sound_push.wav")
 onready var sound_splash = preload("res://sfx/sound_splash.wav")
 
+onready var spray_normal = preload("res://scenes/spray_normal.tscn")
+onready var spray_triple = preload("res://scenes/spray_triple.tscn")
+
 signal waited
 
 func _ready():
@@ -55,6 +58,9 @@ func get_dialog():
 
 func get_hud():
 	return get_tree().get_current_scene().get_node("screen/hud")
+
+func get_ui():
+	return get_tree().get_current_scene().get_node("screen/hud/ui")
 
 func get_overall():
 	return get_tree().get_current_scene().get_node("screen/overall")
@@ -86,12 +92,6 @@ func is_walljump_collision(body):
 func is_push_collision(body):
 	return "box" in body.get_name()
 
-func show_player_ui(show=true):
-	var stage = get_stage()
-	var ui = stage.get_node("screen/hud/ui")
-	if ui != null: 
-		ui.visible = show
-
 func set_player_control(enable):
 	if enable:
 		allow_movement = true
@@ -120,6 +120,10 @@ func wait_until_signal(seconds):
 func show_graffiti(id):
 	var graffiti = get_tree().get_current_scene().get_node("graffitis").get_node("tilemapgraffiti_%s" % id)
 	graffiti.visible = true
+
+func show_player_ui(show = true):
+	var ui = get_ui()
+	if ui: ui.set_visible(show)
 
 func update_health(value):
 	health += value
@@ -174,6 +178,29 @@ func update_graffiti(value):
 	
 	if (graffitis >= 0):
 		get_hud().get_node("label_sprays").set('text', "%0*d" % [2, graffitis])
+
+func drop_item(body, resistance):
+	#if (resistance - random(1, resistance)) != 0:
+	#	return
+	
+	var obj_class = null
+	
+	if health < 5:
+		obj_class = load("res://scenes/health_sandwich.tscn")
+	else:
+		obj_class = load("res://scenes/spray_normal.tscn")
+	
+	var obj = obj_class.instance()
+	obj._ready()
+	
+	obj.position = body.position
+	
+	get_stage().get_node("props").add_child(obj)
+
+func random(start, end):
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	return rng.randi_range(start,end)
 
 func sort_boxes_zindex(a, b):
 	if a[2] != b[2]: return a[2] < b[2] # Y comparison

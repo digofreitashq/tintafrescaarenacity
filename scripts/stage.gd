@@ -1,6 +1,6 @@
 extends Node
 
-var rng = RandomNumberGenerator.new()
+
 
 onready var sound_siren_police = preload("res://sfx/sound_siren_police.wav")
 onready var sound_siren_ambulance = preload("res://sfx/sound_siren_ambulance.wav")
@@ -16,14 +16,10 @@ func reset():
 	$collisions/tilemapcollision_1.set_visible(false)
 	$timer_sfx.start()
 	$music.pause_mode = true
-	global.show_player_ui()
 	global.get_player().can_reload = false
 
 func random_sound():
-	rng.randomize()
-	var option = rng.randi_range(1,6)
-	
-	match option:
+	match global.random(1,6):
 		1: $sfx.stream = sound_horn_1
 		2: $sfx.stream = sound_horn_2
 		3: $sfx.stream = sound_horn_3
@@ -32,7 +28,7 @@ func random_sound():
 		6: $sfx.stream = sound_siren_ambulance
 	
 	$sfx.play()
-	$timer_sfx.wait_time = rng.randi_range(5,10)
+	$timer_sfx.wait_time = global.random(5,10)
 
 func _on_sfx_finished():
 	$timer_sfx.start()

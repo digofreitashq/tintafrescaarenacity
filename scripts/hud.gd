@@ -14,6 +14,8 @@ func reset():
 	bullets = 0
 	filled = false
 	
+	self.set_visible(true)
+	
 	$bullets.set_texture(global.imgs_bullets[0])
 	$health.set_texture(global.imgs_health[0])
 

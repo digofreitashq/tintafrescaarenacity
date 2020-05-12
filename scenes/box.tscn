@@ -61,10 +61,12 @@ anims/floating = SubResource( 1 )
 anims/idle = SubResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0, -2 )
 shape = SubResource( 3 )
 
 [node name="Area2D_bottom" type="Area2D" parent="."]
+visible = false
 position = Vector2( 0, 32 )
 
 [node name="CollisionShape2D_bottom" type="CollisionShape2D" parent="Area2D_bottom"]
@@ -74,6 +76,7 @@ __meta__ = {
 }
 
 [node name="Area2D_top" type="Area2D" parent="."]
+visible = false
 position = Vector2( 0, -32 )
 
 [node name="CollisionShape2D_top" type="CollisionShape2D" parent="Area2D_top"]
@@ -83,6 +86,7 @@ __meta__ = {
 }
 
 [node name="Area2D_left" type="Area2D" parent="."]
+visible = false
 position = Vector2( -16, 0 )
 
 [node name="CollisionShape2D_left" type="CollisionShape2D" parent="Area2D_left"]
@@ -92,6 +96,7 @@ __meta__ = {
 }
 
 [node name="Area2D_right" type="Area2D" parent="."]
+visible = false
 position = Vector2( 16, 0 )
 
 [node name="CollisionShape2D_right" type="CollisionShape2D" parent="Area2D_right"]

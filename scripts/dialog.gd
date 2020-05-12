@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 var MAX_PHRASE_LENGTH = 120
 
@@ -18,12 +18,13 @@ func _ready():
 	reset()
 
 func reset():
-	$dialog_bg.visible = !(true)
-	$dialog_brace_left.visible = !(true)
-	$dialog_brace_right.visible = !(true)
-	$dialog_next.visible = !(true)
-	$fire.visible = !(true)
-	$skip.visible = !(true)
+	self.set_visible(true)
+	$dialog_bg.visible = false
+	$dialog_brace_left.visible = false
+	$dialog_brace_right.visible = false
+	$dialog_next.visible = false
+	$fire.visible = false
+	$skip.visible = false
 	
 	text = $text
 	speaker = $speaker
@@ -53,7 +54,7 @@ func chunk_message(message):
 
 	return result
 
-func show(messages):
+func display(messages):
 	var speaker_name = ''
 	var message = ''
 

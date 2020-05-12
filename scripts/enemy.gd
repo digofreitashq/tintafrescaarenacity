@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 export var sprite_texture = "cachorro" setget setSpriteTexture, getSpriteTexture
+export var resistance = 2
 
 const FLOOR_NORMAL = Vector2(0, -2)
 
@@ -15,6 +16,7 @@ var direction = 2 if randi() % 2 == 0 else -2
 var anim=""
 
 var state = STATE_WALKING
+var health = resistance
 
 onready var GRAVITY_VEC = Vector2(0, global.GRAVITY)
 onready var detect_floor_left = $detect_floor_left
@@ -26,12 +28,14 @@ func _ready():
 	reset()
 	
 func reset():
+	health = resistance
 	global.update_enemies(1)
 	$sprite.modulate = Color(1,1,1,1)
 	$sprite.set_visible(true)
 
 func die():
 	global.update_enemies(-1)
+	global.drop_item(self, resistance)
 	queue_free()
 
 func _physics_process(delta):

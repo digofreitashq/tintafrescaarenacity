@@ -4,6 +4,8 @@ func _ready():
 	reset()
 
 func reset():
+	self.set_visible(true)
+	
 	$anim.play("reset")
 
 func rodou():
