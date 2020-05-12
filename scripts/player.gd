@@ -61,8 +61,16 @@ func _apply_gravity(delta):
 func _apply_movement(delta):
 	if !global.allow_movement: return
 	
-	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
+	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP, 4, PI/4, false)
 	is_on_floor()
+	
+	# after calling move_and_slide()
+	for index in get_slide_count():
+		var collision = get_slide_collision(index)
+		if collision.collider.is_in_group("bodies"):
+			var impulse = Vector2((-collision.normal * 1000).x,0)
+			collision.collider.apply_central_impulse(impulse)
+			#collision.collider.apply_central_impulse(Vector2(linear_vel.x*10,0))
 	
 	on_floor_before = on_floor
 	on_floor = onair_time < MIN_ONAIR_TIME

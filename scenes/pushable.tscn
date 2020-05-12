@@ -7,8 +7,7 @@
 extents = Vector2( 32, 32 )
 
 [node name="pushable" type="RigidBody2D"]
-mass = 7.14286
-gravity_scale = 10.0
+mass = 50.0
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]

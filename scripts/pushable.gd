@@ -1,7 +1,5 @@
 extends RigidBody2D
 
-func _ready():
-	pass
-
-func _integrate_forces(state):
-	self.angular_velocity = 0.0
+func _physics_process(delta):
+	rotation_degrees = 0
+	if linear_velocity.y < 0: linear_velocity.y = 0

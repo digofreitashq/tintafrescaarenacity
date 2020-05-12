@@ -44,7 +44,8 @@ extents = Vector2( 16, 16 )
 [sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 16, 8 )
 
-[node name="box" type="KinematicBody2D"]
+[node name="box" type="RigidBody2D"]
+mass = 21.4286
 script = ExtResource( 1 )
 
 [node name="box_sm" type="Node" parent="."]
@@ -107,5 +108,7 @@ __meta__ = {
 
 [node name="sound" type="AudioStreamPlayer" parent="."]
 volume_db = -15.0
+[connection signal="body_entered" from="Area2D_bottom" to="." method="_on_Area2D_bottom_body_entered"]
+[connection signal="body_exited" from="Area2D_bottom" to="." method="_on_Area2D_bottom_body_exited"]
 [connection signal="body_entered" from="Area2D_top" to="." method="_on_Area2D_top_body_entered"]
 [connection signal="finished" from="sound" to="." method="_on_sound_finished"]
