@@ -14,6 +14,7 @@ func _ready():
 
 func reset():
 	$collisions/tilemapcollision_1.set_visible(false)
+	$graffitis/tilemapgraffiti_1.set_visible(false)
 	$timer_sfx.start()
 	$music.pause_mode = true
 	global.get_player().can_reload = false

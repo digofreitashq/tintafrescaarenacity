@@ -26,6 +26,7 @@ var skip_dialog = false
 var knows_walljump = true
 var jump_released = true
 var can_reload = false
+var last_pull_body = null
 
 onready var sprite = $sprite
 onready var dust = $dust
@@ -35,6 +36,7 @@ onready var spray_particles = $spray_particles
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
+onready var timer_wallslide = $timer_wallslide
 onready var timer_idle = $timer_idle
 
 onready var bullet = preload("res://scenes/bullet.tscn")
@@ -64,13 +66,13 @@ func _apply_movement(delta):
 	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP, 4, PI/4, false)
 	is_on_floor()
 	
-	# after calling move_and_slide()
 	for index in get_slide_count():
 		var collision = get_slide_collision(index)
+		var impulse = null
+		
 		if collision.collider.is_in_group("bodies"):
-			var impulse = Vector2((-collision.normal * 1000).x,0)
+			impulse = Vector2((-collision.normal * 1000).x,0)
 			collision.collider.apply_central_impulse(impulse)
-			#collision.collider.apply_central_impulse(Vector2(linear_vel.x*10,0))
 	
 	on_floor_before = on_floor
 	on_floor = onair_time < MIN_ONAIR_TIME
@@ -98,6 +100,14 @@ func is_same_wall():
 func is_pushing():
 	return round(linear_vel.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
 
+func is_pulling():
+	var pull_body = get_pull_body()
+	if Input.is_action_pressed("move_down") and pull_body:
+		last_pull_body = pull_body
+		return true
+	else:
+		return false
+
 func _handle_move_input():
 	if Input.is_action_pressed("skip") and !skip_dialog:
 		skip_dialog = true
@@ -121,7 +131,7 @@ func _handle_move_input():
 				if player_sm.is_on(player_sm.states.push):
 					player_sm.set_state(player_sm.states.idle)
 			
-			if not Input.is_action_pressed("move_right"):
+			if not Input.is_action_pressed("move_right") and not player_sm.is_on(player_sm.states.pull):
 				siding_left = true
 			
 			play_anim()
@@ -137,10 +147,14 @@ func _handle_move_input():
 				if player_sm.is_on(player_sm.states.push):
 					player_sm.set_state(player_sm.states.idle)
 				
-			if not Input.is_action_pressed("move_left"):
+			if not Input.is_action_pressed("move_left") and not player_sm.is_on(player_sm.states.pull):
 				siding_left = false
 			
 			play_anim()
+	
+	if player_sm.is_on(player_sm.states.pull):
+		var impulse = Vector2(linear_vel.x*3,0)
+		last_pull_body.apply_central_impulse(impulse)
 	
 	if Input.is_action_pressed("shoot"):
 		shoot()
@@ -151,17 +165,12 @@ func _handle_move_input():
 			jump()
 		elif not Input.is_action_pressed("jump") and not jump_released:
 			jump_released = true
-	elif player_sm.is_on(player_sm.states.fall):
+	elif player_sm.is_on(player_sm.states.fall) and timer_wallslide.is_stopped():
 		if Input.is_action_pressed("jump") and is_opposite_wall():
 			wall_jump()
 		elif not Input.is_action_pressed("jump") and not jump_released:
 			jump_released = true
-	elif player_sm.is_on([player_sm.states.jump, player_sm.states.wall_jump]) and onair_time < MAX_ONAIR_TIME:
-		if Input.is_action_pressed("jump") and is_opposite_wall():
-			wall_jump()
-		elif Input.is_action_pressed("jump"):
-			jump()
-	elif knows_walljump and player_sm.is_on([player_sm.states.wall_slide]):
+	elif knows_walljump and player_sm.is_on([player_sm.states.wall_slide])  and timer_wallslide.is_stopped():
 		if is_opposite_wall():
 			if Input.is_action_pressed("jump"):
 				wall_jump()
@@ -279,6 +288,16 @@ func push_direction():
 		result = 1
 	
 	return result
+
+func get_pull_body():
+	if siding_left:
+		for body in $left_wall.get_overlapping_bodies():
+			if body.is_in_group("bodies"):
+				return body
+	else:
+		for body in $right_wall.get_overlapping_bodies():
+			if body.is_in_group("bodies"):
+				return body
 
 func shoot():
 	if not timer_shoot.is_stopped():

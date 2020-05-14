@@ -6,6 +6,7 @@ func _ready():
 	add_state("jump")
 	add_state("fall")
 	add_state("push")
+	add_state("pull")
 	add_state("wall_slide")
 	add_state("wall_jump")
 	add_state("damage")
@@ -45,8 +46,13 @@ func _get_transition(delta):
 				var push_direction = parent.push_direction()
 				if (parent.siding_left and push_direction == -1) or (not parent.siding_left and push_direction == 1):
 					return states.push
+				else:
+					return states.run
 				
-				return states.run
+			elif parent.is_pulling():
+				var push_direction = parent.push_direction()
+				if (parent.siding_left and push_direction == -1) or (not parent.siding_left and push_direction == 1):
+					return states.pull
 		states.run:
 			if not parent.on_floor:
 				if parent.linear_vel.y < 0:
@@ -78,8 +84,6 @@ func _get_transition(delta):
 				return states.idle
 			elif parent.is_same_wall():
 				return states.wall_slide
-			elif parent.linear_vel.y < 0:
-				return states.jump
 		states.push:
 			if not parent.on_floor:
 				if parent.linear_vel.y < 0:
@@ -88,6 +92,15 @@ func _get_transition(delta):
 					return states.fall
 			
 			if round(parent.linear_vel.x) == 0:
+				return states.idle
+		states.pull:
+			if not parent.on_floor:
+				if parent.linear_vel.y < 0:
+					return states.jump
+				elif round(parent.linear_vel.y) > 0:
+					return states.fall
+			
+			if round(parent.linear_vel.x) == 0 and not parent.is_pulling():
 				return states.idle
 		states.wall_slide:
 			if parent.on_floor:
@@ -143,15 +156,21 @@ func _enter_state(new_state, old_state):
 			parent.enable_dust(Vector2(0,16))
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("push")
+		states.pull:
+			parent.enable_dust(Vector2(0,16))
+			parent.play_sound(global.sound_wallslide)
+			parent.play_anim("push")
 		states.wall_slide:
 			parent.on_floor = false
 			parent.enable_dust(Vector2(parent.wall_direction()*20,0))
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("wall_slide")
+			parent.timer_wallslide.start()
 		states.wall_jump:
 			parent.on_floor = false
 			parent.disable_dust()
 			parent.play_anim("wall_jump")
+			parent.timer_wallslide.start()
 		states.damage:
 			parent.on_floor = false
 			parent.disable_dust()

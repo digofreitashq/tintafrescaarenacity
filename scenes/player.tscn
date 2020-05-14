@@ -968,7 +968,7 @@ z_index = 1
 texture = ExtResource( 5 )
 vframes = 8
 hframes = 16
-frame = 34
+frame = 60
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle_right"
@@ -1053,6 +1053,10 @@ one_shot = true
 
 [node name="timer_idle" type="Timer" parent="."]
 wait_time = 10.0
+one_shot = true
+
+[node name="timer_wallslide" type="Timer" parent="."]
+wait_time = 0.2
 one_shot = true
 
 [node name="state_label" type="Label" parent="."]
