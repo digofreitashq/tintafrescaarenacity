@@ -7,7 +7,7 @@ func _ready():
 	reset()
 
 func reset():
-	#start_game() # PULA
+	start_game() # PULA
 	global.show_player_ui(false)
 	$music.play(0)
 	$anim.play("disclaimer")

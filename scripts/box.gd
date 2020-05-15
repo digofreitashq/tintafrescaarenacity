@@ -2,20 +2,33 @@ extends RigidBody2D
 
 var on_floor = false
 var can_play_sound = true
+var follow_player = false
 
 onready var box_sm = $box_sm
 onready var anim = $anim
 onready var player = global.get_player()
+onready var distance_from_player = $CollisionShape2D.shape.extents.x + player.get_node("CollisionShape2D").shape.extents.x*2
 
 func _ready():
 	reset()
 
 func reset():
+	follow_player = false
 	global.boxes.append(self)
 
 func _physics_process(delta):
 	rotation_degrees = 0
+	
 	if linear_velocity.y < 0: linear_velocity.y = 0
+	
+	if follow_player:
+		linear_velocity.x = player.linear_vel.x
+		var direction = (player.global_position - global_position)
+		if abs(direction.x) > distance_from_player:
+			if player.siding_left:
+				global_position.x = player.global_position.x - distance_from_player
+			else:
+				global_position.x = player.global_position.x + distance_from_player
 
 func check_surface():
 	var in_sewer = false

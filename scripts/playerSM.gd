@@ -94,13 +94,7 @@ func _get_transition(delta):
 			if round(parent.linear_vel.x) == 0:
 				return states.idle
 		states.pull:
-			if not parent.on_floor:
-				if parent.linear_vel.y < 0:
-					return states.jump
-				elif round(parent.linear_vel.y) > 0:
-					return states.fall
-			
-			if round(parent.linear_vel.x) == 0 and not parent.is_pulling():
+			if not parent.is_pulling():
 				return states.idle
 		states.wall_slide:
 			if parent.on_floor:
@@ -157,7 +151,11 @@ func _enter_state(new_state, old_state):
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("push")
 		states.pull:
-			parent.enable_dust(Vector2(0,16))
+			if parent.siding_left:
+				parent.enable_dust(Vector2(-32,32))
+			else:
+				parent.enable_dust(Vector2(32,32))
+			
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("push")
 		states.wall_slide:
@@ -184,3 +182,6 @@ func _exit_state(old_state, new_state):
 				parent.siding_left = !parent.siding_left
 		states.idle:
 			parent.timer_idle.stop()
+		states.push:
+			if parent.last_pull_body:
+				parent.last_pull_body.follow_player = false

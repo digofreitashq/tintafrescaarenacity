@@ -1,41 +1,29 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/spray_here.gd" type="Script" id=1]
 [ext_resource path="res://sprites/spray_here_1.png" type="Texture" id=2]
 [ext_resource path="res://sfx/sound_graffiti.wav" type="AudioStream" id=3]
-[ext_resource path="res://sprites/dust.png" type="Texture" id=4]
 
 [sub_resource type="CanvasItemMaterial" id=1]
 blend_mode = 1
 
-[sub_resource type="Animation" id=2]
-length = 5.0
+[sub_resource type="Animation" id=6]
+resource_name = "hide"
 tracks/0/type = "value"
-tracks/0/path = NodePath("sprite:self_modulate:a")
+tracks/0/path = NodePath("sprite:self_modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
 "times": PoolRealArray( 0, 0.3 ),
-"transitions": PoolRealArray( 1, 1 ),
+"transitions": PoolRealArray( 7.46426, 3.86374 ),
 "update": 0,
-"values": [ 1.0, 0.0 ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("particles:emitting")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ true ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=4]
+resource_name = "idle"
 length = 2.0
 loop = true
 tracks/0/type = "value"
@@ -45,55 +33,78 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.5, 1, 1.5 ),
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("sprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1.6, 2 ),
+"transitions": PoolRealArray( 0.241484, 0.466518, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, -16 ), Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprite:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 0, 1, 2, 3 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("sprite:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprite:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.7 ),
+"transitions": PoolRealArray( 6.06286 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
 
-[sub_resource type="RectangleShape2D" id=4]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 32, 30 )
-
-[sub_resource type="CanvasItemMaterial" id=5]
-blend_mode = 1
-
-[sub_resource type="Gradient" id=6]
-offsets = PoolRealArray( 0, 0.302, 1 )
-colors = PoolColorArray( 1, 1, 1, 1, 0.39221, 0.206635, 0.476563, 1, 0.180392, 0.180392, 0.180392, 0 )
-
-[sub_resource type="GradientTexture" id=7]
-gradient = SubResource( 6 )
-
-[sub_resource type="Curve" id=8]
-max_value = 100.0
-_data = [ Vector2( 0, 79.5062 ), 0.0, 24.6591, 0, 0, Vector2( 1, 100 ), 0.0, 0.0, 0, 0 ]
-
-[sub_resource type="CurveTexture" id=9]
-curve = SubResource( 8 )
-
-[sub_resource type="Curve" id=10]
-max_value = 2.0
-_data = [ Vector2( 0, 1.23636 ), 0.0, 0.0, 0, 0, Vector2( 1, 2 ), 0.0, 0.0, 0, 0 ]
-
-[sub_resource type="CurveTexture" id=11]
-curve = SubResource( 10 )
-
-[sub_resource type="ParticlesMaterial" id=12]
-emission_shape = 2
-emission_box_extents = Vector3( 10, 10, 40 )
-flag_rotate_y = true
-flag_disable_z = true
-gravity = Vector3( 0, 0, 0 )
-initial_velocity = 1.0
-angular_velocity = 26.0
-orbit_velocity = 0.0
-orbit_velocity_random = 0.0
-radial_accel = 1.0
-radial_accel_random = 0.3
-radial_accel_curve = SubResource( 9 )
-damping = 10.0
-scale_curve = SubResource( 11 )
-color_ramp = SubResource( 7 )
 
 [node name="spray_here" type="Area2D"]
 material = SubResource( 1 )
@@ -104,17 +115,17 @@ modulate = Color( 1, 1, 0.988235, 1 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 hframes = 4
-frame = 3
 
 [node name="anim" type="AnimationPlayer" parent="."]
-autoplay = "spin"
+autoplay = "idle"
 playback_speed = 3.0
-anims/activated = SubResource( 2 )
+anims/hide = SubResource( 6 )
+anims/idle = SubResource( 4 )
 anims/spin = SubResource( 3 )
 
 [node name="collision" type="CollisionShape2D" parent="."]
 visible = false
-shape = SubResource( 4 )
+shape = SubResource( 5 )
 
 [node name="sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 3 )
@@ -126,15 +137,9 @@ position = Vector2( -1.90735e-06, -1.90735e-06 )
 scale = Vector2( 3.2, 3.2 )
 pause_particles = false
 
-[node name="particles" type="Particles2D" parent="."]
-material = SubResource( 5 )
-rotation = 3.13794
-z_index = 1
-emitting = false
-amount = 100
+[node name="timer_spin" type="Timer" parent="."]
+wait_time = 0.5
 one_shot = true
-explosiveness = 1.0
-process_material = SubResource( 12 )
-texture = ExtResource( 4 )
 [connection signal="body_entered" from="." to="." method="_on_body_enter"]
 [connection signal="finished" from="sound" to="." method="_on_sound_finished"]
+[connection signal="timeout" from="timer_spin" to="." method="_on_timer_spin_timeout"]

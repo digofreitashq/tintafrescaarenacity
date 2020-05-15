@@ -81,7 +81,10 @@ func _apply_movement(delta):
 		emit_signal("grounded")
 	
 	if on_floor:
-		linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.5)
+		if player_sm.is_on([player_sm.states.push, player_sm.states.pull]):
+			linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED/2, 0.5)
+		else:
+			linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.5)
 	else:
 		linear_vel.x = lerp(linear_vel.x, direction * WALK_SPEED, 0.1)
 
@@ -101,9 +104,22 @@ func is_pushing():
 	return round(linear_vel.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
 
 func is_pulling():
-	var pull_body = get_pull_body()
+	if Input.is_action_just_released("move_down"):
+		if last_pull_body:
+			last_pull_body.follow_player = false
+		
+		return false
+	
+	var pull_body = null
+	
+	if player_sm.is_on(player_sm.states.pull):
+		pull_body = last_pull_body
+	else:
+		pull_body = get_pull_body()
+	
 	if Input.is_action_pressed("move_down") and pull_body:
 		last_pull_body = pull_body
+		last_pull_body.follow_player = true
 		return true
 	else:
 		return false
@@ -151,10 +167,6 @@ func _handle_move_input():
 				siding_left = false
 			
 			play_anim()
-	
-	if player_sm.is_on(player_sm.states.pull):
-		var impulse = Vector2(linear_vel.x*3,0)
-		last_pull_body.apply_central_impulse(impulse)
 	
 	if Input.is_action_pressed("shoot"):
 		shoot()
