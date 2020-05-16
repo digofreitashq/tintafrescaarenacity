@@ -8,7 +8,7 @@ const SLOPE_SLIDE_STOP = 25.0
 const MIN_ONAIR_TIME = 0.1
 const WALK_SPEED = 100 # pixels/sec
 
-var linear_vel = Vector2()
+var linear_velocity = Vector2()
 var target_speed = 0
 var onair_time = 0
 var on_floor = false
@@ -44,17 +44,17 @@ func reset():
 	arthur_talks()
 
 func _apply_gravity(delta):
-	linear_vel.y += delta * global.GRAVITY
+	linear_velocity.y += delta * global.GRAVITY
 
-func _apply_movement(delta):
-	linear_vel = move_and_slide(linear_vel, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
+func _apply_movement(_delta):
+	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL, SLOPE_SLIDE_STOP)
 	
 	if is_on_floor():
 		onair_time = 0
 
 	on_floor = onair_time < MIN_ONAIR_TIME
 	target_speed *= WALK_SPEED
-	linear_vel.x = lerp(linear_vel.x, target_speed, 0.1)
+	linear_velocity.x = lerp(linear_velocity.x, target_speed, 0.1)
 	$sprite.scale = Vector2(-PLAYER_SCALE if siding_left else PLAYER_SCALE, 2.0)
 	
 	if abs(initial_position_x - $sprite.global_position.x) > abs(walk_pixels):

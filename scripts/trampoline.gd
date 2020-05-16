@@ -3,8 +3,8 @@ extends RigidBody2D
 var on_floor = false
 var can_play_sound = true
 var follow_player = false
+var is_bouncing = false
 
-onready var box_sm = $box_sm
 onready var anim = $anim
 onready var player = global.get_player()
 onready var distance_from_player = $CollisionShape2D.shape.extents.x + player.get_node("CollisionShape2D").shape.extents.x*2
@@ -13,9 +13,10 @@ func _ready():
 	reset()
 
 func reset():
-	anim.play("idle")
-	follow_player = false
 	global.boxes.append(self)
+	anim.play("idle")
+	is_bouncing = false
+	follow_player = false
 
 func _physics_process(_delta):
 	rotation_degrees = 0
@@ -37,13 +38,9 @@ func check_surface():
 		if global.is_sewer(body):
 			in_sewer = true
 	
-	if box_sm.is_on(box_sm.states.idle):
-		if in_sewer:
-			box_sm.set_state(box_sm.states.floating)
-			play_sound(global.sound_splash)
-	elif box_sm.is_on(box_sm.states.floating):
-		if not in_sewer:
-			box_sm.set_state(box_sm.states.idle)
+	if in_sewer:
+		#derreter com fumaça e sumir
+		queue_free()
 
 func play_sound(stream, force=false):
 	if not force and not can_play_sound: return
@@ -56,8 +53,25 @@ func _on_sound_finished():
 	can_play_sound = true
 
 func _on_Area2D_top_body_entered(body):
-	if global.is_box(body):
-		global.set_all_zindex()
+	if body != self and body.is_in_group("bodies"):
+		var body_linear_velocity
+		
+		if body.linear_velocity.y < 10:
+			body_linear_velocity = Vector2(0,30)
+		else:
+			body_linear_velocity = body.linear_velocity
+		
+		$sound.play(0)
+		anim.play("bounce_start")
+		
+		if global.is_player(body):
+			body.linear_velocity = Vector2(-body_linear_velocity.x,max(-body_linear_velocity.y*2, -player.WALK_SPEED*3))
+		else:
+			body.apply_central_impulse(Vector2(-body_linear_velocity.x,-body_linear_velocity.y*body.mass))
+		
+		yield(anim, "animation_finished")
+		anim.play("bounce_end")
+		
 
 func _on_Area2D_bottom_body_entered(_body):
 	check_surface()

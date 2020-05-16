@@ -17,6 +17,7 @@ var imgs_health = {}
 var imgs_bullets = {}
 
 var boxes = []
+var trampolines = []
 
 onready var sound_fill = preload("res://sfx/sound_fill.wav")
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
@@ -61,7 +62,9 @@ func get_hud():
 	return get_tree().get_current_scene().get_node("screen/hud")
 
 func get_ui():
-	return get_tree().get_current_scene().get_node("screen/hud/ui")
+	var hud = get_hud()
+	if hud: return hud.get_node("ui")
+	return null
 
 func get_overall():
 	return get_tree().get_current_scene().get_node("screen/overall")
@@ -91,7 +94,7 @@ func is_walljump_collision(body):
 	return "tilemapcollision" in body.get_name()
 
 func is_push_collision(body):
-	return "box" in body.get_name()
+	return not is_player(body) and body.is_in_group("bodies")
 
 func set_player_control(enable):
 	if enable:
@@ -181,8 +184,8 @@ func update_graffiti(value):
 		get_hud().get_node("label_sprays").set('text', "%0*d" % [2, graffitis])
 
 func drop_item(body, resistance):
-	#if (resistance - random(1, resistance)) != 0:
-	#	return
+	if (resistance - random(1, resistance)) != 0:
+		return
 	
 	var obj_class = null
 	
@@ -203,7 +206,7 @@ func random(start, end):
 	rng.randomize()
 	return rng.randi_range(start,end)
 
-func sort_boxes_zindex(a, b):
+func sort_zindex(a, b):
 	if a[2] != b[2]: return a[2] < b[2] # Y comparison
 	elif a[1] != b[1]: return a[1] < b[1] # X comparison
 	else: return a[0].get_instance_id() < b[0].get_instance_id()
@@ -213,15 +216,17 @@ func set_all_zindex():
 	var index = 0
 	
 	if boxes.empty(): return
+	if trampolines.empty(): return
 	
-	for box in boxes:
-		info.append([box, box.position.x, box.position.y])
+	for bodies in [trampolines, boxes]:
+		for body in bodies:
+			info.append([body, body.position.x, body.position.y])
 	
-	info.sort_custom(self, "sort_boxes_zindex")
+	info.sort_custom(self, "sort_zindex")
 	info.invert()
 	
-	for box in info:
-		box[0].z_index = index
+	for body in info:
+		body[0].z_index = index
 		index += 1
 	
 	get_player().z_index = index
@@ -236,11 +241,12 @@ func reset_stage():
 	allow_movement = true
 	
 	boxes.clear()
+	trampolines.clear()
 	
 	var stage = get_stage()
 	
 	if stage and stage.get_name().begins_with("stage"):
-		for node in stage.get_node("graffiti").get_children():
+		for node in stage.get_node("graffitis").get_children():
 			node.set_visible(false)
 		
 		for node in stage.get_node("props").get_children():

@@ -14,7 +14,7 @@ const object_frames = {
 	}
 const object_classes = {
 	"box": preload("res://scenes/box.tscn"),
-	"trampoline": preload("res://scenes/box.tscn")
+	"trampoline": preload("res://scenes/trampoline.tscn")
 	}
 
 var frame_changed = false

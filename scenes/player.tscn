@@ -393,6 +393,7 @@ tracks/1/keys = {
 }
 
 [sub_resource type="Animation" id=21]
+length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
@@ -400,13 +401,14 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.3, 0.6 ),
+"times": PoolRealArray( 0, 0.2, 0.4 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 31, 30, 29 ]
 }
 
 [sub_resource type="Animation" id=22]
+length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
@@ -414,7 +416,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.3, 0.6 ),
+"times": PoolRealArray( 0, 0.2, 0.4 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 27, 26, 25 ]
@@ -779,7 +781,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.4 ),
+"times": PoolRealArray( 0, 0.1, 0.3 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 9, 10, 11 ]
@@ -794,7 +796,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.4 ),
+"times": PoolRealArray( 0, 0.1, 0.3 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 13, 14, 15 ]
@@ -893,8 +895,10 @@ tracks/0/keys = {
 extents = Vector2( 6, 22 )
 
 [sub_resource type="RectangleShape2D" id=47]
+extents = Vector2( 10, 20 )
 
 [sub_resource type="RectangleShape2D" id=48]
+extents = Vector2( 10, 20 )
 
 [sub_resource type="CanvasItemMaterial" id=49]
 particles_animation = true
@@ -968,7 +972,7 @@ z_index = 1
 texture = ExtResource( 5 )
 vframes = 8
 hframes = 16
-frame = 60
+frame = 4
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle_right"
@@ -1026,7 +1030,7 @@ light_mask = 0
 position = Vector2( 0, -10 )
 
 [node name="sound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 6 )
+stream = ExtResource( 14 )
 volume_db = -5.0
 
 [node name="sound_bonus" type="AudioStreamPlayer" parent="."]
@@ -1073,16 +1077,14 @@ align = 1
 uppercase = true
 
 [node name="left_wall" type="Area2D" parent="."]
-visible = false
-position = Vector2( -14, 12 )
+position = Vector2( -14, 0 )
 
 [node name="collision_shape" type="CollisionShape2D" parent="left_wall"]
 position = Vector2( -9.53674e-07, 0 )
 shape = SubResource( 47 )
 
 [node name="right_wall" type="Area2D" parent="."]
-visible = false
-position = Vector2( 14, 12 )
+position = Vector2( 14, 0 )
 
 [node name="collision_shape" type="CollisionShape2D" parent="right_wall"]
 position = Vector2( 9.53674e-07, 0 )

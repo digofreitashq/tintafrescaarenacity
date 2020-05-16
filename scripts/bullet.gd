@@ -5,13 +5,14 @@ var disabled = false
 onready var sprite = $sprite
 onready var collision = $Area2D/collision_check
 onready var timer_wait = $timer_wait
+onready var timer_disable = $timer_disable
 
 func _ready():
 	reset()
 
 func reset():
 	sprite.visible = true
-	$timer_disable.start()
+	timer_disable.start()
 	
 	if (global.bullet_type == global.BULLET_NORMAL):
 		$anim.play("normal")

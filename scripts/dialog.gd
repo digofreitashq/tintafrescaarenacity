@@ -55,9 +55,6 @@ func chunk_message(message):
 	return result
 
 func display(messages):
-	var speaker_name = ''
-	var message = ''
-
 	phrases = messages
 
 	current_phrase_index = 0

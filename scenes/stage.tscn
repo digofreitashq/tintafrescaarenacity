@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://scripts/stage.gd" type="Script" id=1]
 [ext_resource path="res://scenes/parallax_bg.tscn" type="PackedScene" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://scenes/overall.tscn" type="PackedScene" id=17]
 [ext_resource path="res://scenes/sewer.tscn" type="PackedScene" id=18]
 [ext_resource path="res://scenes/sketch.tscn" type="PackedScene" id=19]
+[ext_resource path="res://scenes/trampoline.tscn" type="PackedScene" id=20]
 
 [node name="stage" type="Node"]
 pause_mode = 2
@@ -132,7 +133,7 @@ position = Vector2( 928, 214 )
 [node name="box4" parent="props" groups=[
 "bodies",
 ] instance=ExtResource( 6 )]
-position = Vector2( 480, 502 )
+position = Vector2( 416, 460 )
 
 [node name="spray_here_1" parent="props" instance=ExtResource( 14 )]
 position = Vector2( 64, 288 )
@@ -140,11 +141,19 @@ ID = 1
 initial_force = 4
 
 [node name="sketch" parent="props" instance=ExtResource( 19 )]
-position = Vector2( 672, 448 )
-initial_force = 5
+position = Vector2( 608, 446 )
+object = "trampoline"
+
+[node name="sketch2" parent="props" instance=ExtResource( 19 )]
+position = Vector2( 672, 446 )
 
 [node name="sewer" parent="props" instance=ExtResource( 18 )]
 position = Vector2( 992, 606 )
+
+[node name="trampoline" parent="props" groups=[
+"bodies",
+] instance=ExtResource( 20 )]
+position = Vector2( 256, 586 )
 
 [node name="enemies" type="Node2D" parent="."]
 pause_mode = 1
@@ -191,7 +200,9 @@ volume_db = -13.0
 [node name="chars" type="Node2D" parent="."]
 position = Vector2( 93, 586 )
 
-[node name="player" parent="chars" instance=ExtResource( 9 )]
+[node name="player" parent="chars" groups=[
+"bodies",
+] instance=ExtResource( 9 )]
 pause_mode = 1
 
 [node name="arthur" parent="chars" instance=ExtResource( 10 )]

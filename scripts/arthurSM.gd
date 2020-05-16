@@ -14,20 +14,20 @@ func _state_logic(delta):
 	parent._apply_gravity(delta)
 	parent._apply_movement(delta)
 	
-func _get_transition(delta):
+func _get_transition(_delta):
 	match state:
 		states.idle:
 			if not parent.on_floor:
-				if round(parent.linear_vel.y) > 0:
+				if round(parent.linear_velocity.y) > 0:
 					return states.fall
-			elif round(parent.linear_vel.x) != 0:
+			elif round(parent.linear_velocity.x) != 0:
 				return states.run
 		
 		states.run:
 			if not parent.on_floor:
-				if round(parent.linear_vel.y) > 0:
+				if round(parent.linear_velocity.y) > 0:
 					return states.fall
-			elif round(parent.linear_vel.x) == 0:
+			elif round(parent.linear_velocity.x) == 0:
 				return states.idle
 		
 		states.fall:
@@ -36,14 +36,14 @@ func _get_transition(delta):
 		
 		states.eating:
 			if not parent.on_floor:
-				if round(parent.linear_vel.y) > 0:
+				if round(parent.linear_velocity.y) > 0:
 					return states.fall
-			elif round(parent.linear_vel.x) != 0:
+			elif round(parent.linear_velocity.x) != 0:
 				return states.run
 	
 	return null
 
-func _enter_state(new_state, old_state):
+func _enter_state(new_state, _old_state):
 	match new_state:
 		states.idle:
 			parent.play_anim("idle")

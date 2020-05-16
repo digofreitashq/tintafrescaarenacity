@@ -1,7 +1,5 @@
 extends Node
 
-
-
 onready var sound_siren_police = preload("res://sfx/sound_siren_police.wav")
 onready var sound_siren_ambulance = preload("res://sfx/sound_siren_ambulance.wav")
 onready var sound_horn_1 = preload("res://sfx/sound_horn_1.wav")

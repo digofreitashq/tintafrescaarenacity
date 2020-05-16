@@ -5,8 +5,10 @@ func _ready():
 	add_state("shoot")
 	call_deferred("set_state", states.none)
 
-func _enter_state(new_state, old_state):
-	if new_state != states.shoot: return
+func _enter_state(new_state, _old_state):
+	if new_state != states.shoot: 
+		parent.player_sm._enter_state(parent.player_sm.state,parent.player_sm.state)
+		return
 	
 	match parent.player_sm.state:
 		parent.player_sm.states.idle:
