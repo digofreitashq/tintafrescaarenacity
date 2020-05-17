@@ -2,7 +2,7 @@
 
 [ext_resource path="res://scripts/spray_triple.gd" type="Script" id=1]
 [ext_resource path="res://sprites/spray_green.png" type="Texture" id=2]
-[ext_resource path="res://sfx/sound_coin.wav" type="AudioStream" id=3]
+[ext_resource path="res://sfx/sound_spray_can.wav" type="AudioStream" id=3]
 
 [sub_resource type="Animation" id=1]
 resource_name = "spin"
@@ -85,7 +85,7 @@ anims/taken = SubResource( 2 )
 visible = false
 shape = SubResource( 3 )
 
-[node name="sound" type="AudioStreamPlayer2D" parent="."]
+[node name="sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
 
 [node name="enabler" type="VisibilityEnabler2D" parent="."]

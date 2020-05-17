@@ -56,8 +56,8 @@ func _on_Area2D_top_body_entered(body):
 	if body != self and body.is_in_group("bodies"):
 		var body_linear_velocity
 		
-		if body.linear_velocity.y < 10:
-			body_linear_velocity = Vector2(0,30)
+		if body.linear_velocity.y < 100:
+			body_linear_velocity = Vector2(0,100)
 		else:
 			body_linear_velocity = body.linear_velocity
 		
@@ -65,9 +65,10 @@ func _on_Area2D_top_body_entered(body):
 		anim.play("bounce_start")
 		
 		if global.is_player(body):
-			body.linear_velocity = Vector2(-body_linear_velocity.x,max(-body_linear_velocity.y*2, -player.WALK_SPEED*3))
+			body.linear_velocity = Vector2(-body_linear_velocity.x,max(-body_linear_velocity.y*2, -player.WALK_SPEED*2))
+			body.jump_released = false
 		else:
-			body.apply_central_impulse(Vector2(-body_linear_velocity.x,-body_linear_velocity.y*body.mass))
+			body.apply_central_impulse(Vector2(-body_linear_velocity.x,-body_linear_velocity.y*body.mass*2))
 		
 		yield(anim, "animation_finished")
 		anim.play("bounce_end")

@@ -7,7 +7,7 @@
 [sub_resource type="CanvasItemMaterial" id=1]
 blend_mode = 1
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=2]
 resource_name = "hide"
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:self_modulate")
@@ -22,7 +22,7 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=3]
 resource_name = "idle"
 length = 2.0
 loop = true
@@ -63,7 +63,7 @@ tracks/2/keys = {
 "values": [ Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=4]
 length = 0.8
 loop = true
 tracks/0/type = "value"
@@ -119,15 +119,15 @@ hframes = 4
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle"
 playback_speed = 3.0
-anims/hide = SubResource( 6 )
-anims/idle = SubResource( 4 )
-anims/spin = SubResource( 3 )
+anims/hide = SubResource( 2 )
+anims/idle = SubResource( 3 )
+anims/spin = SubResource( 4 )
 
 [node name="collision" type="CollisionShape2D" parent="."]
 visible = false
 shape = SubResource( 5 )
 
-[node name="sound" type="AudioStreamPlayer2D" parent="."]
+[node name="sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
 volume_db = -10.0
 

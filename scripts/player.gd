@@ -2,14 +2,17 @@ extends KinematicBody2D
 
 const PLAYER_SCALE = 2
 const FLOOR_NORMAL = Vector2(0, -1)
-const SLOPE_SLIDE_STOP = 25.0
+const SLOPE_SLIDE_STOP = false
 const MIN_ONAIR_TIME = 0.1
 const MAX_ONAIR_TIME = 0.2
-const WALK_SPEED = 250 # pixels/sec
-const JUMP_SPEED = 350
+const WALK_SPEED = 250
+const JUMP_SPEED = 450
 const WALLJUMP_SPEED = 350
 const BULLET_VELOCITY = 400
 const PUSH = 100
+
+const WALL_LEFT = -1
+const WALL_RIGHT = 1
 
 var linear_velocity = Vector2()
 var direction = 0
@@ -26,6 +29,7 @@ var skip_dialog = false
 var knows_walljump = true
 var jump_released = true
 var can_reload = false
+var can_fall = false
 var last_pull_body = null
 
 onready var sprite = $sprite
@@ -37,6 +41,7 @@ onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
 onready var timer_wallslide = $timer_wallslide
+onready var timer_wallslide_cooldown = $timer_wallslide_cooldown
 onready var timer_idle = $timer_idle
 
 onready var bullet = preload("res://scenes/bullet.tscn")
@@ -99,16 +104,16 @@ func _gravity_wall_slide():
 	linear_velocity.y = min(linear_velocity.y, max_vel)
 
 func is_opposite_wall():
-	return (wall_direction() == 1 and Input.is_action_pressed("move_left")) or (wall_direction() == -1 and Input.is_action_pressed("move_right"))
+	return (wall_direction() == WALL_RIGHT and Input.is_action_pressed("move_left")) or (wall_direction() == WALL_LEFT and Input.is_action_pressed("move_right"))
 
 func is_same_wall():
-	return (wall_direction() == -1 and Input.is_action_pressed("move_left")) or (wall_direction() == 1 and Input.is_action_pressed("move_right"))
+	return (wall_direction() == WALL_LEFT and Input.is_action_pressed("move_left")) or (wall_direction() == WALL_RIGHT and Input.is_action_pressed("move_right"))
 
 func is_pushing():
 	return round(linear_velocity.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
 
 func is_pulling():
-	if last_pull_body:
+	if last_pull_body and last_pull_body.follow_player:
 		return true
 	else:
 		return false
@@ -129,10 +134,10 @@ func _handle_move_input():
 		direction += -1
 		
 		if not siding_left:
-			if player_sm.is_on(player_sm.states.wall_jump):
+			if not Input.is_action_pressed("jump") and player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
 				player_sm.set_state(player_sm.states.fall)
 			
-			if not Input.is_action_pressed("move_right") and not player_sm.is_on([player_sm.states.push, player_sm.states.pull]):
+			if not Input.is_action_pressed("move_right") and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.grab, player_sm.states.pull]):
 				siding_left = true
 			
 			play_anim()
@@ -141,10 +146,10 @@ func _handle_move_input():
 		direction += 1
 		
 		if siding_left:
-			if player_sm.is_on(player_sm.states.wall_jump):
+			if not Input.is_action_pressed("jump") and player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
 				player_sm.set_state(player_sm.states.fall)
 			
-			if not Input.is_action_pressed("move_left") and not player_sm.is_on([player_sm.states.push, player_sm.states.pull]):
+			if not Input.is_action_pressed("move_left") and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.grab, player_sm.states.pull]):
 				siding_left = false
 			
 			play_anim()
@@ -165,21 +170,14 @@ func _handle_move_input():
 	
 	if player_sm.is_on([player_sm.states.idle, player_sm.states.run, player_sm.states.push, player_sm.states.pull]):
 		if Input.is_action_pressed("jump") and jump_released:
-			play_anim("jump")
 			jump()
 		elif not Input.is_action_pressed("jump") and not jump_released:
 			jump_released = true
-	elif player_sm.is_on(player_sm.states.fall) and timer_wallslide.is_stopped():
-		if Input.is_action_pressed("jump") and is_opposite_wall():
+	elif knows_walljump and player_sm.is_on([player_sm.states.fall, player_sm.states.wall_slide]):
+		if Input.is_action_pressed("jump") and is_opposite_wall() and jump_released:
 			wall_jump()
 		elif not Input.is_action_pressed("jump") and not jump_released:
 			jump_released = true
-	elif knows_walljump and player_sm.is_on([player_sm.states.wall_slide])  and timer_wallslide.is_stopped():
-		if is_opposite_wall():
-			if Input.is_action_pressed("jump"):
-				wall_jump()
-		elif not is_same_wall():
-			player_sm.set_state(player_sm.states.fall)
 
 func play_anim(anim_name=""):
 	if player_sm.is_on(player_sm.states.dead): return
@@ -232,6 +230,9 @@ func wall_direction():
 	return result
 
 func jump():
+	play_anim("jump")
+	player_sm.set_state(player_sm.states.jump)
+	
 	linear_velocity.y = -JUMP_SPEED
 	jump_released = false
 	
@@ -239,21 +240,18 @@ func jump():
 		play_sound(global.sound_jump)
 
 func wall_jump():
-	if Input.is_action_pressed("jump") and jump_released:
-		player_sm.set_state(player_sm.states.wall_jump)
-		jump_released = false
-		play_sound(global.sound_walljump)
-		
-		linear_velocity.y = -WALLJUMP_SPEED
-		
-		if siding_left:
-			linear_velocity.x = WALLJUMP_SPEED
-			siding_left = true
-		else:
-			linear_velocity.x = -WALLJUMP_SPEED
-			siding_left = false
-	elif not Input.is_action_pressed("jump") and not jump_released:
-		jump_released = true
+	play_anim("wall_jump")
+	player_sm.set_state(player_sm.states.wall_jump)
+	
+	linear_velocity.y = -WALLJUMP_SPEED
+	
+	if siding_left:
+		linear_velocity.x = WALLJUMP_SPEED
+	else:
+		linear_velocity.x = -WALLJUMP_SPEED
+	
+	jump_released = false
+	play_sound(global.sound_walljump)
 
 func push_direction():
 	var result = 0
@@ -283,9 +281,9 @@ func push_direction():
 		is_near_right = global.is_push_collision(right_body)
 	
 	if is_near_left:
-		result = -1
+		result = WALL_LEFT
 	elif is_near_right:
-		result = 1
+		result = WALL_RIGHT
 	
 	return result
 
@@ -396,7 +394,6 @@ func shoot_spray_triple():
 	shooted += 1
 
 func update_state_label():
-	return
 	state_label.set('text', player_sm.get_state_desc())
 
 func got_damage(value, on_top=false, on_left=null):
@@ -456,3 +453,6 @@ func _on_timer_shoot_timeout():
 
 func _on_timer_idle_timeout():
 	play_anim('start_cross_arms')
+
+func _on_timer_wallslide_cooldown_timeout():
+	can_fall = true

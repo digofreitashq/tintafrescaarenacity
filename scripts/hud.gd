@@ -29,14 +29,16 @@ func fill():
 			filled = true
 		else:
 			if bullets == 1:
-				player.play_sound(global.sound_fill)
+				$sound.stream = global.sound_fill
+				$sound.play()
 			
 			$bullets.set_texture(global.imgs_bullets[bullets])
 			$bullets.update()
 			bullets += 1
 	else:
 		if health == 1:
-			player.play_sound(global.sound_fill)
+			$sound.stream = global.sound_fill
+			$sound.play()
 		
 		$health.set_texture(global.imgs_health[health])
 		$health.update()

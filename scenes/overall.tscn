@@ -87,8 +87,5 @@ centered = false
 anims/reset = SubResource( 1 )
 anims/rodou = SubResource( 2 )
 
-[node name="sound" type="AudioStreamPlayer2D" parent="."]
+[node name="sound" type="AudioStreamPlayer" parent="."]
 volume_db = -5.0
-__meta__ = {
-"_editor_description_": ""
-}

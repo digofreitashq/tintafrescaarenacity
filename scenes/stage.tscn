@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://scripts/stage.gd" type="Script" id=1]
 [ext_resource path="res://scenes/parallax_bg.tscn" type="PackedScene" id=2]
@@ -20,6 +20,7 @@
 [ext_resource path="res://scenes/sewer.tscn" type="PackedScene" id=18]
 [ext_resource path="res://scenes/sketch.tscn" type="PackedScene" id=19]
 [ext_resource path="res://scenes/trampoline.tscn" type="PackedScene" id=20]
+[ext_resource path="res://scenes/sewer_side.tscn" type="PackedScene" id=21]
 
 [node name="stage" type="Node"]
 pause_mode = 2
@@ -60,7 +61,7 @@ cell_size = Vector2( 32, 32 )
 cell_quadrant_size = 32
 cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 format = 1
-tile_data = PoolIntArray( 262145, 7, 4, 262148, 7, 65537, 327681, 27, 131074, 327682, 26, 3, 393217, 27, 131072, 393219, 7, 1, 393220, 7, 0, 393223, 7, 65538, 393225, 7, 4, 458753, 27, 131074, 458754, 26, 3, 458757, 12, 4, 458759, 16, 0, 458760, 1, 131074, 458761, 1, 131075, 458762, 7, 3, 524289, 27, 131072, 524290, 13, 2, 524291, 17, 3, 524292, 19, 0, 524293, 12, 65540, 524294, 10, 2, 524295, 18, 0, 524296, 1, 196610, 524297, 1, 196611, 524298, 19, 3, 524299, 4, 2, 589825, 13, 4, 589827, 14, 2, 589829, 13, 2, 589831, 15, 3, 589832, 14, 4 )
+tile_data = PoolIntArray( 262145, 7, 4, 262148, 7, 65537, 327681, 27, 131074, 327682, 26, 3, 393217, 27, 131072, 393219, 7, 1, 393220, 7, 0, 393223, 7, 65538, 393225, 7, 4, 458753, 27, 131074, 458754, 26, 3, 458757, 12, 4, 458759, 16, 0, 458760, 1, 131074, 458761, 1, 131075, 458762, 7, 3, 524289, 27, 131072, 524290, 13, 2, 524291, 17, 3, 524292, 19, 0, 524293, 12, 65540, 524294, 10, 2, 524295, 18, 0, 524296, 1, 196610, 524297, 1, 196611, 524298, 19, 3, 524299, 4, 2, 524300, 11, 0, 524301, 11, 1, 589825, 13, 4, 589827, 14, 2, 589829, 13, 2, 589831, 15, 3, 589832, 14, 4, 589836, 11, 65536, 589837, 11, 65537 )
 
 [node name="tilemapprops_middle" type="TileMap" parent="tilemap_below"]
 tile_set = ExtResource( 3 )
@@ -96,61 +97,82 @@ cell_size = Vector2( 32, 32 )
 cell_quadrant_size = 32
 cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 format = 1
-tile_data = PoolIntArray( -786474, 0, 0, -786473, 0, 0, -786472, 0, 0, -786471, 0, 0, -786470, 0, 0, -786469, 0, 0, -786468, 0, 0, -786467, 0, 0, -786466, 0, 0, -786465, 0, 0, -786464, 0, 0, -786463, 0, 0, -720938, 0, 0, -655402, 0, 0, -589866, 0, 0, -524330, 0, 0, -458794, 0, 0, -393258, 0, 0, -327722, 0, 0, -262186, 0, 0, -196650, 0, 0, -131114, 0, 0, -65578, 0, 0, -42, 0, 0, 65494, 0, 0, 131030, 0, 0, 131033, 0, 0, 131034, 0, 0, 196566, 0, 0, 262102, 0, 0, 327638, 0, 0, 393174, 0, 0, 393177, 0, 0, 393178, 0, 0, 393201, 0, 0, 393202, 0, 0, 458710, 0, 0, 458737, 0, 0, 458738, 0, 0, 524246, 0, 0, 524273, 0, 0, 524274, 0, 0, 589782, 0, 0, 589809, 0, 0, 589810, 0, 0, 655318, 0, 0, 655319, 0, 0, 655320, 0, 0, 655321, 0, 0, 655322, 0, 0, 655323, 0, 0, 655324, 0, 0, 655325, 0, 0, 655326, 0, 0, 655327, 0, 0, 655328, 0, 0, 655329, 0, 0, 655330, 0, 0, 655331, 0, 0, 655332, 0, 0, 655333, 0, 0, 655334, 0, 0, 655335, 0, 0, 655336, 0, 0, 655337, 0, 0, 655338, 0, 0, 655339, 0, 0, 655340, 0, 0, 655341, 0, 0, 655342, 0, 0, 655343, 0, 0, 655344, 0, 0, 655345, 0, 0, 655346, 0, 0, 655347, 0, 0 )
+tile_data = PoolIntArray( -786474, 0, 0, -786473, 0, 0, -786472, 0, 0, -786471, 0, 0, -786470, 0, 0, -786469, 0, 0, -786468, 0, 0, -786467, 0, 0, -786466, 0, 0, -786465, 0, 0, -786464, 0, 0, -786463, 0, 0, -720938, 0, 0, -655402, 0, 0, -589866, 0, 0, -524330, 0, 0, -458794, 0, 0, -393258, 0, 0, -327722, 0, 0, -262186, 0, 0, -196650, 0, 0, -131114, 0, 0, -65578, 0, 0, -42, 0, 0, 65494, 0, 0, 131030, 0, 0, 196566, 0, 0, 262102, 0, 0, 327638, 0, 0, 393174, 0, 0, 393201, 0, 0, 393202, 0, 0, 458710, 0, 0, 458737, 0, 0, 458738, 0, 0, 524246, 0, 0, 524273, 0, 0, 524274, 0, 0, 589782, 0, 0, 589805, 0, 0, 589806, 0, 0, 589807, 0, 0, 589808, 0, 0, 589809, 0, 0, 589810, 0, 0, 655318, 0, 0, 655319, 0, 0, 655320, 0, 0, 655321, 0, 0, 655322, 0, 0, 655323, 0, 0, 655324, 0, 0, 655325, 0, 0, 655326, 0, 0, 655327, 0, 0, 655328, 0, 0, 655329, 0, 0, 655330, 0, 0, 655331, 0, 0, 655332, 0, 0, 655333, 0, 0, 655334, 0, 0, 655335, 0, 0, 655336, 0, 0, 655337, 0, 0, 655338, 0, 0, 655339, 0, 0, 655340, 0, 0, 655341, 0, 0, 655342, 0, 0, 655343, 0, 0, 655344, 0, 0, 655345, 0, 0, 655346, 0, 0, 655347, 0, 0 )
 
 [node name="props" type="Node2D" parent="."]
 
-[node name="spray_normal" parent="props" instance=ExtResource( 4 )]
-position = Vector2( 160, 254 )
+[node name="sewers" type="Node" parent="props"]
 
-[node name="spray_normal2" parent="props" instance=ExtResource( 4 )]
-position = Vector2( 160, 318 )
+[node name="sewer" parent="props/sewers" instance=ExtResource( 18 )]
+position = Vector2( 992, 608 )
 
-[node name="spray_normal3" parent="props" instance=ExtResource( 4 )]
-position = Vector2( 160, 286 )
+[node name="sewer_side" parent="props/sewers" instance=ExtResource( 21 )]
+position = Vector2( 992, 672 )
 
-[node name="spray_normal4" parent="props" instance=ExtResource( 4 )]
-position = Vector2( 160, 224 )
+[node name="sewer2" parent="props/sewers" instance=ExtResource( 18 )]
+position = Vector2( 1056, 608 )
 
-[node name="spray_triple" parent="props" instance=ExtResource( 5 )]
-position = Vector2( 624, 470 )
+[node name="sewer_side2" parent="props/sewers" instance=ExtResource( 21 )]
+position = Vector2( 1056, 672 )
 
-[node name="box2" parent="props" groups=[
+[node name="boxes" type="Node" parent="props"]
+
+[node name="box2" parent="props/boxes" groups=[
 "bodies",
 ] instance=ExtResource( 6 )]
 position = Vector2( 928, 390 )
 
-[node name="box3" parent="props" groups=[
+[node name="box3" parent="props/boxes" groups=[
 "bodies",
 ] instance=ExtResource( 6 )]
 position = Vector2( 928, 300 )
 
-[node name="box5" parent="props" groups=[
+[node name="box5" parent="props/boxes" groups=[
 "bodies",
 ] instance=ExtResource( 6 )]
 position = Vector2( 928, 214 )
 
-[node name="box4" parent="props" groups=[
+[node name="box4" parent="props/boxes" groups=[
 "bodies",
 ] instance=ExtResource( 6 )]
-position = Vector2( 416, 460 )
+position = Vector2( 192, 400 )
 
-[node name="spray_here_1" parent="props" instance=ExtResource( 14 )]
+[node name="suplies" type="Node" parent="props"]
+
+[node name="spray_normal" parent="props/suplies" instance=ExtResource( 4 )]
+position = Vector2( 160, 254 )
+
+[node name="spray_normal2" parent="props/suplies" instance=ExtResource( 4 )]
+position = Vector2( 160, 318 )
+
+[node name="spray_normal3" parent="props/suplies" instance=ExtResource( 4 )]
+position = Vector2( 160, 286 )
+
+[node name="spray_normal4" parent="props/suplies" instance=ExtResource( 4 )]
+position = Vector2( 160, 224 )
+
+[node name="spray_triple" parent="props/suplies" instance=ExtResource( 5 )]
+position = Vector2( 624, 470 )
+
+[node name="spray_heres" type="Node" parent="props"]
+
+[node name="spray_here_1" parent="props/spray_heres" instance=ExtResource( 14 )]
 position = Vector2( 64, 288 )
 ID = 1
 initial_force = 4
 
-[node name="sketch" parent="props" instance=ExtResource( 19 )]
+[node name="sketches" type="Node" parent="props"]
+
+[node name="sketch" parent="props/sketches" instance=ExtResource( 19 )]
 position = Vector2( 608, 446 )
 object = "trampoline"
 
-[node name="sketch2" parent="props" instance=ExtResource( 19 )]
+[node name="sketch2" parent="props/sketches" instance=ExtResource( 19 )]
 position = Vector2( 672, 446 )
 
-[node name="sewer" parent="props" instance=ExtResource( 18 )]
-position = Vector2( 992, 606 )
+[node name="trampolines" type="Node" parent="props"]
 
-[node name="trampoline" parent="props" groups=[
+[node name="trampoline" parent="props/trampolines" groups=[
 "bodies",
 ] instance=ExtResource( 20 )]
 position = Vector2( 256, 586 )
@@ -204,6 +226,7 @@ position = Vector2( 93, 586 )
 "bodies",
 ] instance=ExtResource( 9 )]
 pause_mode = 1
+position = Vector2( 47, -154 )
 
 [node name="arthur" parent="chars" instance=ExtResource( 10 )]
 position = Vector2( 387, -44 )

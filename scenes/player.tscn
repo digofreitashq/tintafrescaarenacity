@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=2]
+[gd_scene load_steps=70 format=2]
 
 [ext_resource path="res://scripts/player.gd" type="Script" id=1]
 [ext_resource path="res://scripts/playerSM.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://sprites/dust.png" type="Texture" id=4]
 [ext_resource path="res://sprites/player.png" type="Texture" id=5]
 [ext_resource path="res://sfx/sound_run.wav" type="AudioStream" id=6]
+[ext_resource path="res://sfx/sound_push.wav" type="AudioStream" id=7]
 [ext_resource path="res://sfx/sound_wallslide.wav" type="AudioStream" id=14]
 [ext_resource path="res://sfx/sound_graffiti.wav" type="AudioStream" id=24]
 
@@ -188,6 +189,39 @@ tracks/0/keys = {
 "values": [ 14 ]
 }
 
+[sub_resource type="Animation" id=59]
+resource_name = "grab_left"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 77 ]
+}
+
+[sub_resource type="Animation" id=60]
+resource_name = "grab_right"
+length = 0.1
+step = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 73 ]
+}
+
 [sub_resource type="Animation" id=13]
 length = 0.7
 tracks/0/type = "value"
@@ -209,7 +243,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 1 ),
+"times": PoolRealArray( 0.6 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [ "idle" ],
@@ -238,7 +272,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.7 ),
+"times": PoolRealArray( 0.6 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [ "idle" ],
@@ -469,6 +503,77 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 1 ) ]
 }
 
+[sub_resource type="Animation" id=57]
+resource_name = "pull_left"
+length = 2.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 76, 77, 78, 77 ]
+}
+tracks/1/type = "audio"
+tracks/1/path = NodePath("sound")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+} ],
+"times": PoolRealArray( 0, 1 )
+}
+
+[sub_resource type="Animation" id=58]
+resource_name = "pull_right"
+length = 2.0
+loop = true
+step = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 72, 73, 74, 73 ]
+}
+tracks/1/type = "audio"
+tracks/1/path = NodePath("sound")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+} ],
+"times": PoolRealArray( 0, 1 )
+}
+
 [sub_resource type="Animation" id=26]
 length = 2.0
 loop = true
@@ -483,6 +588,24 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 60, 61, 62, 61 ]
+}
+tracks/1/type = "audio"
+tracks/1/path = NodePath("sound")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+} ],
+"times": PoolRealArray( 0, 1 )
 }
 
 [sub_resource type="Animation" id=27]
@@ -500,6 +623,24 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 56, 57, 58, 57 ]
+}
+tracks/1/type = "audio"
+tracks/1/path = NodePath("sound")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 7 )
+} ],
+"times": PoolRealArray( 0, 1 )
 }
 
 [sub_resource type="Animation" id=28]
@@ -967,12 +1108,13 @@ texture = ExtResource( 4 )
 
 [node name="sprite" type="Sprite" parent="."]
 light_mask = 0
+position = Vector2( 0, -135.111 )
 scale = Vector2( 2, 2 )
 z_index = 1
 texture = ExtResource( 5 )
 vframes = 8
 hframes = 16
-frame = 4
+frame = 58
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle_right"
@@ -986,6 +1128,8 @@ anims/fall_weapon_left = SubResource( 9 )
 anims/fall_weapon_right = SubResource( 10 )
 anims/got_damage_left = SubResource( 11 )
 anims/got_damage_right = SubResource( 12 )
+anims/grab_left = SubResource( 59 )
+anims/grab_right = SubResource( 60 )
 anims/grounded_idle_left = SubResource( 13 )
 anims/grounded_idle_right = SubResource( 14 )
 anims/grounded_run_left = SubResource( 15 )
@@ -999,6 +1143,8 @@ anims/jump_right = SubResource( 22 )
 anims/jump_weapon_left = SubResource( 23 )
 anims/jump_weapon_right = SubResource( 24 )
 anims/modulate_normal = SubResource( 25 )
+anims/pull_left = SubResource( 57 )
+anims/pull_right = SubResource( 58 )
 anims/push_left = SubResource( 26 )
 anims/push_right = SubResource( 27 )
 anims/run_left = SubResource( 28 )
@@ -1021,11 +1167,13 @@ anims/wall_slide_weapon_left = SubResource( 44 )
 anims/wall_slide_weapon_right = SubResource( 45 )
 
 [node name="camera" type="Camera2D" parent="."]
+visible = false
 current = true
 limit_left = 0
 limit_top = 0
 
 [node name="bullet_shoot" type="Position2D" parent="."]
+visible = false
 light_mask = 0
 position = Vector2( 0, -10 )
 
@@ -1060,7 +1208,11 @@ wait_time = 10.0
 one_shot = true
 
 [node name="timer_wallslide" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.001
+one_shot = true
+
+[node name="timer_wallslide_cooldown" type="Timer" parent="."]
+wait_time = 0.3
 one_shot = true
 
 [node name="state_label" type="Label" parent="."]
@@ -1077,6 +1229,7 @@ align = 1
 uppercase = true
 
 [node name="left_wall" type="Area2D" parent="."]
+visible = false
 position = Vector2( -14, 0 )
 
 [node name="collision_shape" type="CollisionShape2D" parent="left_wall"]
@@ -1084,6 +1237,7 @@ position = Vector2( -9.53674e-07, 0 )
 shape = SubResource( 47 )
 
 [node name="right_wall" type="Area2D" parent="."]
+visible = false
 position = Vector2( 14, 0 )
 
 [node name="collision_shape" type="CollisionShape2D" parent="right_wall"]
@@ -1106,3 +1260,4 @@ process_material = SubResource( 56 )
 [connection signal="timeout" from="timer_flashing" to="." method="_on_timer_flashing_timeout"]
 [connection signal="timeout" from="timer_shoot" to="." method="_on_timer_shoot_timeout"]
 [connection signal="timeout" from="timer_idle" to="." method="_on_timer_idle_timeout"]
+[connection signal="timeout" from="timer_wallslide_cooldown" to="." method="_on_timer_wallslide_cooldown_timeout"]

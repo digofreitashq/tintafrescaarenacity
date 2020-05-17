@@ -164,9 +164,7 @@ position = Vector2( 0, -6 )
 shape = SubResource( 6 )
 one_way_collision_margin = 0.0
 
-[node name="sound" type="AudioStreamPlayer2D" parent="."]
-visible = false
-position = Vector2( 0, 10 )
+[node name="sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
 [connection signal="body_entered" from="damage_area" to="." method="_on_damage_area_body_entered"]
 [connection signal="body_entered" from="chase_area" to="." method="_on_chase_area_body_entered"]

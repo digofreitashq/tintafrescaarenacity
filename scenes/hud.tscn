@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/hud.gd" type="Script" id=1]
 [ext_resource path="res://sprites/hud_base.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://sprites/hud_bullets_00.png" type="Texture" id=4]
 [ext_resource path="res://sprites/spray_1.png" type="Texture" id=5]
 [ext_resource path="res://sfx/sound_fill.wav" type="AudioStream" id=6]
+[ext_resource path="res://sprites/osb_down.png" type="Texture" id=7]
 [ext_resource path="res://sprites/osb_fire.png" type="Texture" id=15]
 [ext_resource path="res://fonts/gbb.font" type="BitmapFont" id=16]
 [ext_resource path="res://sprites/osb_left.png" type="Texture" id=17]
@@ -78,6 +79,15 @@ shape = SubResource( 3 )
 action = "jump"
 visibility_mode = 1
 
+[node name="jump2" type="TouchScreenButton" parent="ui"]
+modulate = Color( 1, 1, 1, 0.501961 )
+position = Vector2( 560, 270 )
+scale = Vector2( 2, 2 )
+normal = ExtResource( 7 )
+shape = SubResource( 3 )
+action = "move_down"
+visibility_mode = 1
+
 [node name="fire" type="TouchScreenButton" parent="ui"]
 modulate = Color( 1, 1, 1, 0.501961 )
 position = Vector2( 450, 350 )
@@ -124,8 +134,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="sound" type="AudioStreamPlayer2D" parent="."]
+[node name="sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 6 )
+volume_db = -15.0
 
 [node name="timer_fill" type="Timer" parent="."]
 wait_time = 0.05
@@ -135,6 +146,8 @@ wait_time = 0.05
 [connection signal="released" from="ui/right" to="." method="_on_button_released"]
 [connection signal="pressed" from="ui/jump" to="." method="_on_button_pressed"]
 [connection signal="released" from="ui/jump" to="." method="_on_button_released"]
+[connection signal="pressed" from="ui/jump2" to="." method="_on_button_pressed"]
+[connection signal="released" from="ui/jump2" to="." method="_on_button_released"]
 [connection signal="pressed" from="ui/fire" to="." method="_on_button_pressed"]
 [connection signal="released" from="ui/fire" to="." method="_on_button_released"]
 [connection signal="timeout" from="timer_fill" to="." method="fill"]

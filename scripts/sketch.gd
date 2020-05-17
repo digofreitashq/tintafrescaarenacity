@@ -16,6 +16,10 @@ const object_classes = {
 	"box": preload("res://scenes/box.tscn"),
 	"trampoline": preload("res://scenes/trampoline.tscn")
 	}
+const object_nodes = {
+	"box": "props/boxes",
+	"trampoline": "props/trampolines"
+	}
 
 var frame_changed = false
 var force = null
@@ -49,7 +53,7 @@ func _on_Area2D_body_entered(body):
 			var new_object = object_classes[object].instance()
 			new_object.global_position = global_position
 			new_object.add_to_group("bodies")
-			global.get_stage().get_node("props").add_child(new_object)
+			global.get_stage().get_node(object_nodes[object]).add_child(new_object)
 			force = initial_force
 			$sound.stream = global.sound_beep
 			$sound.play(0)

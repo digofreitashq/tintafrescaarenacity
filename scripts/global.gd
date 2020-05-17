@@ -87,7 +87,7 @@ func is_sewer(body):
 func is_box(body):
 	return "box" in body.get_name()
 
-func is_tilemap(body):
+func is_tilemap(body):	
 	return "tilemap" in body.get_name()
 
 func is_walljump_collision(body):
@@ -199,7 +199,7 @@ func drop_item(body, resistance):
 	
 	obj.position = body.position
 	
-	get_stage().get_node("props").add_child(obj)
+	get_stage().get_node("props/suplies").add_child(obj)
 
 func random(start, end):
 	var rng = RandomNumberGenerator.new()
@@ -249,8 +249,9 @@ func reset_stage():
 		for node in stage.get_node("graffitis").get_children():
 			node.set_visible(false)
 		
-		for node in stage.get_node("props").get_children():
-			node.reset()
+		for nodes in stage.get_node("props").get_children():
+			for node in nodes:
+				node.reset()
 		
 		for node in stage.get_node("enemies").get_children():
 			node.reset()
