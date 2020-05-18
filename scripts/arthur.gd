@@ -57,11 +57,11 @@ func _apply_movement(_delta):
 	linear_velocity.x = lerp(linear_velocity.x, target_speed, 0.1)
 	$sprite.scale = Vector2(-PLAYER_SCALE if siding_left else PLAYER_SCALE, 2.0)
 	
-	if abs(initial_position_x - $sprite.global_position.x) > abs(walk_pixels):
+	if abs(initial_position_x - global_position.x) > abs(walk_pixels):
 		walk_pixels = 0
 		last_position_x = 0
 		emit_signal("walked")
-	elif last_position_x == $sprite.global_position.x:
+	elif last_position_x == global_position.x:
 		position_repeated += 1
 		
 		if position_repeated > 10:
@@ -70,7 +70,7 @@ func _apply_movement(_delta):
 			last_position_x = 0
 			emit_signal("walked")
 	
-	last_position_x = $sprite.global_position.x
+	last_position_x = global_position.x
 
 func _handle_move_input():
 	target_speed = 0
@@ -80,8 +80,8 @@ func _handle_move_input():
 		walk_pixels = 0
 		last_position_x = 0
 		
-		if initial_position_x != $sprite.global_position.x:
-			initial_position_x = $sprite.global_position.x
+		if initial_position_x != global_position.x:
+			initial_position_x = global_position.x
 	
 	if walk_pixels < 0:
 		target_speed += -1
@@ -132,15 +132,29 @@ func call_body_entered():
 
 func arthur_talks():
 	if ID == 1:
+		return
 		global.set_player_control(false)
-		player.player_sm.set_state(player.player_sm.states.idle)
-		player.play_anim("start_cross_arms")
-		
-		global.wait_until_signal(2)
-		yield(global, "waited")
+		player.siding_left = true
+		player.play_anim("idle")
 		
 		dialog.display([
-			["Ícaro","Eu já cheguei faz quinze minutos e nada daquele velho..."],
+			["Ícaro","Hmmm... Que tal se eu fizer..."],
+			])
+		yield(dialog, "finished")
+		
+		player.play_anim("idle_weapon")
+		player.play_sound(global.sound_shake)
+		global.wait_until_signal(1)
+		yield(global, "waited")
+		player.play_anim("idle_weapon")
+		player.play_sound(global.sound_shake)
+		yield(player.anim, "animation_finished")
+		global.wait_until_signal(1)
+		yield(global, "waited")
+		player.play_anim("start_cross_arms")
+		
+		dialog.display([
+			["Ícaro","A tinta já acabou e nada daquele velho..."],
 			])
 		yield(dialog, "finished")
 		
@@ -148,10 +162,17 @@ func arthur_talks():
 		yield(self, "walked")
 		
 		dialog.display([
-			["Ícaro","E aí, velhote! Tá atrasado..."],
+			["Arthur","Opa. ~~Como é que tá essa força?"],
+			])
+		yield(dialog, "finished")
+		
+		player.siding_left = false
+		player.play_anim("idle")
+		
+		dialog.display([
+			["Ícaro","E aí, velhote! ~~Tá atrasado."],
 			["Arthur","Mais respeito, por favor, rapaz."],
-			["Ícaro","Tá bom! Boa tarde..."],
-			["Ícaro","Velhote!"],
+			["Ícaro","Tá bom! ~~Boa tarde... ~~Velhote!"],
 			])
 		yield(dialog, "finished")
 		
@@ -161,42 +182,52 @@ func arthur_talks():
 		yield(global, "waited")
 		
 		dialog.display([
-			["Arthur","Hunf! \nHoje seu treino será em campo."],
-			["Arthur","Como deve ter percebido, a cidade está infestada desses tais Podres."],
+			["Arthur","Hmm... ~~\nHoje seu treino será em campo."],
+			["Arthur","Como deve ter percebido, a cidade está infestada desses tais... ~~\nPodres."],
 			])
 		yield(dialog, "finished")
 		player.play_anim("start_scratch")
 		dialog.display([
-			["Ícaro","Podres...?"],
+			["Ícaro","Podres~.~.~.~?"],
 			["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
-			["Ícaro","Eita. \nE eu vou ter que fazer o quê? Pintura facial neles...?"],
-			["Arthur","Você vai usar seus poderes de transformar os desenhos em realidade para vencê-los."],
+			["Ícaro","Eita. ~~\nE eu vou ter que fazer o quê? ~~Pintura facial neles...?"],
+			["Arthur","Você vai usar todas as suas habilidades!"],
+			["Arthur","Inclusive os poderes que eu te ensinei de transformar os desenhos em realidade."],
 		])
 		yield(dialog, "finished")
+		dialog.display([
+			["Ícaro","Mas eu tô sem tinta!"],
+			["Arthur","Ah~.~.~. Peraí."],
+		])
+		yield(dialog, "finished")
+		
+		global.drop_item(self, load("res://scenes/spray_normal.tscn"), Vector2(-32,-32))
+		global.drop_item(self, load("res://scenes/spray_normal.tscn"), Vector2(-32,-16))
+		global.drop_item(self, load("res://scenes/spray_normal.tscn"), Vector2(-48,-32))
+		global.drop_item(self, load("res://scenes/spray_normal.tscn"), Vector2(-48,-16))
+		
 		player.play_anim("idle")
 		dialog.display([
 			["Ícaro","Então bora lá..."],
-			["Arthur","Ahm... \nEu disse você! \nSozinho."],
+			["Arthur","Eu disse você! ~~\nSozinho."],
 		])
 		yield(dialog, "finished")
 		arthur_sm.set_state(arthur_sm.states.idle)
 		dialog.display([
 			["Arthur","Mas fique tranquilo que vou ficar olhando de longe."],
 			["Arthur","E de vez em quando vou dar uns palpites."],
-			["Ícaro","Ótimo! \nSe eu morrer, tudo bem, né?"],
-			["Arthur","Eu... \nConfio em você! Boa sorte."],
+			["Ícaro","Ótimo! ~~\nSe eu morrer, tudo bem, né?"],
+			["Arthur","Eu... ~~\nConfio em você! ~~\nBoa sorte."],
 			])
 		yield(dialog, "finished")
 		$Area2D/CollisionShape2D.scale.x = 0.5
 		
 		walk_pixels = 500
 		yield(self, "walked")
-		self.set_visible(false)
-		$CollisionShape2D.set_disabled(true)
 		
 		player.play_anim("start_scratch")
 		dialog.display([
-			["Ícaro","Vamos lá, né? \nAfinal, o que pode acontecer de ruim?"],
+			["Ícaro","Vamos lá, né? ~~\nAfinal, o que pode dar errado?"],
 			])
 		yield(dialog, "finished")
 		player.play_anim("idle")
@@ -204,3 +235,5 @@ func arthur_talks():
 		times_talked += 1
 		
 		global.set_player_control(true)
+		
+		queue_free()

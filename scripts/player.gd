@@ -26,7 +26,8 @@ var shooted = 1
 var siding_left = false
 var damage_enabled = true
 var skip_dialog = false
-var knows_walljump = true
+var knows_walljump = false
+var knows_pull = false
 var jump_released = true
 var can_reload = false
 var can_fall = false
@@ -113,7 +114,7 @@ func is_pushing():
 	return round(linear_velocity.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
 
 func is_pulling():
-	if last_pull_body and last_pull_body.follow_player:
+	if knows_pull and last_pull_body and last_pull_body.follow_player:
 		return true
 	else:
 		return false
@@ -136,9 +137,11 @@ func _handle_move_input():
 		if not siding_left:
 			if not Input.is_action_pressed("jump") and player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
 				player_sm.set_state(player_sm.states.fall)
-			
-			if not Input.is_action_pressed("move_right") and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.grab, player_sm.states.pull]):
+			elif not Input.is_action_pressed("move_right") and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.grab, player_sm.states.pull, player_sm.states.push]):
 				siding_left = true
+			
+			if player_sm.is_on(player_sm.states.push):
+				player_sm.set_state(player_sm.states.run)
 			
 			play_anim()
 		
@@ -149,12 +152,15 @@ func _handle_move_input():
 			if not Input.is_action_pressed("jump") and player_sm.is_on([player_sm.states.wall_slide, player_sm.states.wall_jump]):
 				player_sm.set_state(player_sm.states.fall)
 			
-			if not Input.is_action_pressed("move_left") and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.grab, player_sm.states.pull]):
+			if not Input.is_action_pressed("move_left") and not player_sm.is_on([player_sm.states.wall_slide, player_sm.states.grab, player_sm.states.pull, player_sm.states.push]):
 				siding_left = false
+			
+			if player_sm.is_on(player_sm.states.push):
+				player_sm.set_state(player_sm.states.run)
 			
 			play_anim()
 	
-	if Input.is_action_pressed("move_down"):
+	if Input.is_action_pressed("move_down") and knows_pull:
 		if not last_pull_body:
 			last_pull_body = get_pull_body()
 			
@@ -184,7 +190,7 @@ func play_anim(anim_name=""):
 	
 	var clean_anim_name = anim.current_animation.replace('_left','').replace('_right','')
 	
-	if anim_name == clean_anim_name: 
+	if anim_name == clean_anim_name and global.allow_movement:
 		return
 	elif anim_name == "start_cross_arms" and clean_anim_name == "cross_arms": 
 		return	

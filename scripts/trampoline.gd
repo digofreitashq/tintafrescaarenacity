@@ -1,5 +1,7 @@
 extends RigidBody2D
 
+const MAX_BOUNCE_FORCE = 600
+
 var on_floor = false
 var can_play_sound = true
 var follow_player = false
@@ -65,10 +67,10 @@ func _on_Area2D_top_body_entered(body):
 		anim.play("bounce_start")
 		
 		if global.is_player(body):
-			body.linear_velocity = Vector2(-body_linear_velocity.x,max(-body_linear_velocity.y*2, -player.WALK_SPEED*2))
+			body.linear_velocity = Vector2(-body_linear_velocity.x,max(-body_linear_velocity.y*2, -MAX_BOUNCE_FORCE))
 			body.jump_released = false
 		else:
-			body.apply_central_impulse(Vector2(-body_linear_velocity.x,-body_linear_velocity.y*body.mass*2))
+			body.apply_central_impulse(Vector2(-body_linear_velocity.x,max(-body_linear_velocity.y*10, -MAX_BOUNCE_FORCE)))
 		
 		yield(anim, "animation_finished")
 		anim.play("bounce_end")

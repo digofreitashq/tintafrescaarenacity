@@ -33,9 +33,11 @@ func _state_logic(delta):
 	if state == states.wall_slide:
 		parent._gravity_wall_slide()
 	
-	parent.update_state_label()
+	#parent.update_state_label()
 
 func _get_transition(_delta):
+	if not global.allow_movement: return
+	
 	var going_up = round(parent.linear_velocity.y) < 0
 	var moving = round(parent.linear_velocity.x) != 0
 	
@@ -54,7 +56,7 @@ func _get_transition(_delta):
 	
 	if state in [states.idle, states.run, states.fall, states.jump, states.push, states.grab, states.pull]:
 		if not parent.on_floor:
-			if parent.is_same_wall():
+			if parent.is_same_wall() and parent.knows_walljump:
 				return states.wall_slide
 			if going_up:
 				return states.jump
@@ -127,7 +129,7 @@ func _get_transition(_delta):
 					return states.run
 				else:
 					return states.idle
-			elif parent.is_same_wall():
+			elif parent.is_same_wall() and parent.knows_walljump:
 				return states.wall_slide
 	
 	return null

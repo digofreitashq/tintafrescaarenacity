@@ -27,7 +27,7 @@ func _on_body_enter( body ):
 			$sound.stream = global.sound_success
 			$sound.play(0)
 		else:
-			$sound.stream = global.sound_beep
+			$sound.stream = global.sound_coin
 			$sound.play(0)
 			$timer_spin.start()
 

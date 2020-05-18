@@ -97,15 +97,19 @@ func update_text():
 		waiting_next = true
 		$anim.play("show_next")
 		return
-
+	
 	if current_phrase_index < phrases.size():
 		speaker.set_text(phrases[current_phrase_index][0])
-
-	$text.set_text(phrases[current_phrase_index][1].substr(0,current_pos))
-
-	$sound.stream = global.sound_letter
-	$sound.play()
-	timer_letter.set_wait_time(0.01)
+	
+	if phrases[current_phrase_index][1].substr(current_pos,1) == "~":
+		timer_letter.set_wait_time(0.5)
+	else:
+		timer_letter.set_wait_time(0.01)
+		$sound.stream = global.sound_letter
+		$sound.play()
+	
+	$text.set_text(phrases[current_phrase_index][1].substr(0,current_pos).replace("~",""))
+	
 	timer_letter.start()
 
 func wait_button():
@@ -121,7 +125,7 @@ func wait_button():
 			current_pos = 0
 
 			$anim.play("hide_next")
-			$sound.stream = global.sound_next
+			$sound.stream = global.sound_beep
 			$sound.play(0)
 
 			timer_interaction.set_wait_time(0.5)

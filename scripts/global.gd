@@ -5,7 +5,7 @@ const GRAVITY = 900
 var BULLET_NORMAL = 0
 var BULLET_TRIPLE = 1
 
-var health = 1
+var health = 10
 var bullets = 0
 var bullet_type = BULLET_NORMAL
 var sprays = 0
@@ -56,18 +56,18 @@ func get_stage():
 	return get_tree().get_current_scene()
 
 func get_dialog():
-	return get_tree().get_current_scene().get_node("screen/dialog")
+	return get_tree().get_current_scene().find_node("dialog")
 
 func get_hud():
-	return get_tree().get_current_scene().get_node("screen/hud")
+	return get_tree().get_current_scene().find_node("hud")
 
 func get_ui():
 	var hud = get_hud()
-	if hud: return hud.get_node("ui")
+	if hud: return hud.find_node("ui")
 	return null
 
 func get_overall():
-	return get_tree().get_current_scene().get_node("screen/overall")
+	return get_tree().get_current_scene().find_node("overall")
 
 func pause_bgm():
 	get_tree().get_current_scene().get_node("music").stream_paused = true
@@ -108,7 +108,7 @@ func set_player_control(enable):
 	else:
 		allow_movement = false
 		var player = get_player()
-		player.linear_vel =  Vector2(0,0)
+		player.linear_velocity =  Vector2(0,0)
 		player.play_anim("idle")
 		yield(player.anim, "animation_finished")
 
@@ -183,7 +183,15 @@ func update_graffiti(value):
 	if (graffitis >= 0):
 		get_hud().get_node("label_sprays").set('text', "%0*d" % [2, graffitis])
 
-func drop_item(body, resistance):
+func drop_item(body, obj_class=load("res://scenes/spray_normal.tscn"), offset=Vector2(0,0)):
+	var obj = obj_class.instance()
+	obj._ready()
+	
+	obj.position = body.position + offset
+	
+	get_stage().get_node("props/suplies").add_child(obj)
+
+func drop_random_item(body, resistance, offset=Vector2(0,0)):
 	if (resistance - random(1, resistance)) != 0:
 		return
 	
@@ -197,7 +205,7 @@ func drop_item(body, resistance):
 	var obj = obj_class.instance()
 	obj._ready()
 	
-	obj.position = body.position
+	obj.position = body.position + offset
 	
 	get_stage().get_node("props/suplies").add_child(obj)
 
@@ -233,7 +241,7 @@ func set_all_zindex():
 
 func reset_stage():
 	health = 10
-	bullets = 10
+	bullets = 0
 	bullet_type = BULLET_NORMAL
 	sprays = 0
 	enemies = 0

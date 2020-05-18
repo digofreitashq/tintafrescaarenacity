@@ -6,6 +6,8 @@ func _ready():
 	call_deferred("set_state", states.none)
 
 func _enter_state(new_state, _old_state):
+	if not global.allow_movement: return
+	
 	if new_state != states.shoot: 
 		parent.player_sm._enter_state(parent.player_sm.state,parent.player_sm.state)
 		return
