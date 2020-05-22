@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-export (Texture) var sprite_texture = load("res://sprites/enemy_cachorro.png") setget setSpriteTexture, getSpriteTexture
+export (Texture) var sprite_texture = load("res://sprites/enemy_pato.png") setget setSpriteTexture, getSpriteTexture
 export (int,1,5,1) var initial_resistance = 1
 
 const FLOOR_NORMAL = Vector2(0, -2)

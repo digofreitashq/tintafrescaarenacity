@@ -8,7 +8,6 @@ var BULLET_TRIPLE = 1
 var health = 10
 var bullets = 0
 var bullet_type = BULLET_NORMAL
-var sprays = 0
 var enemies = 0
 var graffitis = 0
 var allow_movement = true
@@ -32,6 +31,7 @@ onready var sound_graffiti = preload("res://sfx/sound_graffiti.wav")
 onready var sound_success = preload("res://sfx/sound_success.wav")
 onready var sound_dead = preload("res://sfx/sound_dead.wav")
 onready var sound_beep = preload("res://sfx/sound_beep.wav")
+onready var sound_coin = preload("res://sfx/sound_coin.wav")
 onready var sound_letter = preload("res://sfx/sound_letter.wav")
 onready var sound_next = preload("res://sfx/sound_next.wav")
 onready var sound_push = preload("res://sfx/sound_push.wav")
@@ -43,6 +43,8 @@ onready var spray_triple = preload("res://scenes/spray_triple.tscn")
 signal waited
 
 func _ready():
+	VisualServer.set_default_clear_color(Color("#3e2137"))
+	
 	for i in range(11):
 		imgs_health[i] = load("res://sprites/hud_health_%02d.png"%(i))
 		imgs_bullets[i] = load("res://sprites/hud_bullets_%02d.png"%(i))
@@ -162,12 +164,6 @@ func update_bullet_type(type):
 	elif (bullet_type == BULLET_TRIPLE):
 		get_hud().get_node("spray").texture = load("res://sprites/spray_2.png")
 
-func update_sprays(value):
-	sprays += value
-	
-	if (sprays < 0):
-		sprays = 0
-
 func update_enemies(value):
 	enemies += value
 	
@@ -179,9 +175,6 @@ func update_enemies(value):
 
 func update_graffiti(value):
 	graffitis += value
-	
-	if (graffitis >= 0):
-		get_hud().get_node("label_sprays").set('text', "%0*d" % [2, graffitis])
 
 func drop_item(body, obj_class=load("res://scenes/spray_normal.tscn"), offset=Vector2(0,0)):
 	var obj = obj_class.instance()
@@ -243,7 +236,6 @@ func reset_stage():
 	health = 10
 	bullets = 0
 	bullet_type = BULLET_NORMAL
-	sprays = 0
 	enemies = 0
 	graffitis = 0
 	allow_movement = true
@@ -258,8 +250,9 @@ func reset_stage():
 			node.set_visible(false)
 		
 		for nodes in stage.get_node("props").get_children():
-			for node in nodes:
-				node.reset()
+			for node in nodes.get_children():
+				if "reset" in node:
+					node.reset()
 		
 		for node in stage.get_node("enemies").get_children():
 			node.reset()

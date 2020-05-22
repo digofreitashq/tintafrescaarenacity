@@ -144,14 +144,12 @@ func _enter_state(new_state, old_state):
 			parent.timer_idle.start()
 			parent.disable_dust()
 			if old_state in [states.jump, states.fall, states.wall_jump, states.wall_slide, states.damage]:
-				parent.play_sound(global.sound_grounded)
 				parent.play_anim("grounded_idle")
 			else:
 				parent.play_anim("idle")
 		states.run:
 			parent.disable_dust()
 			if old_state in [states.jump, states.fall, states.wall_jump, states.wall_slide, states.damage]:
-				parent.play_sound(global.sound_grounded)
 				parent.play_anim("grounded_run")
 			else:
 				parent.play_anim("run")

@@ -242,8 +242,7 @@ func jump():
 	linear_velocity.y = -JUMP_SPEED
 	jump_released = false
 	
-	if not player_sm.is_on(player_sm.states.jump):
-		play_sound(global.sound_jump)
+	play_sound(global.sound_jump)
 
 func wall_jump():
 	play_anim("wall_jump")
@@ -429,6 +428,7 @@ func die():
 	anim.play("die")
 	yield(anim, "animation_finished")
 	can_reload = true
+	global.get_overall().rodou()
 
 func enable_dust(position=Vector2(0,10)):
 	if (not dust.is_emitting()):

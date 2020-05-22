@@ -11,8 +11,9 @@ func _ready():
 	reset()
 
 func reset():
-	$collisions/tilemapcollision_1.set_visible(false)
-	$graffitis/tilemapgraffiti_1.set_visible(false)
+	for node in $collisions.get_children(): node.set_visible(false)
+	for node in $graffitis.get_children(): node.set_visible(false)
+	
 	$timer_sfx.start()
 	$music.pause_mode = true
 	global.get_player().can_reload = false

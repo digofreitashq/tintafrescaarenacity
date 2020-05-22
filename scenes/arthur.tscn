@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/arthur.gd" type="Script" id=1]
 [ext_resource path="res://scripts/arthurSM.gd" type="Script" id=2]
@@ -22,7 +22,6 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=2]
-resource_name = "fall"
 length = 5.0
 loop = true
 tracks/0/type = "value"
@@ -39,22 +38,6 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=3]
-length = 5.0
-loop = true
-tracks/0/type = "value"
-tracks/0/path = NodePath("sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 1, 2, 3, 4 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
-"update": 1,
-"values": [ 0, 1, 2, 1, 0 ]
-}
-
-[sub_resource type="Animation" id=4]
 length = 2.0
 loop = true
 step = 0.25
@@ -71,10 +54,10 @@ tracks/0/keys = {
 "values": [ 4, 5, 6, 5 ]
 }
 
-[sub_resource type="RectangleShape2D" id=5]
+[sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 5.33333, 10.1814 )
 
-[sub_resource type="RectangleShape2D" id=6]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 112, 36 )
 
 [node name="arthur" type="KinematicBody2D"]
@@ -87,30 +70,32 @@ script = ExtResource( 2 )
 [node name="anim" type="AnimationPlayer" parent="."]
 playback_speed = 3.0
 anims/eating = SubResource( 1 )
-anims/fall = SubResource( 2 )
-anims/idle = SubResource( 3 )
-anims/walk = SubResource( 4 )
+anims/idle = SubResource( 2 )
+anims/walk = SubResource( 3 )
 
 [node name="sprite" type="Sprite" parent="."]
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 vframes = 4
 hframes = 16
+frame = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0, -12 )
 scale = Vector2( 3, 3.143 )
-shape = SubResource( 5 )
+shape = SubResource( 4 )
 one_way_collision_margin = 0.0
 
 [node name="sound" type="AudioStreamPlayer" parent="."]
 volume_db = -23.0
 
 [node name="Area2D" type="Area2D" parent="."]
+visible = false
 position = Vector2( 0, -16 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource( 6 )
+shape = SubResource( 5 )
 __meta__ = {
 "_edit_lock_": true
 }

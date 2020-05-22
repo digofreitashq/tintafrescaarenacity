@@ -9,11 +9,10 @@ func _ready():
 	reset()
 
 func reset():
-	global.update_sprays(1)
+	pass
 
 func _on_body_enter( body ):
 	if (not taken and body is player_class):
-		global.update_sprays(-1)
 		$anim.play("taken")
 		$sound.play(0)
 		global.update_bullets(1)

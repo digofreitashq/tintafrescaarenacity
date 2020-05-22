@@ -117,8 +117,7 @@ anims/idle = SubResource( 2 )
 anims/walk = SubResource( 3 )
 
 [node name="detect_floor_left" type="RayCast2D" parent="."]
-visible = false
-position = Vector2( -32, 22 )
+position = Vector2( -16, 22 )
 enabled = true
 cast_to = Vector2( 0, 45 )
 
@@ -129,8 +128,7 @@ enabled = true
 cast_to = Vector2( 0, 45 )
 
 [node name="detect_floor_right" type="RayCast2D" parent="."]
-visible = false
-position = Vector2( 32, 22 )
+position = Vector2( 16, 22 )
 enabled = true
 cast_to = Vector2( 0, 45 )
 

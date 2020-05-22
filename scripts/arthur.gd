@@ -114,18 +114,6 @@ func _on_Area2D_body_entered(body):
 		walk_pixels = 0
 		
 		siding_left = body.global_position.x < global_position.x
-		
-		var player = global.get_player()
-		
-		if body.global_position.x > global_position.x:
-			player.siding_left = true
-		else:
-			player.siding_left = false
-		
-		if !player.on_floor:
-			yield(player, "grounded")
-		
-		return
 
 func call_body_entered():
 	_on_Area2D_body_entered($sprite)
