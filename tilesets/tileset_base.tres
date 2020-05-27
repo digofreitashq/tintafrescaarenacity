@@ -615,7 +615,7 @@
 35/navigation_offset = Vector2( 0, 0 )
 35/shapes = [  ]
 35/z_index = 0
-36/name = "chao_terra1_inclinado"
+36/name = "terra1_inclinado"
 36/texture = ExtResource( 1 )
 36/tex_offset = Vector2( 0, 0 )
 36/modulate = Color( 1, 1, 1, 1 )
@@ -632,7 +632,7 @@
 36/navigation_offset = Vector2( 0, 0 )
 36/shapes = [  ]
 36/z_index = 0
-37/name = "chao_terra2_inclinado"
+37/name = "terra2_inclinado"
 37/texture = ExtResource( 1 )
 37/tex_offset = Vector2( 0, 0 )
 37/modulate = Color( 1, 1, 1, 1 )

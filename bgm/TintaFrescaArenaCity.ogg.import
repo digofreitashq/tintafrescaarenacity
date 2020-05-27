@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/TintaFrescaArenaCity.ogg-0cf87a4c1a5a1d8e5ceeb3d445a2c4e3.oggstr"
+
+[deps]
+
+source_file="res://bgm/TintaFrescaArenaCity.ogg"
+dest_files=[ "res://.import/TintaFrescaArenaCity.ogg-0cf87a4c1a5a1d8e5ceeb3d445a2c4e3.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

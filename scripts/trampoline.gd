@@ -16,6 +16,7 @@ func _ready():
 
 func reset():
 	global.boxes.append(self)
+	add_to_group("bodies")
 	anim.play("idle")
 	is_bouncing = false
 	follow_player = false

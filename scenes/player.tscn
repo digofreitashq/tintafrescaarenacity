@@ -1,10 +1,11 @@
-[gd_scene load_steps=69 format=2]
+[gd_scene load_steps=72 format=2]
 
 [ext_resource path="res://scripts/player.gd" type="Script" id=1]
 [ext_resource path="res://scripts/playerSM.gd" type="Script" id=2]
 [ext_resource path="res://scripts/playerASM.gd" type="Script" id=3]
 [ext_resource path="res://sprites/dust.png" type="Texture" id=4]
 [ext_resource path="res://sprites/player.png" type="Texture" id=5]
+[ext_resource path="res://sprites/dark_light.png" type="Texture" id=6]
 [ext_resource path="res://sfx/sound_push.wav" type="AudioStream" id=7]
 [ext_resource path="res://sfx/sound_wallslide.wav" type="AudioStream" id=14]
 [ext_resource path="res://sfx/sound_graffiti.wav" type="AudioStream" id=24]
@@ -1023,6 +1024,38 @@ scale = 4.0
 color_ramp = SubResource( 59 )
 anim_speed_curve = SubResource( 57 )
 
+[sub_resource type="Animation" id=61]
+resource_name = "hide"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("dark_light:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+
+[sub_resource type="Animation" id=62]
+resource_name = "show"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("dark_light:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
 [node name="player" type="KinematicBody2D"]
 collision/safe_margin = 1.0
 script = ExtResource( 1 )
@@ -1191,6 +1224,17 @@ fract_delta = false
 visibility_rect = Rect2( 0, 0, 0, 0 )
 local_coords = false
 process_material = SubResource( 60 )
+
+[node name="anim_dark_light" type="AnimationPlayer" parent="."]
+anims/hide = SubResource( 61 )
+anims/show = SubResource( 62 )
+
+[node name="dark_light" type="Sprite" parent="."]
+self_modulate = Color( 1, 1, 1, 0 )
+scale = Vector2( 2, 2 )
+z_index = 4001
+z_as_relative = false
+texture = ExtResource( 6 )
 [connection signal="timeout" from="timer_damage" to="." method="abort_flashing"]
 [connection signal="timeout" from="timer_flashing" to="." method="_on_timer_flashing_timeout"]
 [connection signal="timeout" from="timer_shoot" to="." method="_on_timer_shoot_timeout"]

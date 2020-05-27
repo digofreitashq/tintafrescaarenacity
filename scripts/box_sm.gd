@@ -10,5 +10,6 @@ func _enter_state(new_state, _old_state):
 		states.floating:
 			parent.anim.play("floating")
 			parent.play_sound(global.sound_splash, true)
+			parent.physics_material_override.friction = 0
 		states.idle:
 			parent.anim.play("idle")

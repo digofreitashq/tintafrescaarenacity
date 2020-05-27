@@ -108,7 +108,7 @@ script = ExtResource( 1 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 hframes = 3
-frame = 1
+frame = 2
 
 [node name="anim" type="AnimationPlayer" parent="."]
 playback_speed = 3.0
@@ -168,6 +168,19 @@ stream = ExtResource( 3 )
 [node name="timer_chasing" type="Timer" parent="."]
 wait_time = 5.0
 one_shot = true
+
+[node name="timer_damage" type="Timer" parent="."]
+one_shot = true
+
+[node name="timer_flashing" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="VisibilityEnabler2D" type="VisibilityEnabler2D" parent="."]
+position = Vector2( -270, 10 )
+scale = Vector2( 10.4875, 6.0625 )
+physics_process_parent = true
 [connection signal="body_entered" from="damage_area" to="." method="_on_damage_area_body_entered"]
 [connection signal="body_entered" from="chase_area" to="." method="_on_chase_area_body_entered"]
 [connection signal="timeout" from="timer_chasing" to="." method="_on_timer_chasing_timeout"]
+[connection signal="timeout" from="timer_damage" to="." method="_on_timer_damage_timeout"]
+[connection signal="timeout" from="timer_flashing" to="." method="_on_timer_flashing_timeout"]

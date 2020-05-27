@@ -120,6 +120,7 @@ func call_body_entered():
 
 func arthur_talks():
 	if ID == 1:
+		global.set_player_control(true)
 		return
 		global.set_player_control(false)
 		player.siding_left = true

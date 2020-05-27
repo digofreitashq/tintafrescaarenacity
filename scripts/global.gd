@@ -20,6 +20,7 @@ var trampolines = []
 
 onready var sound_fill = preload("res://sfx/sound_fill.wav")
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
+onready var sound_enemy = preload("res://sfx/sound_enemy.wav")
 onready var sound_jump = preload("res://sfx/sound_jump.wav")
 onready var sound_walljump = preload("res://sfx/sound_walljump.wav")
 onready var sound_wallslide = preload("res://sfx/sound_wallslide.wav")

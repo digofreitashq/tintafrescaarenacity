@@ -1,8 +1,13 @@
 extends RigidBody2D
 
+const FLOAT_SPEED = 50
+
 var on_floor = false
 var can_play_sound = true
 var follow_player = false
+var float_direction = 0
+var last_position_x = 0
+var position_repeated = 0
 
 onready var box_sm = $box_sm
 onready var anim = $anim
@@ -16,18 +21,26 @@ func reset():
 	anim.play("idle")
 	follow_player = false
 	global.boxes.append(self)
+	add_to_group("bodies")
 
 func _physics_process(_delta):
 	rotation_degrees = 0
 	
-	if follow_player:
-		linear_velocity.x = player.linear_velocity.x
-		var direction = (player.global_position - global_position)
-		if abs(direction.x) > distance_from_player:
-			if player.siding_left:
-				global_position.x = player.global_position.x - distance_from_player
-			else:
-				global_position.x = player.global_position.x + distance_from_player
+	if box_sm.is_on(box_sm.states.idle):
+		float_direction = -1 if linear_velocity.x < 0 else 1
+	
+		if follow_player:
+			linear_velocity.x = player.linear_velocity.x
+			var direction = (player.global_position - global_position)
+			if abs(direction.x) > distance_from_player:
+				if player.siding_left:
+					global_position.x = player.global_position.x - distance_from_player
+				else:
+					global_position.x = player.global_position.x + distance_from_player
+	
+	elif box_sm.is_on(box_sm.states.floating):
+		linear_velocity.x = FLOAT_SPEED * float_direction
+		
 
 func check_surface():
 	var in_sewer = false
@@ -41,6 +54,7 @@ func check_surface():
 		if in_sewer:
 			box_sm.set_state(box_sm.states.floating)
 			play_sound(global.sound_splash)
+			
 	elif box_sm.is_on(box_sm.states.floating):
 		if not in_sewer:
 			box_sm.set_state(box_sm.states.idle)
@@ -64,3 +78,11 @@ func _on_Area2D_bottom_body_entered(_body):
 
 func _on_Area2D_bottom_body_exited(_body):
 	check_surface()
+
+func _on_Area2D_left_body_entered(body):
+	if box_sm.is_on(box_sm.states.floating):
+		float_direction *= -1 
+
+func _on_Area2D_right_body_entered(body):
+	if box_sm.is_on(box_sm.states.floating):
+		float_direction *= -1 

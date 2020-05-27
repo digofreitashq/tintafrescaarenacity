@@ -52,7 +52,6 @@ func _on_Area2D_body_entered(body):
 		if force == 0:
 			var new_object = object_classes[object].instance()
 			new_object.global_position = global_position
-			new_object.add_to_group("bodies")
 			global.get_stage().get_node(object_nodes[object]).add_child(new_object)
 			force = initial_force
 			$sound.stream = global.sound_beep

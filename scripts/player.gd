@@ -34,6 +34,8 @@ var can_fall = false
 var last_pull_body = null
 
 onready var sprite = $sprite
+onready var dark_light = $dark_light
+onready var anim_dark_light = $anim_dark_light
 onready var dust = $dust
 onready var state_label = $state_label
 onready var anim = $anim
@@ -58,6 +60,7 @@ func reset():
 		last_pull_body = null
 	
 	sprite.set_visible(true)
+	dark_light.self_modulate = Color(1,1,1,0)
 	sprite.position.x = 0
 	sprite.position.y = 0
 	player_sm.set_state(player_sm.states.alive)
@@ -442,6 +445,12 @@ func enable_dust(position=Vector2(0,10)):
 func disable_dust():
 	if (dust.is_emitting()):
 		dust.set_emitting(false)
+
+func show_dark_light(value):
+	if value:
+		anim_dark_light.play("show")
+	else:
+		anim_dark_light.play("hide")
 
 func abort_flashing():
 	damage_enabled = true

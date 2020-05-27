@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/sound_water_dripping_2.wav-ee0b71d16f5036ca6bd731626216bb15.sample"
+
+[deps]
+
+source_file="res://sfx/sound_water_dripping_2.wav"
+dest_files=[ "res://.import/sound_water_dripping_2.wav-ee0b71d16f5036ca6bd731626216bb15.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

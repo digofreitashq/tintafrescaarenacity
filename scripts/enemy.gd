@@ -28,6 +28,9 @@ onready var GRAVITY_VEC = Vector2(0, global.GRAVITY)
 
 onready var anim = $anim
 onready var sprite = $sprite
+onready var timer_chasing = $timer_chasing
+onready var timer_damage = $timer_damage
+onready var timer_flashing = $timer_flashing
 onready var detect_floor_left = $detect_floor_left
 onready var detect_floor_right = $detect_floor_right
 onready var detect_wall_left = $detect_wall_left
@@ -90,10 +93,18 @@ func set_direction(delta=0):
 	sprite.scale = Vector2(-direction, SPRITE_SCALE)
 
 func hit_by_bullet():
-	resistance =- 1
-	
-	if resistance <= 0:
-		die()
+	if timer_damage.is_stopped():
+		resistance -= 1
+		
+		if resistance <= 0:
+			die()
+		else:
+			$sound.stream = global.sound_enemy
+			$sound.play(0)
+			timer_damage.start()
+			timer_flashing.start()
+			linear_velocity.x = -direction * current_speed
+			linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
 
 func die():
 	state = STATE_KILLED
@@ -117,7 +128,7 @@ func _on_damage_area_body_entered(body):
 
 func _on_chase_area_body_entered(body):
 	chasing = true
-	$timer_chasing.start()
+	timer_chasing.start()
 	current_speed = WALK_SPEED
 	
 	if ("player" in body.get_name()):
@@ -131,3 +142,12 @@ func _on_chase_area_body_entered(body):
 func _on_timer_chasing_timeout():
 	chasing = false
 
+func _on_timer_flashing_timeout():
+	if sprite.modulate == Color(1,1,1,1):
+		sprite.modulate = Color(1,1,1,0)
+	else:
+		sprite.modulate = Color(1,1,1,1)
+
+func _on_timer_damage_timeout():
+	timer_flashing.stop()
+	sprite.modulate = Color(1,1,1,1)
