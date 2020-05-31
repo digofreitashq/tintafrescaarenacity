@@ -1,8 +1,7 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/title.gd" type="Script" id=1]
 [ext_resource path="res://sprites/title.png" type="Texture" id=2]
-[ext_resource path="res://sprites/title_start.png" type="Texture" id=3]
 [ext_resource path="res://sprites/title_credits_01.png" type="Texture" id=4]
 [ext_resource path="res://bgm/TintaFrescaTitle.ogg" type="AudioStream" id=5]
 [ext_resource path="res://sfx/sound_logo.wav" type="AudioStream" id=6]
@@ -10,38 +9,6 @@
 [ext_resource path="res://sprites/title_credits_03.png" type="Texture" id=8]
 [ext_resource path="res://sprites/title_credits_04.png" type="Texture" id=9]
 [ext_resource path="res://sprites/osb_fire.png" type="Texture" id=10]
-
-[sub_resource type="Animation" id=1]
-resource_name = "still"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/path = NodePath("start:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 4 ),
-"update": 0,
-"values": [ Vector2( 0, 0 ) ]
-}
-
-[sub_resource type="Animation" id=2]
-length = 2.0
-loop = true
-tracks/0/type = "value"
-tracks/0/path = NodePath("start:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 1, 1.3, 1.9 ),
-"transitions": PoolRealArray( 4, -0.25, -5, -5 ),
-"update": 0,
-"values": [ Vector2( 0, 0 ), Vector2( 0, -5 ), Vector2( 0, -10 ), Vector2( 0, 0 ) ]
-}
 
 [sub_resource type="Animation" id=3]
 length = 3.0
@@ -64,10 +31,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.3, 0.5, 1.4, 1.7 ),
-"transitions": PoolRealArray( 1, 1, 1, 0 ),
+"times": PoolRealArray( 0, 1.4, 1.7 ),
+"transitions": PoolRealArray( 1, 1, 0 ),
 "update": 0,
-"values": [ 0.0, 1.0, 1.0, 0.0 ]
+"values": [ 1.0, 1.0, 0.0 ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("bg:visible")
@@ -76,7 +43,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 1.5 ),
+"times": PoolRealArray( 0, 0.9 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ false, true ]
@@ -93,66 +60,39 @@ tracks/3/keys = {
 "update": 0,
 "values": [ 0.0, 1.0 ]
 }
-tracks/4/type = "value"
-tracks/4/path = NodePath("start:visible")
+tracks/4/type = "method"
+tracks/4/path = NodePath(".")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 1.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ false, true ]
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 0 ),
+"values": [ {
+"args": [  ],
+"method": "disclaimer_end"
+} ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath("start:modulate:a")
+tracks/5/path = NodePath("disclaimer:texture")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 0, 1.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
-tracks/6/type = "method"
-tracks/6/path = NodePath(".")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/keys = {
-"times": PoolRealArray( 0, 1.5 ),
-"transitions": PoolRealArray( 0, 1 ),
-"values": [ {
-"args": [  ],
-"method": "disclaimer_end"
-}, {
-"args": [  ],
-"method": "anim_start"
-} ]
-}
-tracks/7/type = "value"
-tracks/7/path = NodePath("disclaimer:texture")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/keys = {
 "times": PoolRealArray( 0, 0.5, 0.6, 0.7, 0.8, 0.9 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ ExtResource( 4 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 4 ) ]
 }
-tracks/8/type = "audio"
-tracks/8/path = NodePath("sound")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
+tracks/6/type = "audio"
+tracks/6/path = NodePath("sound")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
 "clips": [ {
 "end_offset": 0.0,
 "start_offset": 0.0,
@@ -187,30 +127,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [ true, true ]
 }
-tracks/2/type = "value"
-tracks/2/path = NodePath("start:modulate:a")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 1.0, 0.0 ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("start:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ true, true ]
-}
 
 [node name="title" type="Node"]
 script = ExtResource( 1 )
@@ -222,15 +138,7 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 centered = false
 
-[node name="start" type="Sprite" parent="."]
-visible = false
-modulate = Color( 1, 1, 1, 0 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 3 )
-centered = false
-
 [node name="disclaimer" type="Sprite" parent="."]
-modulate = Color( 1, 1, 1, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 centered = false
@@ -243,10 +151,6 @@ stream = ExtResource( 5 )
 
 [node name="sound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 6 )
-
-[node name="anim_start" type="AnimationPlayer" parent="."]
-anims/still = SubResource( 1 )
-anims/updown = SubResource( 2 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/disclaimer = SubResource( 3 )

@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=2]
+[gd_scene load_steps=75 format=2]
 
 [ext_resource path="res://scripts/player.gd" type="Script" id=1]
 [ext_resource path="res://scripts/playerSM.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://sprites/player.png" type="Texture" id=5]
 [ext_resource path="res://sprites/dark_light.png" type="Texture" id=6]
 [ext_resource path="res://sfx/sound_push.wav" type="AudioStream" id=7]
+[ext_resource path="res://scripts/camera.gd" type="Script" id=8]
 [ext_resource path="res://sfx/sound_wallslide.wav" type="AudioStream" id=14]
 [ext_resource path="res://sfx/sound_graffiti.wav" type="AudioStream" id=24]
 
@@ -970,7 +971,7 @@ tracks/0/keys = {
 "values": [ 40, 41 ]
 }
 
-[sub_resource type="Animation" id=64]
+[sub_resource type="Animation" id=50]
 resource_name = "damage"
 length = 0.5
 step = 0.05
@@ -987,7 +988,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 5 ), Vector2( 0, -5 ), Vector2( 0, 4 ), Vector2( 0, -4 ) ]
 }
 
-[sub_resource type="Animation" id=61]
+[sub_resource type="Animation" id=51]
 resource_name = "hide_dark_light"
 length = 0.5
 tracks/0/type = "value"
@@ -1003,7 +1004,7 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="Animation" id=63]
+[sub_resource type="Animation" id=52]
 resource_name = "shake"
 step = 0.05
 tracks/0/type = "value"
@@ -1019,7 +1020,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 8 ), Vector2( 0, -8 ), Vector2( 0, 7 ), Vector2( 0, -7 ), Vector2( 0, 6 ), Vector2( 0, -6 ), Vector2( 0, 5 ), Vector2( 0, -5 ), Vector2( 0, 4 ), Vector2( 0, -4 ) ]
 }
 
-[sub_resource type="Animation" id=62]
+[sub_resource type="Animation" id=53]
 resource_name = "show_dark_light"
 length = 0.5
 tracks/0/type = "value"
@@ -1035,48 +1036,48 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="RectangleShape2D" id=50]
+[sub_resource type="RectangleShape2D" id=54]
 extents = Vector2( 8, 22 )
 
-[sub_resource type="RectangleShape2D" id=51]
+[sub_resource type="RectangleShape2D" id=55]
 
-[sub_resource type="RectangleShape2D" id=52]
+[sub_resource type="RectangleShape2D" id=56]
 
-[sub_resource type="CanvasItemMaterial" id=53]
+[sub_resource type="CanvasItemMaterial" id=57]
 particles_animation = true
 particles_anim_h_frames = 1
 particles_anim_v_frames = 1
 particles_anim_loop = false
 
-[sub_resource type="Curve" id=54]
+[sub_resource type="Curve" id=58]
 min_value = -360.0
 max_value = 360.0
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=55]
-curve = SubResource( 54 )
+[sub_resource type="CurveTexture" id=59]
+curve = SubResource( 58 )
 
-[sub_resource type="Curve" id=56]
+[sub_resource type="Curve" id=60]
 max_value = 200.0
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=57]
-curve = SubResource( 56 )
+[sub_resource type="CurveTexture" id=61]
+curve = SubResource( 60 )
 
-[sub_resource type="Gradient" id=58]
+[sub_resource type="Gradient" id=62]
 offsets = PoolRealArray( 0.79669, 1 )
 colors = PoolColorArray( 1, 0.623529, 0.145098, 1, 1, 0.623529, 0.145098, 0 )
 
-[sub_resource type="GradientTexture" id=59]
-gradient = SubResource( 58 )
+[sub_resource type="GradientTexture" id=63]
+gradient = SubResource( 62 )
 
-[sub_resource type="ParticlesMaterial" id=60]
+[sub_resource type="ParticlesMaterial" id=64]
 flag_disable_z = true
 spread = 50.0
 flatness = 1.0
 gravity = Vector3( 0, 0, 0 )
 initial_velocity = 50.0
-angular_velocity_curve = SubResource( 55 )
+angular_velocity_curve = SubResource( 59 )
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 linear_accel = -100.0
@@ -1084,8 +1085,8 @@ radial_accel = 100.0
 radial_accel_random = 0.5
 angle = -149.8
 scale = 4.0
-color_ramp = SubResource( 59 )
-anim_speed_curve = SubResource( 57 )
+color_ramp = SubResource( 63 )
+anim_speed_curve = SubResource( 61 )
 
 [node name="player" type="KinematicBody2D"]
 collision/safe_margin = 1.0
@@ -1167,10 +1168,10 @@ anims/wall_slide_weapon_left = SubResource( 48 )
 anims/wall_slide_weapon_right = SubResource( 49 )
 
 [node name="anim_screen" type="AnimationPlayer" parent="."]
-anims/damage = SubResource( 64 )
-anims/hide_dark_light = SubResource( 61 )
-anims/shake = SubResource( 63 )
-anims/show_dark_light = SubResource( 62 )
+anims/damage = SubResource( 50 )
+anims/hide_dark_light = SubResource( 51 )
+anims/shake = SubResource( 52 )
+anims/show_dark_light = SubResource( 53 )
 
 [node name="camera" type="Camera2D" parent="."]
 position = Vector2( 0, -4 )
@@ -1179,6 +1180,7 @@ limit_left = 0
 limit_top = 0
 smoothing_enabled = true
 smoothing_speed = 100.0
+script = ExtResource( 8 )
 
 [node name="bullet_shoot" type="Position2D" parent="."]
 light_mask = 0
@@ -1193,7 +1195,7 @@ stream = ExtResource( 24 )
 volume_db = -5.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 50 )
+shape = SubResource( 54 )
 
 [node name="timer_damage" type="Timer" parent="."]
 one_shot = true
@@ -1214,7 +1216,7 @@ wait_time = 10.0
 one_shot = true
 
 [node name="timer_wallslide" type="Timer" parent="."]
-wait_time = 0.001
+wait_time = 0.2
 one_shot = true
 
 [node name="timer_wallslide_cooldown" type="Timer" parent="."]
@@ -1222,7 +1224,6 @@ wait_time = 0.3
 one_shot = true
 
 [node name="state_label" type="Label" parent="."]
-visible = false
 margin_left = -50.2015
 margin_top = -54.0867
 margin_right = 50.7985
@@ -1234,13 +1235,23 @@ text = "IDLE"
 align = 1
 uppercase = true
 
+[node name="raycast_left" type="RayCast2D" parent="."]
+rotation = 1.5708
+scale = Vector2( 1, 0.3 )
+enabled = true
+
+[node name="raycast_right" type="RayCast2D" parent="."]
+rotation = 4.71239
+scale = Vector2( 1, 0.3 )
+enabled = true
+
 [node name="left_wall" type="Area2D" parent="."]
 position = Vector2( -8, 0 )
 space_override = 3
 
 [node name="collision_shape" type="CollisionShape2D" parent="left_wall"]
 position = Vector2( 0, -10 )
-shape = SubResource( 51 )
+shape = SubResource( 55 )
 
 [node name="right_wall" type="Area2D" parent="."]
 position = Vector2( 8, 0 )
@@ -1248,10 +1259,10 @@ space_override = 3
 
 [node name="collision_shape" type="CollisionShape2D" parent="right_wall"]
 position = Vector2( 0, -10 )
-shape = SubResource( 52 )
+shape = SubResource( 56 )
 
 [node name="spray_particles" type="Particles2D" parent="."]
-material = SubResource( 53 )
+material = SubResource( 57 )
 position = Vector2( 0, -12 )
 scale = Vector2( 1, 0.5 )
 emitting = false
@@ -1261,10 +1272,11 @@ one_shot = true
 fract_delta = false
 visibility_rect = Rect2( 0, 0, 0, 0 )
 local_coords = false
-process_material = SubResource( 60 )
+process_material = SubResource( 64 )
 
 [node name="dark_light" type="Sprite" parent="."]
 self_modulate = Color( 1, 1, 1, 0 )
+position = Vector2( 0.15976, 0.15976 )
 scale = Vector2( 2, 2 )
 z_index = 4001
 z_as_relative = false
@@ -1273,4 +1285,5 @@ texture = ExtResource( 6 )
 [connection signal="timeout" from="timer_flashing" to="." method="_on_timer_flashing_timeout"]
 [connection signal="timeout" from="timer_shoot" to="." method="_on_timer_shoot_timeout"]
 [connection signal="timeout" from="timer_idle" to="." method="_on_timer_idle_timeout"]
+[connection signal="timeout" from="timer_wallslide" to="." method="_on_timer_wallslide_timeout"]
 [connection signal="timeout" from="timer_wallslide_cooldown" to="." method="_on_timer_wallslide_cooldown_timeout"]

@@ -271,3 +271,4 @@ func reset_stage():
 func reload_stage():
 	reset_stage()
 	get_tree().reload_current_scene()
+	global.allow_movement = true

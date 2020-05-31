@@ -32,6 +32,7 @@ var jump_released = true
 var can_reload = false
 var can_fall = false
 var last_pull_body = null
+var wall_touching = 0
 
 onready var sprite = $sprite
 onready var dark_light = $dark_light
@@ -99,6 +100,7 @@ func _apply_movement(_delta):
 			linear_velocity.x = lerp(linear_velocity.x, direction * WALK_SPEED, 0.5)
 	else:
 		linear_velocity.x = lerp(linear_velocity.x, direction * WALK_SPEED, 0.1)
+		check_wall_touching()
 
 func _gravity_wall_slide():
 	if !global.allow_movement: return
@@ -107,12 +109,10 @@ func _gravity_wall_slide():
 	linear_velocity.y = min(linear_velocity.y, max_vel)
 
 func is_opposite_wall():
-	var wall_direction_result = wall_direction()
-	return (wall_direction_result == WALL_RIGHT and Input.is_action_pressed("move_left")) or (wall_direction_result == WALL_LEFT and Input.is_action_pressed("move_right"))
+	return (wall_touching == WALL_RIGHT and Input.is_action_pressed("move_left")) or (wall_touching == WALL_LEFT and Input.is_action_pressed("move_right"))
 
 func is_same_wall():
-	var wall_direction_result = wall_direction()
-	return (wall_direction_result == WALL_LEFT and Input.is_action_pressed("move_left")) or (wall_direction_result == WALL_RIGHT and Input.is_action_pressed("move_right"))
+	return (wall_touching == WALL_LEFT and Input.is_action_pressed("move_left")) or (wall_touching == WALL_RIGHT and Input.is_action_pressed("move_right"))
 
 func is_pushing():
 	return round(linear_velocity.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
@@ -128,6 +128,7 @@ func _handle_move_input():
 		skip_dialog = true
 	
 	if Input.is_action_pressed("shoot") and can_reload:
+		global.allow_movement = false
 		global.reload_stage()
 		return
 	
@@ -221,23 +222,22 @@ func play_sound(stream):
 		$sound_bonus.stream = stream
 		$sound_bonus.play()
 
-func wall_direction():
-	var is_near_left = false
-	var is_near_right = false
+func check_wall_touching():
+	var previous_wall_touchng = wall_touching
 	
-	for body in $left_wall.get_overlapping_bodies():
-		if global.is_walljump_collision(body):
-			is_near_left = true
-			break
+	wall_touching = 0
 	
-	for body in $right_wall.get_overlapping_bodies():
-		if global.is_walljump_collision(body):
-			is_near_right = true
-			break
+	if $raycast_left.is_colliding():
+		if global.is_walljump_collision($raycast_left.get_collider()):
+			wall_touching += WALL_LEFT
 	
-	var result = -int(is_near_left) + int(is_near_right)
-	
-	return result
+	if $raycast_right.is_colliding():
+		if global.is_walljump_collision($raycast_right.get_collider()):
+			wall_touching += WALL_RIGHT
+			
+	if previous_wall_touchng != wall_touching and not timer_wallslide.is_stopped():
+		print('stop!')
+		timer_wallslide.stop()
 
 func jump():
 	play_anim("jump")
@@ -473,3 +473,6 @@ func _on_timer_idle_timeout():
 
 func _on_timer_wallslide_cooldown_timeout():
 	can_fall = true
+
+func _on_timer_wallslide_timeout():
+	player_sm.state = player_sm.states.wall_slide

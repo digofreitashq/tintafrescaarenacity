@@ -33,7 +33,7 @@ func _state_logic(delta):
 	if state == states.wall_slide:
 		parent._gravity_wall_slide()
 	
-	#parent.update_state_label()
+	parent.update_state_label()
 
 func _get_transition(_delta):
 	if not global.allow_movement: return
@@ -57,7 +57,8 @@ func _get_transition(_delta):
 	if state in [states.idle, states.run, states.fall, states.jump, states.push, states.grab, states.pull]:
 		if not parent.on_floor:
 			if parent.is_same_wall() and parent.knows_walljump:
-				return states.wall_slide
+				if parent.timer_wallslide.is_stopped():
+					parent.timer_wallslide.start()
 			if going_up:
 				return states.jump
 			else:
@@ -130,7 +131,8 @@ func _get_transition(_delta):
 				else:
 					return states.idle
 			elif parent.is_same_wall() and parent.knows_walljump:
-				return states.wall_slide
+				if parent.timer_wallslide.is_stopped():
+					parent.timer_wallslide.start()
 	
 	return null
 
@@ -180,15 +182,13 @@ func _enter_state(new_state, old_state):
 		states.wall_slide:
 			parent.can_fall = false
 			parent.on_floor = false
-			parent.enable_dust(Vector2(parent.wall_direction()*20,0))
+			parent.enable_dust(Vector2(parent.wall_touching*20,0))
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("wall_slide")
-			parent.timer_wallslide.start()
 		states.wall_jump:
 			parent.on_floor = false
 			parent.disable_dust()
 			parent.play_anim("wall_jump")
-			parent.timer_wallslide.start()
 		states.damage:
 			parent.on_floor = false
 			parent.disable_dust()

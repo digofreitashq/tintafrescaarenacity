@@ -12,9 +12,6 @@ func reset():
 	$music.play(0)
 	$anim.play("disclaimer")
 
-func anim_start():
-	$anim_start.play("updown")
-
 func disclaimer_end():
 	timer_start = $timer_start
 	timer_start.connect("timeout", self, "start")
@@ -26,8 +23,6 @@ func start():
 		
 		if (press_start):
 			pressed_start = true
-			
-			$anim_start.play("still")
 			
 			$disclaimer.visible = false
 			
