@@ -37,24 +37,24 @@ func update_sprite():
 
 func _on_timer_frame_timeout():
 	if frame_changed:
-		drawing.frame -= frame_step
-		counter.frame -= frame_step
+		drawing.frame = object_frames[object]
+		counter.frame = number_frames[force]
 	else:
-		drawing.frame += frame_step
-		counter.frame += frame_step
+		drawing.frame = object_frames[object] + frame_step
+		counter.frame = number_frames[force] + frame_step
 	
 	frame_changed = !frame_changed
 
 func _on_Area2D_body_entered(body):
 	if global.is_bullet(body):
+		if force <= 0: return
+		
 		force -= 1
 		
-		if force == 0:
-			var new_object = object_classes[object].instance()
-			new_object.global_position = global_position
-			global.get_stage().get_node(object_nodes[object]).add_child(new_object)
-			force = initial_force
-			$sound.stream = global.sound_beep
-			$sound.play(0)
+		var new_object = object_classes[object].instance()
+		new_object.global_position = global_position
+		global.get_stage().get_node(object_nodes[object]).add_child(new_object)
+		$sound.stream = global.sound_beep
+		$sound.play(0)
 		
 		update_sprite()

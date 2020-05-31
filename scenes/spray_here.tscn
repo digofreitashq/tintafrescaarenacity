@@ -33,10 +33,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PoolRealArray( 0, 0.2, 0.5, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0 ]
+"values": [ 1, 2, 3, 0 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("sprite:position")
@@ -45,10 +45,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 1.6, 2 ),
+"times": PoolRealArray( 0, 1.8, 2 ),
 "transitions": PoolRealArray( 0.241484, 0.466518, 1 ),
 "update": 0,
-"values": [ Vector2( 0, 0 ), Vector2( 0, -16 ), Vector2( 0, 0 ) ]
+"values": [ Vector2( 0, 0 ), Vector2( 0, -32 ), Vector2( 0, 0 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("sprite:self_modulate")
@@ -104,7 +104,7 @@ tracks/2/keys = {
 }
 
 [sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 32, 30 )
+extents = Vector2( 32, 48 )
 
 [node name="spray_here" type="Area2D"]
 material = SubResource( 1 )
@@ -112,9 +112,11 @@ script = ExtResource( 1 )
 
 [node name="sprite" type="Sprite" parent="."]
 modulate = Color( 1, 1, 0.988235, 1 )
+position = Vector2( 0, -5.86067 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 hframes = 4
+frame = 1
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle"
@@ -125,6 +127,7 @@ anims/spin = SubResource( 4 )
 
 [node name="collision" type="CollisionShape2D" parent="."]
 visible = false
+position = Vector2( 0, -16 )
 shape = SubResource( 5 )
 
 [node name="sound" type="AudioStreamPlayer" parent="."]
@@ -133,9 +136,9 @@ volume_db = -10.0
 
 [node name="enabler" type="VisibilityEnabler2D" parent="."]
 visible = false
-position = Vector2( -1.90735e-06, -1.90735e-06 )
+position = Vector2( -2.27374e-13, -2.27374e-13 )
 scale = Vector2( 3.2, 3.2 )
-pause_particles = false
+physics_process_parent = true
 
 [node name="timer_spin" type="Timer" parent="."]
 wait_time = 0.5

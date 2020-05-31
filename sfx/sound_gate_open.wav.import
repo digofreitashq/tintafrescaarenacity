@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/sound_gate_open.wav-268268d5cd8bc412be2cf3b4615ee099.sample"
+
+[deps]
+
+source_file="res://sfx/sound_gate_open.wav"
+dest_files=[ "res://.import/sound_gate_open.wav-268268d5cd8bc412be2cf3b4615ee099.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

@@ -28,7 +28,7 @@ boot_splash/use_filter=false
 boot_splash/bg_color=Color( 0.243137, 0.129412, 0.215686, 1 )
 config/icon="res://icon.png"
 name_es="Tinta Fresca Arena"
-target_fps="15"
+target_fps="60"
 
 [autoload]
 

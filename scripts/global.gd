@@ -6,7 +6,7 @@ var BULLET_NORMAL = 0
 var BULLET_TRIPLE = 1
 
 var health = 10
-var bullets = 0
+var bullets = 10
 var bullet_type = BULLET_NORMAL
 var enemies = 0
 var graffitis = 0
@@ -21,6 +21,7 @@ var trampolines = []
 onready var sound_fill = preload("res://sfx/sound_fill.wav")
 onready var sound_damage = preload("res://sfx/sound_damage.wav")
 onready var sound_enemy = preload("res://sfx/sound_enemy.wav")
+onready var sound_hit = preload("res://sfx/sound_hit.wav")
 onready var sound_jump = preload("res://sfx/sound_jump.wav")
 onready var sound_walljump = preload("res://sfx/sound_walljump.wav")
 onready var sound_wallslide = preload("res://sfx/sound_wallslide.wav")
@@ -94,7 +95,7 @@ func is_tilemap(body):
 	return "tilemap" in body.get_name()
 
 func is_walljump_collision(body):
-	return "tilemapcollision" in body.get_name()
+	return body is TileMap and "tilemapcollision" in body.get_name()
 
 func is_push_collision(body):
 	return not is_player(body) and body.is_in_group("bodies")
@@ -125,8 +126,8 @@ func wait_until_signal(seconds):
 	timer.start()
 
 func show_graffiti(id):
-	var graffiti = get_tree().get_current_scene().get_node("graffitis").get_node("tilemapgraffiti_%s" % id)
-	graffiti.visible = true
+	var graffiti = get_tree().get_current_scene().find_node("tilemapgraffiti_%s" % id)
+	graffiti.set_visible(true)
 
 func show_player_ui(show = true):
 	var ui = get_ui()
@@ -233,9 +234,12 @@ func set_all_zindex():
 	
 	get_player().z_index = index
 
+func shake_camera():
+	get_player().shake_camera()
+
 func reset_stage():
 	health = 10
-	bullets = 0
+	bullets = 10
 	bullet_type = BULLET_NORMAL
 	enemies = 0
 	graffitis = 0

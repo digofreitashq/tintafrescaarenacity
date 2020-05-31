@@ -26,8 +26,8 @@ var shooted = 1
 var siding_left = false
 var damage_enabled = true
 var skip_dialog = false
-var knows_walljump = false
-var knows_pull = false
+var knows_walljump = true
+var knows_pull = true
 var jump_released = true
 var can_reload = false
 var can_fall = false
@@ -35,10 +35,10 @@ var last_pull_body = null
 
 onready var sprite = $sprite
 onready var dark_light = $dark_light
-onready var anim_dark_light = $anim_dark_light
 onready var dust = $dust
 onready var state_label = $state_label
 onready var anim = $anim
+onready var anim_screen = $anim_screen
 onready var spray_particles = $spray_particles
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
@@ -79,13 +79,12 @@ func _apply_movement(_delta):
 	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL, SLOPE_SLIDE_STOP, 4, PI/4, false)
 	is_on_floor()
 	
-	for index in get_slide_count():
-		var collision = get_slide_collision(index)
-		var impulse = null
-		
-		if collision.collider.is_in_group("bodies"):
-			impulse = Vector2((-collision.normal * 1000).x,0)
-			collision.collider.apply_central_impulse(impulse)
+	if player_sm.is_on(player_sm.states.push):
+		for index in get_slide_count():
+			var collision = get_slide_collision(index)
+			
+			if collision.collider.is_in_group("bodies"):
+				collision.collider.apply_central_impulse(Vector2((-collision.normal * 1000).x,0))
 	
 	on_floor_before = on_floor
 	on_floor = onair_time < MIN_ONAIR_TIME
@@ -108,10 +107,12 @@ func _gravity_wall_slide():
 	linear_velocity.y = min(linear_velocity.y, max_vel)
 
 func is_opposite_wall():
-	return (wall_direction() == WALL_RIGHT and Input.is_action_pressed("move_left")) or (wall_direction() == WALL_LEFT and Input.is_action_pressed("move_right"))
+	var wall_direction_result = wall_direction()
+	return (wall_direction_result == WALL_RIGHT and Input.is_action_pressed("move_left")) or (wall_direction_result == WALL_LEFT and Input.is_action_pressed("move_right"))
 
 func is_same_wall():
-	return (wall_direction() == WALL_LEFT and Input.is_action_pressed("move_left")) or (wall_direction() == WALL_RIGHT and Input.is_action_pressed("move_right"))
+	var wall_direction_result = wall_direction()
+	return (wall_direction_result == WALL_LEFT and Input.is_action_pressed("move_left")) or (wall_direction_result == WALL_RIGHT and Input.is_action_pressed("move_right"))
 
 func is_pushing():
 	return round(linear_velocity.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
@@ -415,13 +416,11 @@ func got_damage(value, on_top=false, on_left=null):
 		
 		if on_left == null: on_left = siding_left
 		
-		if on_top:
-			linear_velocity = Vector2(0, -JUMP_SPEED/2)
-		else:
-			linear_velocity = Vector2(-JUMP_SPEED if on_left else JUMP_SPEED, -JUMP_SPEED)
+		linear_velocity = Vector2(0, -JUMP_SPEED/2)
 		
 		$timer_damage.start()
 		$timer_flashing.start()
+		$anim_screen.play("damage")
 
 func die():
 	stop_sound()
@@ -448,14 +447,17 @@ func disable_dust():
 
 func show_dark_light(value):
 	if value:
-		anim_dark_light.play("show")
+		anim_screen.play("show_dark_light")
 	else:
-		anim_dark_light.play("hide")
+		anim_screen.play("hide_dark_light")
 
 func abort_flashing():
 	damage_enabled = true
 	sprite.modulate = Color(1,1,1,1)
 	$timer_flashing.stop()
+
+func shake_camera():
+	$anim_screen.play("shake")
 
 func _on_timer_flashing_timeout():
 	if sprite.modulate == Color(1,1,1,1):

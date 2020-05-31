@@ -23,6 +23,7 @@ func _ready():
 func reset():
 	undergrounded = false
 	
+	
 	for node in $collisions.get_children(): node.set_visible(false)
 	for node in $graffitis.get_children(): node.set_visible(false)
 	
@@ -39,6 +40,8 @@ func random_sound():
 			4: $sfx.stream = sound_horn_4
 			5: $sfx.stream = sound_siren_police
 			6: $sfx.stream = sound_siren_ambulance
+		
+		$timer_sfx.wait_time = global.random(5,10)
 	else:
 		match global.random(1,6):
 			1: $sfx.stream = sound_water_dripping_1
@@ -47,9 +50,11 @@ func random_sound():
 			4: $sfx.stream = sound_water_dripping_4
 			5: $sfx.stream = sound_water_dripping_5
 			6: $sfx.stream = sound_water_dripping_6
+		
+		$timer_sfx.wait_time = global.random(1,3)
 	
 	$sfx.play()
-	$timer_sfx.wait_time = global.random(5,10)
+	
 
 func _on_sfx_finished():
 	$timer_sfx.start()
@@ -57,7 +62,7 @@ func _on_sfx_finished():
 
 func _on_area_parallax_1_body_entered(body):
 	if not global.is_player(body): return
-	undergrounded = $areas/area_parallax_1.position.y < player.position.y
+	undergrounded = $triggers/area_parallax_1.position.y < player.position.y
 	$parallax_bg.show(!undergrounded)
 	player.show_dark_light(undergrounded)
 	
@@ -75,3 +80,16 @@ func _on_area_parallax_1_body_entered(body):
 	$music_base.play(playback_position)
 	$music.play(playback_position)
 
+func _on_area_close_gate_body_entered(body):
+	if not global.is_player(body): return
+	find_node("grid").open()
+
+func _on_area_close_gate_body_exited(body):
+	if not global.is_player(body): return
+	find_node("grid").close()
+
+func _on_area_dark_light_off_body_entered(body):
+	if not global.is_player(body): return
+	var hide = $triggers/area_dark_light_off.position.x < player.position.x
+	player.shake_camera()
+	player.show_dark_light(hide)

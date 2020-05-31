@@ -77,8 +77,14 @@ func _on_Area2D_top_body_entered(body):
 		anim.play("bounce_end")
 		
 
-func _on_Area2D_bottom_body_entered(_body):
+func _on_Area2D_bottom_body_entered(body):
 	check_surface()
+	
+	if global.is_player(body):
+		bounce = 1
 
-func _on_Area2D_bottom_body_exited(_body):
+func _on_Area2D_bottom_body_exited(body):
 	check_surface()
+	
+	if global.is_player(body):
+		bounce = 0

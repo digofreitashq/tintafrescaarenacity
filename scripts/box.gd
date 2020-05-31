@@ -1,6 +1,7 @@
 extends RigidBody2D
 
 const FLOAT_SPEED = 50
+const MAX_DISTANCE_FROM_PLAYER = 64
 
 var on_floor = false
 var can_play_sound = true
@@ -12,7 +13,6 @@ var position_repeated = 0
 onready var box_sm = $box_sm
 onready var anim = $anim
 onready var player = global.get_player()
-onready var distance_from_player = $CollisionShape2D.shape.extents.x + player.get_node("CollisionShape2D").shape.extents.x*2
 
 func _ready():
 	reset()
@@ -25,6 +25,7 @@ func reset():
 
 func _physics_process(_delta):
 	rotation_degrees = 0
+	angular_velocity = 0
 	
 	if box_sm.is_on(box_sm.states.idle):
 		float_direction = -1 if linear_velocity.x < 0 else 1
@@ -32,15 +33,14 @@ func _physics_process(_delta):
 		if follow_player:
 			linear_velocity.x = player.linear_velocity.x
 			var direction = (player.global_position - global_position)
-			if abs(direction.x) > distance_from_player:
+			if abs(direction.x) > MAX_DISTANCE_FROM_PLAYER:
 				if player.siding_left:
-					global_position.x = player.global_position.x - distance_from_player
+					global_position.x = player.global_position.x - MAX_DISTANCE_FROM_PLAYER
 				else:
-					global_position.x = player.global_position.x + distance_from_player
+					global_position.x = player.global_position.x + MAX_DISTANCE_FROM_PLAYER
 	
 	elif box_sm.is_on(box_sm.states.floating):
 		linear_velocity.x = FLOAT_SPEED * float_direction
-		
 
 func check_surface():
 	var in_sewer = false
@@ -73,11 +73,17 @@ func _on_Area2D_top_body_entered(body):
 	if global.is_box(body):
 		global.set_all_zindex()
 
-func _on_Area2D_bottom_body_entered(_body):
+func _on_Area2D_bottom_body_entered(body):
 	check_surface()
+	
+	if global.is_player(body):
+		bounce = 1
 
-func _on_Area2D_bottom_body_exited(_body):
+func _on_Area2D_bottom_body_exited(body):
 	check_surface()
+	
+	if global.is_player(body):
+		bounce = 0
 
 func _on_Area2D_left_body_entered(body):
 	if box_sm.is_on(box_sm.states.floating):

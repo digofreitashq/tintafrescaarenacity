@@ -1,7 +1,17 @@
 extends KinematicBody2D
 
-export (Texture) var sprite_texture = load("res://sprites/enemy_pato.png") setget setSpriteTexture, getSpriteTexture
-export (int,1,5,1) var initial_resistance = 1
+const ENEMY_TYPES = {
+	"arara": 1, 
+	"bode": 2, 
+	"cachorro": 2, 
+	"crocodilo": 4, 
+	"pato": 3, 
+	"rato": 2, 
+	"rinoceronte": 4, 
+	"tigre": 3
+}
+
+export (String, "arara", "bode", "cachorro", "crocodilo", "pato", "rato", "rinoceronte", "tigre") var type = "pato" setget setType, getType
 
 const FLOOR_NORMAL = Vector2(0, -2)
 
@@ -10,9 +20,9 @@ const JUMP_SPEED = 250
 const STATE_WALKING = 0
 const STATE_KILLED = 1
 const SPRITE_SCALE = 2
-
 const DAMAGE = 1
 
+var initial_resistance = 1
 var linear_velocity = Vector2()
 var direction = 2 if randi() % 2 == 0 else -2
 var anim_name=""
@@ -40,17 +50,18 @@ func _ready():
 	reset()
 	
 func reset():
+	initial_resistance = ENEMY_TYPES[type]
 	resistance = initial_resistance
 	global.update_enemies(1)
 	sprite.modulate = Color(1,1,1,1)
 	sprite.set_visible(true)
 
-func getSpriteTexture():
-	return sprite_texture
+func getType():
+	return type
 
-func setSpriteTexture(newSpriteTexture):
-	if newSpriteTexture:
-		$sprite.set_texture(newSpriteTexture)
+func setType(new_type):
+	if new_type:
+		$sprite.set_texture(load("res://sprites/enemy_%s.png" % new_type))
 
 func _physics_process(delta):
 	if not global.allow_movement: return
@@ -99,12 +110,14 @@ func hit_by_bullet():
 		if resistance <= 0:
 			die()
 		else:
-			$sound.stream = global.sound_enemy
+			$sound.stream = global.sound_hit
 			$sound.play(0)
 			timer_damage.start()
 			timer_flashing.start()
 			linear_velocity.x = -direction * current_speed
 			linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
+			
+			chase(global.get_player())
 
 func die():
 	state = STATE_KILLED
@@ -126,18 +139,24 @@ func _on_damage_area_body_entered(body):
 		
 		global.get_player().got_damage(DAMAGE, on_left)
 
-func _on_chase_area_body_entered(body):
+func chase(body):
 	chasing = true
 	timer_chasing.start()
 	current_speed = WALK_SPEED
 	
-	if ("player" in body.get_name()):
-		if global_position.x > body.global_position.x:
-			direction = -SPRITE_SCALE
-		else:
-			direction = SPRITE_SCALE
+	if global_position.x > body.global_position.x:
+		direction = -SPRITE_SCALE
+	else:
+		direction = SPRITE_SCALE
+	
+	set_direction()
+
+func check_body_chase(body):
+	if global.is_player(body):
+		if (direction > 0 and global_position.x > body.global_position.x) or (direction < 0 and global_position.x < body.global_position.x):
+			return
 		
-		set_direction()
+		chase(body)
 
 func _on_timer_chasing_timeout():
 	chasing = false
