@@ -4,11 +4,9 @@
 [ext_resource path="res://sprites/hud_base.png" type="Texture" id=2]
 [ext_resource path="res://sprites/hud_health_10.png" type="Texture" id=3]
 [ext_resource path="res://sprites/hud_bullets_00.png" type="Texture" id=4]
-[ext_resource path="res://sprites/spray_1.png" type="Texture" id=5]
 [ext_resource path="res://sfx/sound_fill.wav" type="AudioStream" id=6]
 [ext_resource path="res://sprites/osb_down.png" type="Texture" id=7]
 [ext_resource path="res://sprites/osb_fire.png" type="Texture" id=15]
-[ext_resource path="res://fonts/gbb.font" type="BitmapFont" id=16]
 [ext_resource path="res://sprites/osb_left.png" type="Texture" id=17]
 [ext_resource path="res://sprites/osb_right.png" type="Texture" id=18]
 [ext_resource path="res://sprites/osb_jump.png" type="Texture" id=19]
@@ -24,6 +22,16 @@ radius = 30.0
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 30.0
+
+[sub_resource type="DynamicFontData" id=5]
+antialiased = false
+hinting = 0
+font_path = "res://fonts/TinyUnicode.ttf"
+
+[sub_resource type="DynamicFont" id=6]
+size = 28
+outline_size = 2
+font_data = SubResource( 5 )
 
 [node name="hud" type="Node2D"]
 script = ExtResource( 1 )
@@ -41,11 +49,6 @@ centered = false
 [node name="bullets" type="Sprite" parent="."]
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
-centered = false
-
-[node name="spray" type="Sprite" parent="."]
-scale = Vector2( 2, 2 )
-texture = ExtResource( 5 )
 centered = false
 
 [node name="ui" type="Node2D" parent="."]
@@ -97,20 +100,18 @@ shape = SubResource( 4 )
 action = "shoot"
 visibility_mode = 1
 
-[node name="label_enemies" type="Label" parent="."]
-margin_left = 4.0
-margin_top = 46.0
-margin_right = 224.0
-margin_bottom = 100.0
+[node name="label_sprays" type="Label" parent="."]
+margin_left = 64.0
+margin_top = 30.0
+margin_right = 184.0
+margin_bottom = 48.0
 mouse_filter = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
-custom_fonts/font = ExtResource( 16 )
-custom_colors/font_color = Color( 0.843137, 0.231373, 0.0196078, 1 )
-custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
-custom_constants/shadow_offset_x = 2
-custom_constants/line_spacing = 0
-custom_constants/shadow_offset_y = 2
+size_flags_stretch_ratio = 0.0
+custom_fonts/font = SubResource( 6 )
+custom_colors/font_color = Color( 0.439216, 0.215686, 0.498039, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
 text = "000"
 __meta__ = {
 "_edit_use_anchors_": false

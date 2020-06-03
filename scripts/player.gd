@@ -11,8 +11,8 @@ const WALLJUMP_SPEED = 350
 const BULLET_VELOCITY = 400
 const PUSH = 100
 
-const WALL_LEFT = -1
-const WALL_RIGHT = 1
+const SIDE_LEFT = -1
+const SIDE_RIGHT = 1
 
 var linear_velocity = Vector2()
 var direction = 0
@@ -33,6 +33,9 @@ var can_reload = false
 var can_fall = false
 var last_pull_body = null
 var wall_touching = 0
+var holding_shoot = false
+var holding_shoot_empty = false
+var holding_shoot_seconds = 0
 
 onready var sprite = $sprite
 onready var dark_light = $dark_light
@@ -40,14 +43,18 @@ onready var dust = $dust
 onready var state_label = $state_label
 onready var anim = $anim
 onready var anim_screen = $anim_screen
+onready var anim_charging = $anim_charging
 onready var spray_particles = $spray_particles
 onready var player_sm = $player_sm
 onready var player_asm = $player_asm
 onready var timer_shoot = $timer_shoot
+onready var timer_holding_shoot = $timer_holding_shoot
+onready var timer_flashing_shoot = $timer_flashing_shoot
 onready var timer_wallslide = $timer_wallslide
 onready var timer_wallslide_cooldown = $timer_wallslide_cooldown
 onready var timer_idle = $timer_idle
 
+onready var white_shader = preload("res://shaders/white_shader.tres")
 onready var bullet = preload("res://scenes/bullet.tscn")
 
 signal grounded
@@ -61,12 +68,14 @@ func reset():
 		last_pull_body = null
 	
 	sprite.set_visible(true)
+	sprite.material = null
 	dark_light.self_modulate = Color(1,1,1,0)
 	sprite.position.x = 0
 	sprite.position.y = 0
 	player_sm.set_state(player_sm.states.alive)
 	player_sm.set_state(player_sm.states.idle)
 	anim.play("idle_right")
+	anim_charging.play("stop")
 
 func _apply_gravity(delta):
 	if !global.allow_movement: 
@@ -109,10 +118,10 @@ func _gravity_wall_slide():
 	linear_velocity.y = min(linear_velocity.y, max_vel)
 
 func is_opposite_wall():
-	return (wall_touching == WALL_RIGHT and Input.is_action_pressed("move_left")) or (wall_touching == WALL_LEFT and Input.is_action_pressed("move_right"))
+	return (wall_touching == SIDE_RIGHT and Input.is_action_pressed("move_left")) or (wall_touching == SIDE_LEFT and Input.is_action_pressed("move_right"))
 
 func is_same_wall():
-	return (wall_touching == WALL_LEFT and Input.is_action_pressed("move_left")) or (wall_touching == WALL_RIGHT and Input.is_action_pressed("move_right"))
+	return (wall_touching == SIDE_LEFT and Input.is_action_pressed("move_left")) or (wall_touching == SIDE_RIGHT and Input.is_action_pressed("move_right"))
 
 func is_pushing():
 	return round(linear_velocity.x) != 0 and (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"))
@@ -176,7 +185,9 @@ func _handle_move_input():
 			last_pull_body.follow_player = false
 			last_pull_body = null
 	
-	if Input.is_action_pressed("shoot"):
+	if Input.is_action_pressed("shoot") and not holding_shoot:
+		start_shoot()
+	elif Input.is_action_just_released("shoot"):
 		shoot()
 	
 	if player_sm.is_on([player_sm.states.idle, player_sm.states.run, player_sm.states.push, player_sm.states.pull]):
@@ -229,14 +240,13 @@ func check_wall_touching():
 	
 	if $raycast_left.is_colliding():
 		if global.is_walljump_collision($raycast_left.get_collider()):
-			wall_touching += WALL_LEFT
+			wall_touching += SIDE_LEFT
 	
 	if $raycast_right.is_colliding():
 		if global.is_walljump_collision($raycast_right.get_collider()):
-			wall_touching += WALL_RIGHT
+			wall_touching += SIDE_RIGHT
 			
 	if previous_wall_touchng != wall_touching and not timer_wallslide.is_stopped():
-		print('stop!')
 		timer_wallslide.stop()
 
 func jump():
@@ -290,9 +300,9 @@ func push_direction():
 		is_near_right = global.is_push_collision(right_body)
 	
 	if is_near_left:
-		result = WALL_LEFT
+		result = SIDE_LEFT
 	elif is_near_right:
-		result = WALL_RIGHT
+		result = SIDE_RIGHT
 	
 	return result
 
@@ -308,35 +318,65 @@ func get_pull_body():
 	
 	return null
 
+func start_shoot():
+	if global.bullets == 0:
+		holding_shoot = false
+		holding_shoot_empty = true
+		return
+	
+	holding_shoot_empty = false
+	holding_shoot = true
+	
+	if timer_holding_shoot.is_stopped() and global.bullets > 0:
+		holding_shoot_seconds = 0
+		timer_holding_shoot.start()
+
 func shoot():
+	$sound_charging.stop()
+	anim_charging.play("stop")
+	
 	if not timer_shoot.is_stopped():
+		return
+	
+	var special = false
+	var spray_direction = SIDE_LEFT if siding_left else SIDE_RIGHT
+	
+	if not timer_flashing_shoot.is_stopped():
+		special = true
+	
+	holding_shoot_seconds = 0
+	timer_flashing_shoot.stop()
+	timer_holding_shoot.stop()
+	$sound_flashing.stop()
+	
+	sprite.material = null
+	holding_shoot = false
+	
+	if global.bullets == 0 or holding_shoot_empty:
+		player_asm.set_state(player_asm.states.shoot)
+		play_sound(global.sound_shake)
 		return
 	
 	timer_shoot.start()
 	
-	if (global.bullets):
-		var direction = PLAYER_SCALE if not siding_left else -PLAYER_SCALE
-		
-		if player_sm.is_on(player_sm.states.wall_slide): direction *= -1
-		
-		$spray_particles.set_emitting(true)
-		$spray_particles.position.x = 10 * direction
-		$spray_particles.scale.x = direction
-		
-		player_asm.set_state(player_asm.states.shoot)
-		
+	if player_sm.is_on(player_sm.states.wall_slide): spray_direction *= -1
+	
+	$spray_particles.set_emitting(true)
+	$spray_particles.position.x = spray_direction * 20
+	$spray_particles.scale.x = spray_direction * 2
+	
+	player_asm.set_state(player_asm.states.shoot)
+	
+	if special:
+		play_sound(global.sound_spray3)
+		shoot_spray_triple()
+	else:
 		if shooted % 2 == 0:
 			play_sound(global.sound_spray1)
 		else:
 			play_sound(global.sound_spray2)
 		
-		if (global.bullet_type == global.BULLET_NORMAL):
-			shoot_spray_normal()
-		elif (global.bullet_type == global.BULLET_TRIPLE):
-			shoot_spray_triple()
-	else:
-		player_asm.set_state(player_asm.states.shoot)
-		play_sound(global.sound_shake)
+		shoot_spray_normal()
 
 func shoot_spray_normal():
 	var bi = bullet.instance()
@@ -376,10 +416,6 @@ func shoot_spray_triple():
 	bi1.sprite.scale.x = -local_direction
 	bi2.sprite.scale.x = -local_direction
 	bi3.sprite.scale.x = -local_direction
-	
-	bi1.particles.scale.x = -local_direction
-	bi2.particles.scale.x = -local_direction
-	bi3.particles.scale.x = -local_direction
 	
 	bi1.position = $bullet_shoot.global_position
 	bi2.position = $bullet_shoot.global_position
@@ -476,3 +512,26 @@ func _on_timer_wallslide_cooldown_timeout():
 
 func _on_timer_wallslide_timeout():
 	player_sm.state = player_sm.states.wall_slide
+
+func _on_timer_flashing_shoot_timeout():
+	if sprite.material:
+		sprite.material = null
+	else:                   
+		sprite.material = white_shader
+		sprite.material.set_shader_param("bright_amount", 0.5)
+
+func _on_timer_holding_shoot_timeout():
+	if holding_shoot_seconds == 0:
+		$sound_charging.play(0)
+		anim_charging.play("start")
+	elif holding_shoot_seconds >= 1.5:
+		if timer_flashing_shoot.is_stopped():
+			timer_flashing_shoot.start()
+			$sound_flashing.play(0)
+			timer_holding_shoot.stop()
+	
+	holding_shoot_seconds += 0.5
+
+func _on_sound_flashing_finished():
+	if holding_shoot:
+		$sound_flashing.play(0)

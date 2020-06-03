@@ -2,12 +2,9 @@ extends Node
 
 const GRAVITY = 900
 
-var BULLET_NORMAL = 0
-var BULLET_TRIPLE = 1
-
 var health = 10
-var bullets = 10
-var bullet_type = BULLET_NORMAL
+var sprays = 0
+var bullets = 0
 var enemies = 0
 var graffitis = 0
 var allow_movement = true
@@ -29,6 +26,7 @@ onready var sound_grounded = preload("res://sfx/sound_grounded.wav")
 onready var sound_shake = preload("res://sfx/sound_shake.wav")
 onready var sound_spray1 = preload("res://sfx/sound_spray1.wav")
 onready var sound_spray2 = preload("res://sfx/sound_spray2.wav")
+onready var sound_spray3 = preload("res://sfx/sound_spray3.wav")
 onready var sound_graffiti = preload("res://sfx/sound_graffiti.wav")
 onready var sound_success = preload("res://sfx/sound_success.wav")
 onready var sound_dead = preload("res://sfx/sound_dead.wav")
@@ -38,9 +36,10 @@ onready var sound_letter = preload("res://sfx/sound_letter.wav")
 onready var sound_next = preload("res://sfx/sound_next.wav")
 onready var sound_push = preload("res://sfx/sound_push.wav")
 onready var sound_splash = preload("res://sfx/sound_splash.wav")
+onready var sound_charge = preload("res://sfx/sound_charge.wav")
+onready var sound_flashing = preload("res://sfx/sound_flashing.wav")
 
 onready var spray_normal = preload("res://scenes/spray_normal.tscn")
-onready var spray_triple = preload("res://scenes/spray_triple.tscn")
 
 signal waited
 
@@ -147,33 +146,38 @@ func update_health(value):
 	if health == 0:
 		get_player().die()
 
-func update_bullets(value):
-	bullets += value
+func update_sprays(value):
+	if bullets == 0 and value > 0:
+		update_bullets(10)
+		value -= 1
 	
-	if (bullets < 0):
-		bullets = 0
-	elif (bullets > 10):
-		bullets = 10	
+	sprays += value
 	
-	if (bullets >= 0):
-		get_hud().get_node("bullets").set_texture(imgs_bullets[bullets])
+	if (sprays < 0):
+		sprays = 0
+	
+	if (sprays >= 0):
+		get_hud().get_node("label_sprays").set('text', "%0*d" % [3, sprays])
 
-func update_bullet_type(type):
-	bullet_type = type
+func update_bullets(value):
+	if bullets > 0 and sprays > 0 and (bullets + value) <= 0:
+		update_sprays(-1)
+		bullets = 10
+	else:
+		bullets += value
+		
+		if (bullets < 0):
+			bullets = 0
+		elif (bullets > 10):
+			bullets = 10	
 	
-	if (bullet_type == BULLET_NORMAL):
-		get_hud().get_node("spray").texture = load("res://sprites/spray_1.png")
-	elif (bullet_type == BULLET_TRIPLE):
-		get_hud().get_node("spray").texture = load("res://sprites/spray_2.png")
+	get_hud().get_node("bullets").set_texture(imgs_bullets[bullets])
 
 func update_enemies(value):
 	enemies += value
 	
 	if (enemies < 0):
 		enemies = 0
-	
-	if (enemies >= 0):
-		get_hud().get_node("label_enemies").set('text', "%0*d" % [3, enemies])
 
 func update_graffiti(value):
 	graffitis += value
@@ -239,8 +243,7 @@ func shake_camera():
 
 func reset_stage():
 	health = 10
-	bullets = 10
-	bullet_type = BULLET_NORMAL
+	bullets = 0
 	enemies = 0
 	graffitis = 0
 	allow_movement = true

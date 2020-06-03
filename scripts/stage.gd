@@ -23,7 +23,6 @@ func _ready():
 func reset():
 	undergrounded = false
 	
-	
 	for node in $collisions.get_children(): node.set_visible(false)
 	for node in $graffitis.get_children(): node.set_visible(false)
 	
@@ -58,7 +57,6 @@ func random_sound():
 
 func _on_sfx_finished():
 	$timer_sfx.start()
-
 
 func _on_area_parallax_1_body_entered(body):
 	if not global.is_player(body): return

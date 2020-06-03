@@ -15,7 +15,7 @@ func _on_body_enter( body ):
 	if (not taken and body is player_class):
 		$anim.play("taken")
 		$sound.play(0)
-		global.update_bullets(1)
+		global.update_sprays(1)
 		yield($anim, "animation_finished")
 		taken = true
 		queue_free()

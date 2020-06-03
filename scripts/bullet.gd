@@ -13,11 +13,7 @@ func _ready():
 func reset():
 	sprite.visible = true
 	timer_disable.start()
-	
-	if (global.bullet_type == global.BULLET_NORMAL):
-		$anim.play("normal")
-	elif (global.bullet_type == global.BULLET_TRIPLE):
-		$anim.play("triple")
+	$anim.play("normal")
 
 func disable():
 	if (disabled):
