@@ -213,9 +213,6 @@ one_shot = true
 
 [node name="timer_flashing" type="Timer" parent="."]
 wait_time = 0.1
-[connection signal="body_entered" from="damage_area" to="." method="_on_damage_area_body_entered"]
-[connection signal="body_entered" from="chase_area" to="." method="check_body_chase"]
-[connection signal="body_exited" from="chase_area" to="." method="check_body_chase"]
 [connection signal="timeout" from="timer_chasing" to="." method="_on_timer_chasing_timeout"]
 [connection signal="timeout" from="timer_damage" to="." method="_on_timer_damage_timeout"]
 [connection signal="timeout" from="timer_flashing" to="." method="_on_timer_flashing_timeout"]

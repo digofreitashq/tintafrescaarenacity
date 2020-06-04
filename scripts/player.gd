@@ -17,6 +17,7 @@ const SIDE_RIGHT = 1
 var linear_velocity = Vector2()
 var direction = 0
 var onair_time = 0
+var onair_counter = 0
 var on_floor_before = false
 var on_floor = false
 var shoot_time = 99999 #time since last shot
@@ -56,6 +57,7 @@ onready var timer_idle = $timer_idle
 
 onready var white_shader = preload("res://shaders/white_shader.tres")
 onready var bullet = preload("res://scenes/bullet.tscn")
+onready var impact_dust = preload("res://scenes/impact_dust.tscn")
 
 signal grounded
 
@@ -99,7 +101,15 @@ func _apply_movement(_delta):
 	on_floor_before = on_floor
 	on_floor = onair_time < MIN_ONAIR_TIME
 	
-	if on_floor and !on_floor_before:
+	if on_floor and !on_floor_before and linear_velocity.y >= 0:
+		if onair_counter > 0.3:
+			var new_impact_dust = impact_dust.instance()
+			new_impact_dust.position = Vector2(global_position.x, global_position.y+24)
+			new_impact_dust.z_index = z_index + 1
+			global.get_stage().add_child(new_impact_dust)
+			new_impact_dust._ready()
+		
+		onair_counter = 0
 		emit_signal("grounded")
 	
 	if on_floor:
@@ -202,6 +212,7 @@ func _handle_move_input():
 			jump_released = true
 
 func play_anim(anim_name=""):
+	print(anim_name)
 	if player_sm.is_on(player_sm.states.dead): return
 	
 	var clean_anim_name = anim.current_animation.replace('_left','').replace('_right','')

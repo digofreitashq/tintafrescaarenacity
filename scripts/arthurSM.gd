@@ -50,6 +50,6 @@ func _enter_state(new_state, _old_state):
 		states.run:
 			parent.play_anim("walk")
 		states.fall:
-			parent.play_anim("fall")
+			parent.play_anim("idle")
 		states.eating:
 			parent.play_anim("eating")

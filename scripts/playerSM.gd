@@ -33,6 +33,9 @@ func _state_logic(delta):
 	if state == states.wall_slide:
 		parent._gravity_wall_slide()
 	
+	if state == states.fall:
+		parent.onair_counter += delta
+	
 	#parent.update_state_label()
 
 func _get_transition(_delta):
@@ -147,12 +150,16 @@ func _enter_state(new_state, old_state):
 			parent.disable_dust()
 			if old_state in [states.jump, states.fall, states.wall_jump, states.wall_slide, states.damage]:
 				parent.play_anim("grounded_idle")
+				yield(parent.anim, "animation_finished")
+				parent.play_anim("idle")
 			else:
 				parent.play_anim("idle")
 		states.run:
 			parent.disable_dust()
 			if old_state in [states.jump, states.fall, states.wall_jump, states.wall_slide, states.damage]:
 				parent.play_anim("grounded_run")
+				yield(parent.anim, "animation_finished")
+				parent.play_anim("run")
 			else:
 				parent.play_anim("run")
 		states.jump:
@@ -165,7 +172,7 @@ func _enter_state(new_state, old_state):
 			parent.disable_dust()
 			parent.play_anim("fall")
 		states.push:
-			parent.enable_dust(Vector2(0,16))
+			parent.enable_dust(0,Vector2(0,16))
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("push")
 		states.grab:
@@ -174,20 +181,20 @@ func _enter_state(new_state, old_state):
 			parent.play_anim("grab")
 		states.pull:
 			if parent.siding_left:
-				parent.enable_dust(Vector2(-32,32))
+				parent.enable_dust(0,Vector2(-32,32))
 			else:
-				parent.enable_dust(Vector2(32,32))
+				parent.enable_dust(0,Vector2(32,32))
 			
 			parent.play_anim("pull")
 		states.wall_slide:
 			parent.can_fall = false
 			parent.on_floor = false
-			parent.enable_dust(Vector2(parent.wall_touching*20,0))
+			parent.enable_dust(Vector2(parent.wall_touching*10,10))
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("wall_slide")
 		states.wall_jump:
 			parent.on_floor = false
-			parent.disable_dust()
+			parent.enable_dust(Vector2(parent.wall_touching*10,10))
 			parent.play_anim("wall_jump")
 		states.damage:
 			parent.on_floor = false
