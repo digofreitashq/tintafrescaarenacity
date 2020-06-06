@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 const FLOAT_SPEED = 50
-const MAX_DISTANCE_FROM_PLAYER = 64
+const MAX_DISTANCE_FROM_PLAYER = 32
 
 var on_floor = false
 var can_play_sound = true
@@ -34,10 +34,7 @@ func _physics_process(_delta):
 			linear_velocity.x = player.linear_velocity.x
 			var direction = (player.global_position - global_position)
 			if abs(direction.x) > MAX_DISTANCE_FROM_PLAYER:
-				if player.siding_left:
-					global_position.x = player.global_position.x - MAX_DISTANCE_FROM_PLAYER
-				else:
-					global_position.x = player.global_position.x + MAX_DISTANCE_FROM_PLAYER
+				global_position.x = player.global_position.x + global.SIDE[player.siding_left] * MAX_DISTANCE_FROM_PLAYER
 	
 	elif box_sm.is_on(box_sm.states.floating):
 		linear_velocity.x = FLOAT_SPEED * float_direction
@@ -77,13 +74,13 @@ func _on_Area2D_bottom_body_entered(body):
 	check_surface()
 	
 	if global.is_player(body):
-		bounce = 1
+		linear_velocity.y = -200
 
 func _on_Area2D_bottom_body_exited(body):
 	check_surface()
 	
 	if global.is_player(body):
-		bounce = 0
+		linear_velocity.y = 0
 
 func _on_Area2D_left_body_entered(body):
 	if box_sm.is_on(box_sm.states.floating):

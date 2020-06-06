@@ -10,14 +10,14 @@ colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
 [sub_resource type="GradientTexture" id=2]
 gradient = SubResource( 1 )
 
-[sub_resource type="Curve" id=6]
+[sub_resource type="Curve" id=3]
 max_value = 2.0
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 1.07273 ), 0.0, 0.0, 0, 0 ]
 
 [sub_resource type="CurveTexture" id=4]
-curve = SubResource( 6 )
+curve = SubResource( 3 )
 
-[sub_resource type="ParticlesMaterial" id=7]
+[sub_resource type="ParticlesMaterial" id=5]
 lifetime_randomness = 0.5
 emission_shape = 2
 emission_box_extents = Vector3( 8, 2, 0 )
@@ -45,7 +45,7 @@ one_shot = true
 speed_scale = 0.5
 explosiveness = 1.0
 visibility_rect = Rect2( -100, -100, 100, 100 )
-process_material = SubResource( 7 )
+process_material = SubResource( 5 )
 texture = ExtResource( 1 )
 
 [node name="Timer" type="Timer" parent="."]

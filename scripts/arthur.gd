@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 export var  ID = 0
 
-const PLAYER_SCALE = 2
+const SPRITE_SCALE = 2
 const FLOOR_NORMAL = Vector2(0, -1)
 const SLOPE_SLIDE_STOP = 25.0
 const MIN_ONAIR_TIME = 0.1
@@ -55,7 +55,7 @@ func _apply_movement(_delta):
 	on_floor = onair_time < MIN_ONAIR_TIME
 	target_speed *= WALK_SPEED
 	linear_velocity.x = lerp(linear_velocity.x, target_speed, 0.1)
-	$sprite.scale = Vector2(-PLAYER_SCALE if siding_left else PLAYER_SCALE, 2.0)
+	$sprite.scale = Vector2(global.SIDE[siding_left] * SPRITE_SCALE, SPRITE_SCALE)
 	
 	if abs(initial_position_x - global_position.x) > abs(walk_pixels):
 		walk_pixels = 0
@@ -96,10 +96,7 @@ func _handle_move_input():
 			siding_left = false
 
 func play_anim(anim_name):
-	if siding_left:
-		$sprite.scale.x = -PLAYER_SCALE
-	else:
-		$sprite.scale.x = PLAYER_SCALE
+	$sprite.scale.x = global.SIDE[siding_left] * SPRITE_SCALE
 	
 	anim.play(anim_name)
 
@@ -143,7 +140,7 @@ func arthur_talks():
 		player.play_anim("start_cross_arms")
 		
 		dialog.display([
-			["Ícaro","A tinta já acabou e nada daquele velho..."],
+			["Ícaro","A tinta já acabou e nada daquele velho miserável..."],
 			])
 		yield(dialog, "finished")
 		
@@ -151,7 +148,7 @@ func arthur_talks():
 		yield(self, "walked")
 		
 		dialog.display([
-			["Arthur","Opa. ~~Como é que tá essa força?"],
+			["Arthur","Miserável?"],
 			])
 		yield(dialog, "finished")
 		
@@ -160,7 +157,7 @@ func arthur_talks():
 		
 		dialog.display([
 			["Ícaro","E aí, velhote! ~~Tá atrasado."],
-			["Arthur","Mais respeito, por favor, rapaz."],
+			["Arthur","Mais respeito, por favor, rapaz! Sou seu mestre."],
 			["Ícaro","Tá bom! ~~Boa tarde... ~~Velhote!"],
 			])
 		yield(dialog, "finished")
@@ -179,9 +176,9 @@ func arthur_talks():
 		dialog.display([
 			["Ícaro","Podres~.~.~.~?"],
 			["Arthur","É o nome da gangue que está atacando a cidade. São bandidos mutantes."],
-			["Ícaro","Eita. ~~\nE eu vou ter que fazer o quê? ~~Pintura facial neles...?"],
+			["Ícaro","Eita. ~~\nE eu vou ter que fazer o quê? ~~\nPintura facial neles...?"],
 			["Arthur","Você vai usar todas as suas habilidades!"],
-			["Arthur","Inclusive os poderes que eu te ensinei de transformar os desenhos em realidade."],
+			["Arthur","Inclusive o Dom que eu te ensinei. Transforme seus desenhos em realidade!"],
 		])
 		yield(dialog, "finished")
 		dialog.display([
@@ -197,16 +194,22 @@ func arthur_talks():
 		
 		player.play_anim("idle")
 		dialog.display([
-			["Ícaro","Então bora lá..."],
+			["Arthur","Pronto. ~~\nEu trouxe esses por precaução. ~~\nVocê precisa se preparar mais!"],
+		])
+		yield(dialog, "finished")
+		dialog.display([
+			["Ícaro","E você precisa explicar melhor as coisas..."],
+			["Ícaro","Mas, beleza. Bora lá."],
 			["Arthur","Eu disse você! ~~\nSozinho."],
 		])
 		yield(dialog, "finished")
 		arthur_sm.set_state(arthur_sm.states.idle)
 		dialog.display([
+			["Ícaro","O QUÊ?!"],
 			["Arthur","Mas fique tranquilo que vou ficar olhando de longe."],
 			["Arthur","E de vez em quando vou dar uns palpites."],
 			["Ícaro","Ótimo! ~~\nSe eu morrer, tudo bem, né?"],
-			["Arthur","Eu... ~~\nConfio em você! ~~\nBoa sorte."],
+			["Arthur","Eu~.~.~. ~~\nConfio em você! ~~\nBoa sorte."],
 			])
 		yield(dialog, "finished")
 		$Area2D/CollisionShape2D.scale.x = 0.5
@@ -216,7 +219,7 @@ func arthur_talks():
 		
 		player.play_anim("start_scratch")
 		dialog.display([
-			["Ícaro","Vamos lá, né? ~~\nAfinal, o que pode dar errado?"],
+			["Ícaro","Vamos lá, né? ~~\nAfinal~.~.~. ~~O que pode dar errado?"],
 			])
 		yield(dialog, "finished")
 		player.play_anim("idle")

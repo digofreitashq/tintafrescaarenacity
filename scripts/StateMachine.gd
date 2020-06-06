@@ -29,11 +29,12 @@ func _exit_state(_old_state, _new_state):
 	pass
 
 func set_state(new_state):
-	if new_state == state: return
+	if state != null:
+		if new_state == state: return
 	
 	previous_state = state
 	state = new_state
-
+	
 	if previous_state != null:
 		_exit_state(previous_state, new_state)
 	if new_state != null:

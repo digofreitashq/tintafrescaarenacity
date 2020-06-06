@@ -41,13 +41,13 @@ tracks/0/keys = {
 radius = 16.0
 height = 16.0
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 30, 20 )
 
-[sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 16, 16 )
-
 [sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 32, 8 )
+
+[sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 16, 8 )
 
 [node name="box" type="RigidBody2D"]
@@ -76,14 +76,18 @@ rotation = 1.57079
 shape = SubResource( 4 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
-shape = SubResource( 7 )
+shape = SubResource( 5 )
 
 [node name="Area2D_bottom" type="Area2D" parent="."]
 visible = false
 position = Vector2( 0, 32 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="CollisionShape2D_bottom" type="CollisionShape2D" parent="Area2D_bottom"]
-shape = SubResource( 5 )
+position = Vector2( 0, 8 )
+shape = SubResource( 6 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -93,7 +97,7 @@ visible = false
 position = Vector2( 0, -32 )
 
 [node name="CollisionShape2D_top" type="CollisionShape2D" parent="Area2D_top"]
-shape = SubResource( 6 )
+shape = SubResource( 7 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -103,7 +107,7 @@ visible = false
 position = Vector2( -16, 0 )
 
 [node name="CollisionShape2D_left" type="CollisionShape2D" parent="Area2D_left"]
-shape = SubResource( 6 )
+shape = SubResource( 7 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -113,7 +117,7 @@ visible = false
 position = Vector2( 16, 0 )
 
 [node name="CollisionShape2D_right" type="CollisionShape2D" parent="Area2D_right"]
-shape = SubResource( 6 )
+shape = SubResource( 7 )
 __meta__ = {
 "_edit_lock_": true
 }

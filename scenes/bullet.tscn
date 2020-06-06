@@ -97,13 +97,9 @@ frame = 1
 visible = false
 shape = SubResource( 1 )
 
-[node name="timer_wait" type="Timer" parent="."]
-wait_time = 0.11
-one_shot = true
-
 [node name="timer_disable" type="Timer" parent="."]
-wait_time = 2.0
 one_shot = true
+autostart = true
 
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/normal = SubResource( 2 )

@@ -26,7 +26,6 @@ func reset():
 	for node in $collisions.get_children(): node.set_visible(false)
 	for node in $graffitis.get_children(): node.set_visible(false)
 	
-	$timer_sfx.start()
 	$music.pause_mode = true
 	global.get_player().can_reload = false
 
@@ -53,7 +52,6 @@ func random_sound():
 		$timer_sfx.wait_time = global.random(1,3)
 	
 	$sfx.play()
-	
 
 func _on_sfx_finished():
 	$timer_sfx.start()
@@ -67,15 +65,12 @@ func _on_area_parallax_1_body_entered(body):
 	var playback_position = $music.get_playback_position()
 	
 	if undergrounded:
-		$music_base.stream = load("res://bgm/TintaFrescaArenaUndergroundBase.ogg")
-		$music.stream = load("res://bgm/TintaFrescaArenaUnderground.ogg")
+		$music.stream = load("res://bgm/TintaFrescaStage1Underground.ogg")
 		$bg.stop()
 	else:
-		$music_base.stream = load("res://bgm/TintaFrescaArenaCityBase.ogg")
-		$music.stream = load("res://bgm/TintaFrescaArenaCity.ogg")
+		$music.stream = load("res://bgm/TintaFrescaStage1.ogg")
 		$bg.play()
 	
-	$music_base.play(playback_position)
 	$music.play(playback_position)
 
 func _on_area_close_gate_body_entered(body):

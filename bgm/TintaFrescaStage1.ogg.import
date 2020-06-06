@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/TintaFrescaStage1.ogg-db0b301450aa0af140af9310629cb411.oggstr"
+
+[deps]
+
+source_file="res://bgm/TintaFrescaStage1.ogg"
+dest_files=[ "res://.import/TintaFrescaStage1.ogg-db0b301450aa0af140af9310629cb411.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

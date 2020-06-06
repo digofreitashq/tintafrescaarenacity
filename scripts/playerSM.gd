@@ -1,8 +1,13 @@
 extends "res://scripts/StateMachine.gd"
 
+var direction_locked_states = []
+var wall_states = []
+
 func _ready():
 	add_state("idle")
+	add_state("grounded_idle")
 	add_state("run")
+	add_state("grounded_run")
 	add_state("jump")
 	add_state("fall")
 	add_state("push")
@@ -14,14 +19,15 @@ func _ready():
 	add_state("dead")
 	add_state("alive")
 	call_deferred("set_state", states.idle)
+	
+	direction_locked_states = [states.wall_slide, states.wall_jump, states.grab, states.pull, states.push]
+	wall_states = [states.wall_slide, states.wall_jump]
 
 func _state_logic(delta):
-	if !parent.is_on_floor():
-		parent.onair_time += delta
-	else:
+	if parent.is_on_floor():
 		parent.onair_time = 0
-	
-	parent.shoot_time += delta
+	else:
+		parent.onair_time += delta
 	
 	parent._handle_move_input()
 	
@@ -44,22 +50,22 @@ func _get_transition(_delta):
 	var going_up = round(parent.linear_velocity.y) < 0
 	var moving = round(parent.linear_velocity.x) != 0
 	
-	if state in [states.idle, states.run, states.fall]:
+	if state in [states.idle, states.run, states.grounded_idle, states.grounded_run, states.fall]:
 		if parent.is_pulling():
 			var push_direction = parent.push_direction()
-			if (parent.siding_left and push_direction == parent.SIDE_LEFT) or (not parent.siding_left and push_direction == parent.SIDE_RIGHT):
+			if push_direction == global.SIDE[parent.siding_left]:
 				if not moving:
 					return states.grab
 				else:
 					return states.pull
 		elif parent.is_pushing():
 			var push_direction = parent.push_direction()
-			if (parent.siding_left and push_direction == parent.SIDE_LEFT) or (not parent.siding_left and push_direction == parent.SIDE_RIGHT):
+			if push_direction == global.SIDE[parent.siding_left]:
 				return states.push
 	
-	if state in [states.idle, states.run, states.fall, states.jump, states.push, states.grab, states.pull]:
+	if state in [states.idle, states.run, states.grounded_idle, states.grounded_run, states.fall, states.jump, states.push, states.grab, states.pull]:
 		if not parent.on_floor:
-			if parent.is_same_wall() and parent.knows_walljump:
+			if parent.is_same_wall():
 				if parent.timer_wallslide.is_stopped():
 					parent.timer_wallslide.start()
 			if going_up:
@@ -77,17 +83,17 @@ func _get_transition(_delta):
 		states.jump:
 			if parent.on_floor:
 				if moving:
-					return states.run
+					return states.grounded_run
 				else:
-					return states.idle
+					return states.grounded_idle
 			elif not going_up:
 				return states.fall
 		states.fall:
 			if parent.on_floor:
 				if moving:
-					return states.run
+					return states.grounded_run
 				else:
-					return states.idle
+					return states.grounded_idle
 		states.push:
 			if not moving:
 				return states.idle
@@ -109,9 +115,9 @@ func _get_transition(_delta):
 		states.wall_slide:
 			if parent.on_floor:
 				if moving:
-					return states.run
+					return states.grounded_run
 				else:
-					return states.idle
+					return states.grounded_idle
 				
 			elif not parent.is_same_wall():
 				if not parent.can_fall:
@@ -122,18 +128,18 @@ func _get_transition(_delta):
 		states.wall_jump:
 			if parent.on_floor:
 				if moving:
-					return states.run
+					return states.grounded_run
 				else:
-					return states.idle
+					return states.grounded_idle
 			elif not going_up:
 				return states.fall
 		states.damage:
 			if parent.on_floor:
 				if moving:
-					return states.run
+					return states.grounded_run
 				else:
-					return states.idle
-			elif parent.is_same_wall() and parent.knows_walljump:
+					return states.grounded_idle
+			elif parent.is_same_wall():
 				if parent.timer_wallslide.is_stopped():
 					parent.timer_wallslide.start()
 	
@@ -148,20 +154,16 @@ func _enter_state(new_state, old_state):
 		states.idle:
 			parent.timer_idle.start()
 			parent.disable_dust()
-			if old_state in [states.jump, states.fall, states.wall_jump, states.wall_slide, states.damage]:
-				parent.play_anim("grounded_idle")
-				yield(parent.anim, "animation_finished")
-				parent.play_anim("idle")
-			else:
-				parent.play_anim("idle")
+			parent.play_anim("idle")
 		states.run:
 			parent.disable_dust()
-			if old_state in [states.jump, states.fall, states.wall_jump, states.wall_slide, states.damage]:
-				parent.play_anim("grounded_run")
-				yield(parent.anim, "animation_finished")
-				parent.play_anim("run")
-			else:
-				parent.play_anim("run")
+			parent.play_anim("run")
+		states.grounded_idle:
+			parent.disable_dust()
+			parent.play_anim("grounded_idle")
+		states.grounded_run:
+			parent.disable_dust()
+			parent.play_anim("grounded_run")
 		states.jump:
 			if old_state == states.damage: return
 			parent.on_floor = false
@@ -172,7 +174,7 @@ func _enter_state(new_state, old_state):
 			parent.disable_dust()
 			parent.play_anim("fall")
 		states.push:
-			parent.enable_dust(0,Vector2(0,16))
+			parent.enable_dust(Vector2(0,16))
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("push")
 		states.grab:
@@ -180,10 +182,7 @@ func _enter_state(new_state, old_state):
 			parent.play_sound(global.sound_wallslide)
 			parent.play_anim("grab")
 		states.pull:
-			if parent.siding_left:
-				parent.enable_dust(0,Vector2(-32,32))
-			else:
-				parent.enable_dust(0,Vector2(32,32))
+			parent.enable_dust(Vector2(global.SIDE[parent.siding_left] * 32,32))
 			
 			parent.play_anim("pull")
 		states.wall_slide:

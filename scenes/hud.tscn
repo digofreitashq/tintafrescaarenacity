@@ -101,17 +101,17 @@ action = "shoot"
 visibility_mode = 1
 
 [node name="label_sprays" type="Label" parent="."]
-margin_left = 64.0
-margin_top = 30.0
-margin_right = 184.0
-margin_bottom = 48.0
+margin_left = 66.0
+margin_top = 23.0
+margin_right = 93.0
+margin_bottom = 46.0
 mouse_filter = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
 size_flags_stretch_ratio = 0.0
 custom_fonts/font = SubResource( 6 )
-custom_colors/font_color = Color( 0.439216, 0.215686, 0.498039, 1 )
-custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 0.964706, 0.941176, 0.74902, 1 )
+custom_colors/font_outline_modulate = Color( 0.121569, 0.054902, 0.109804, 1 )
 text = "000"
 __meta__ = {
 "_edit_use_anchors_": false

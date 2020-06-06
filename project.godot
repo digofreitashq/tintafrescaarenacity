@@ -32,8 +32,8 @@ target_fps="60"
 
 [autoload]
 
+pixelperfect="*res://scripts/pixelperfect.gd"
 global="*res://scripts/global.gd"
-pixelperfect="res://scripts/pixelperfect.gd"
 
 [debug]
 
@@ -111,7 +111,7 @@ skip={
 
 [physics]
 
-2d/default_gravity=700
+2d/default_gravity=1500
 
 [rasterizer]
 

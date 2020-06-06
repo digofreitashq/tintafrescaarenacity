@@ -2,6 +2,10 @@ extends Node
 
 const GRAVITY = 900
 
+const SIDE_LEFT = -1
+const SIDE_RIGHT = 1
+const SIDE = {true: SIDE_LEFT, false: SIDE_RIGHT}
+
 var health = 10
 var sprays = 0
 var bullets = 0
@@ -80,6 +84,10 @@ func play_bgm():
 
 func is_player(body):
 	return "player" in body.get_name()
+
+func is_enemy(body):
+	if body is KinematicBody2D:
+		return "enemies" in body.get_parent().get_name()
 	
 func is_bullet(body):
 	return "bullet" in body.get_name()
@@ -121,7 +129,10 @@ func do_timer_signal():
 func wait_until_signal(seconds):
 	var timer = get_tree().get_current_scene().get_node("stage_timer")
 	timer.set_wait_time(seconds)
-	timer.connect("timeout", self, "do_timer_signal")
+	
+	if not timer.is_connected("timeout", self, "do_timer_signal"):
+		timer.connect("timeout", self, "do_timer_signal")
+	
 	timer.start()
 
 func show_graffiti(id):
@@ -156,22 +167,40 @@ func update_sprays(value):
 	if (sprays < 0):
 		sprays = 0
 	
-	if (sprays >= 0):
-		get_hud().get_node("label_sprays").set('text', "%0*d" % [3, sprays])
+	get_hud().get_node("label_sprays").set('text', "%0*d" % [3, sprays])
 
 func update_bullets(value):
-	if bullets > 0 and sprays > 0 and (bullets + value) <= 0:
-		update_sprays(-1)
-		bullets = 10
+	if value < 0:
+		if (bullets + sprays * 10) + value < 0:
+			return false
+		
+		if bullets + value > 0:
+			bullets += value
+		elif bullets + value <= 0:
+			var result = -value / 10
+			var mod = -value % 10
+			
+			if mod == 0:
+				result -= 1
+				mod = 10
+			
+			if bullets - mod <= 0:
+				result += 1
+				bullets = bullets + 10 - mod
+			else:
+				bullets -= mod
+			
+			update_sprays(-result)
 	else:
 		bullets += value
-		
-		if (bullets < 0):
-			bullets = 0
-		elif (bullets > 10):
-			bullets = 10	
+	
+	if (bullets > 10):
+		bullets = 10
+	elif (bullets <= 0):
+		bullets = 0
 	
 	get_hud().get_node("bullets").set_texture(imgs_bullets[bullets])
+	return true
 
 func update_enemies(value):
 	enemies += value
@@ -244,6 +273,7 @@ func shake_camera():
 func reset_stage():
 	health = 10
 	bullets = 0
+	sprays = 0
 	enemies = 0
 	graffitis = 0
 	allow_movement = true
@@ -259,17 +289,16 @@ func reset_stage():
 		
 		for nodes in stage.get_node("props").get_children():
 			for node in nodes.get_children():
-				if "reset" in node:
-					node.reset()
+				if "reset" in node: node.reset()
 		
 		for node in stage.get_node("enemies").get_children():
-			node.reset()
+			if "reset" in node: node.reset()
 		
 		for node in stage.get_node("chars").get_children():
-			node.reset()
+			if "reset" in node: node.reset()
 		
 		for node in stage.get_node("screen").get_children():
-			node.reset()
+			if "reset" in node: node.reset()
 
 func reload_stage():
 	reset_stage()
