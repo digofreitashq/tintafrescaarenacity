@@ -58,7 +58,7 @@ tracks/0/keys = {
 extents = Vector2( 5.33333, 10.1814 )
 
 [sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 112, 36 )
+extents = Vector2( 132, 42 )
 
 [node name="arthur" type="KinematicBody2D"]
 script = ExtResource( 1 )
@@ -91,7 +91,6 @@ one_way_collision_margin = 0.0
 volume_db = -23.0
 
 [node name="Area2D" type="Area2D" parent="."]
-visible = false
 position = Vector2( 0, -16 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]

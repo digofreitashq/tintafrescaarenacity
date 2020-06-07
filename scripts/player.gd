@@ -50,6 +50,8 @@ onready var timer_wallslide = $timer_wallslide
 onready var timer_wallslide_cooldown = $timer_wallslide_cooldown
 onready var timer_idle = $timer_idle
 onready var timer_shoot = $timer_shoot
+onready var sound_charging = $sound_charging
+onready var sound_flashing = $sound_flashing
 
 onready var white_shader = preload("res://shaders/white_shader.tres")
 onready var bullet = preload("res://scenes/bullet.tscn")
@@ -86,12 +88,11 @@ func _apply_movement(_delta):
 	
 	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL, SLOPE_SLIDE_STOP, 4, PI/4, false)
 	
-	if player_sm.is_on(player_sm.states.push):
-		for index in get_slide_count():
-			var collision = get_slide_collision(index)
-			
-			if collision.collider.is_in_group("bodies"):
-				collision.collider.apply_central_impulse(Vector2((-collision.normal * 1000).x,0))
+	for index in get_slide_count():
+		var collision = get_slide_collision(index)
+		
+		if collision.collider.is_in_group("bodies"):
+			collision.collider.apply_central_impulse(Vector2((-collision.normal * 500).x,0))
 	
 	on_floor_before = on_floor
 	on_floor = onair_time < MIN_ONAIR_TIME
@@ -365,7 +366,7 @@ func shoot():
 	if player_asm.is_on(player_asm.states.flash) and global.update_bullets(-10):
 		player_asm.set_state(player_asm.states.shoot)
 		play_sound(global.sound_spray3)
-		shoot_spray_triple()
+		shoot_spray_special()
 	elif global.update_bullets(-2):
 		player_asm.set_state(player_asm.states.shoot)
 		
@@ -397,40 +398,24 @@ func shoot_spray_normal():
 	
 	shooted += 1
 
-func shoot_spray_triple():
-	var bi1 = bullet.instance()
-	var bi2 = bullet.instance()
-	var bi3 = bullet.instance()
-	
-	bi1._ready()
-	bi2._ready()
-	bi3._ready()
-	
+func shoot_spray_special():
+	var step = 80
+	var position_y_list = [-160,-80,0,80,160]
+	var bi = null
 	var local_direction = global.SIDE[siding_left]
 	
 	if player_sm.is_on(player_sm.states.wall_slide): local_direction *= -1
 	
 	$bullet_shoot.position.x = 16 * local_direction
 	
-	bi1.sprite.scale.x = local_direction * SPRITE_SCALE
-	bi2.sprite.scale.x = local_direction * SPRITE_SCALE
-	bi3.sprite.scale.x = local_direction * SPRITE_SCALE
-	
-	bi1.position = $bullet_shoot.global_position
-	bi2.position = $bullet_shoot.global_position
-	bi3.position = $bullet_shoot.global_position
-	
-	bi1.linear_velocity = Vector2(local_direction * BULLET_VELOCITY, -160)
-	bi2.linear_velocity = Vector2(local_direction * BULLET_VELOCITY, 0)
-	bi3.linear_velocity = Vector2(local_direction * BULLET_VELOCITY, 160)
-	
-	bi1.add_collision_exception_with(self)
-	bi2.add_collision_exception_with(self)
-	bi3.add_collision_exception_with(self)
-	
-	global.get_stage().add_child(bi1)
-	global.get_stage().add_child(bi2)
-	global.get_stage().add_child(bi3)
+	for position_y in position_y_list:
+		bi = bullet.instance()
+		bi._ready()
+		bi.sprite.scale.x = local_direction * SPRITE_SCALE
+		bi.position = $bullet_shoot.global_position
+		bi.linear_velocity = Vector2(local_direction * BULLET_VELOCITY, position_y)
+		bi.add_collision_exception_with(self)
+		global.get_stage().add_child(bi)
 	
 	shooted += 1
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scripts/enemy.gd" type="Script" id=1]
 [ext_resource path="res://sprites/enemy_pato.png" type="Texture" id=2]
@@ -101,6 +101,9 @@ extents = Vector2( 10, 9.54502 )
 [sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 56.6667, 9.90837 )
 
+[sub_resource type="RectangleShape2D" id=9]
+extents = Vector2( 60, 9.54502 )
+
 [sub_resource type="RectangleShape2D" id=7]
 
 [sub_resource type="RectangleShape2D" id=8]
@@ -155,6 +158,14 @@ scale = Vector2( 3, 3.143 )
 shape = SubResource( 6 )
 one_way_collision_margin = 0.0
 
+[node name="visible_area" type="Area2D" parent="."]
+position = Vector2( 0, 10 )
+scale = Vector2( 3, 3.143 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="visible_area"]
+shape = SubResource( 9 )
+one_way_collision_margin = 0.0
+
 [node name="bottom_area" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="bottom_area"]
@@ -168,6 +179,7 @@ position = Vector2( 0, 10 )
 shape = SubResource( 8 )
 
 [node name="name_label" type="Label" parent="."]
+visible = false
 margin_left = -30.0
 margin_top = -50.0
 margin_right = 10.0
@@ -193,12 +205,16 @@ one_shot = true
 
 [node name="timer_flashing" type="Timer" parent="."]
 wait_time = 0.1
+
+[node name="timer_check_side_area" type="Timer" parent="."]
 [connection signal="body_entered" from="damage_area" to="." method="_on_damage_area_body_entered"]
 [connection signal="body_entered" from="chase_area" to="." method="check_body_chase"]
 [connection signal="body_exited" from="chase_area" to="." method="check_body_chase"]
+[connection signal="body_entered" from="visible_area" to="." method="_on_visible_area_body_entered"]
 [connection signal="body_entered" from="bottom_area" to="." method="check_kinematic_below"]
 [connection signal="body_exited" from="bottom_area" to="." method="check_kinematic_below"]
 [connection signal="body_entered" from="side_area" to="." method="_on_side_area_body_entered"]
 [connection signal="timeout" from="timer_chasing" to="." method="_on_timer_chasing_timeout"]
 [connection signal="timeout" from="timer_damage" to="." method="_on_timer_damage_timeout"]
 [connection signal="timeout" from="timer_flashing" to="." method="_on_timer_flashing_timeout"]
+[connection signal="timeout" from="timer_check_side_area" to="." method="_on_timer_check_side_area_timeout"]

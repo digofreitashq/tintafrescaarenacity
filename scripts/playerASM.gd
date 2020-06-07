@@ -27,6 +27,9 @@ func _enter_state(new_state, _old_state):
 			else:
 				parent.anim_charging.play("stop")
 		states.flash:
+			parent.sound_flashing.stream = global.sound_charged
+			parent.sound_flashing.play(0)
+			
 			if parent.anim_charging.current_animation != "flash":
 				parent.anim_charging.play("flash")
 				return

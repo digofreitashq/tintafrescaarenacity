@@ -63,9 +63,12 @@ func display(messages):
 	global.get_player().skip_dialog = false
 	
 	global.show_player_ui(false)
-
-	$anim.play("open")
-	yield($anim, "animation_finished")
+	
+	if Input.is_action_pressed("skip"):
+		global.get_player().skip_dialog = true
+	else:
+		$anim.play("open")
+		yield($anim, "animation_finished")
 
 	timer_interaction.set_wait_time(0.3)
 	timer_interaction.start()
@@ -133,7 +136,7 @@ func wait_button():
 
 			timer_letter.set_wait_time(0.5)
 			timer_letter.start()
-		else:
+		elif current_phrase_index in phrases:
 			current_pos = phrases[current_phrase_index][1].length()-1
 			$sound.stream = global.sound_next
 			$sound.play(0)

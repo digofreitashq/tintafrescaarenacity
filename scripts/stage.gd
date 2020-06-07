@@ -15,9 +15,16 @@ onready var sound_water_dripping_4 = preload("res://sfx/sound_water_dripping_4.w
 onready var sound_water_dripping_5 = preload("res://sfx/sound_water_dripping_5.wav")
 onready var sound_water_dripping_6 = preload("res://sfx/sound_water_dripping_6.wav")
 
+onready var dialog = global.get_dialog()
+
 var undergrounded = false
+var arthur_falou = 0
+var first_enemy_seen = false
 
 func _ready():
+	for body in $enemies.get_children():
+		body.connect("seen", self, "enemy_seen_signal", [body])
+	
 	reset()
 
 func reset():
@@ -28,6 +35,21 @@ func reset():
 	
 	$music.pause_mode = true
 	global.get_player().can_reload = false
+
+func enemy_seen_signal(body):
+	if arthur_falou == 1 and not first_enemy_seen:
+		first_enemy_seen = true
+		
+		body.direction = global.SIDE_LEFT if body.global_position.x > player.global_position.x else global.SIDE_RIGHT
+		body.set_direction()
+		
+		global.set_player_control(false)
+		dialog.display([
+			["Ícaro","Mas você é muito feio!"],
+			["Mutante","Pagou quanto pra ver minha beleza?"],
+			])
+		yield(dialog, "finished")
+		global.set_player_control(true)
 
 func random_sound():
 	if not undergrounded:
@@ -57,8 +79,12 @@ func _on_sfx_finished():
 	$timer_sfx.start()
 
 func _on_area_parallax_1_body_entered(body):
+	if global.is_enemy(body):
+		body.linear_velocity = Vector2(-body.JUMP_SPEED, -body.JUMP_SPEED)
+
+func _on_area_parallax_1_body_exited(body):
 	if not global.is_player(body): return
-	undergrounded = $triggers/area_parallax_1.position.y < player.position.y
+	undergrounded = $triggers/area_parallax_1/CollisionShape2D.global_position.y < player.global_position.y
 	$parallax_bg.show(!undergrounded)
 	player.show_dark_light(undergrounded)
 	
@@ -73,16 +99,15 @@ func _on_area_parallax_1_body_entered(body):
 	
 	$music.play(playback_position)
 
-func _on_area_close_gate_body_entered(body):
+func _on_area_dark_light_off_body_exited(body):
 	if not global.is_player(body): return
-	find_node("grid").open()
-
-func _on_area_close_gate_body_exited(body):
-	if not global.is_player(body): return
-	find_node("grid").close()
-
-func _on_area_dark_light_off_body_entered(body):
-	if not global.is_player(body): return
-	var hide = $triggers/area_dark_light_off.position.x < player.position.x
-	player.shake_camera()
+	var hide = $triggers/area_dark_light_off/CollisionShape2D.global_position.x < player.global_position.x
+	yield(player, "grounded")
+	
+	
 	player.show_dark_light(hide)
+	
+	find_node("grid2").close()
+	yield(find_node("grid2"), "finished")
+	find_node("grid1").close()
+	yield(find_node("grid1"), "finished")

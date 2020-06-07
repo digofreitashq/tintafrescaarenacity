@@ -150,6 +150,11 @@ func _enter_state(new_state, old_state):
 		state = states.dead
 		return
 	
+	if old_state in [states.push, states.pull]:
+		if parent.last_pull_body: 
+			parent.last_pull_body.follow_player = false
+			parent.last_pull_body = null
+	
 	match new_state:
 		states.idle:
 			parent.timer_idle.start()

@@ -41,6 +41,7 @@ onready var sound_next = preload("res://sfx/sound_next.wav")
 onready var sound_push = preload("res://sfx/sound_push.wav")
 onready var sound_splash = preload("res://sfx/sound_splash.wav")
 onready var sound_charge = preload("res://sfx/sound_charge.wav")
+onready var sound_charged = preload("res://sfx/sound_charged.wav")
 onready var sound_flashing = preload("res://sfx/sound_flashing.wav")
 
 onready var spray_normal = preload("res://scenes/spray_normal.tscn")
@@ -256,7 +257,7 @@ func set_all_zindex():
 	
 	for bodies in [trampolines, boxes]:
 		for body in bodies:
-			info.append([body, body.position.x, body.position.y])
+			info.append([body, body.global_position.x, body.global_position.y])
 	
 	info.sort_custom(self, "sort_zindex")
 	info.invert()

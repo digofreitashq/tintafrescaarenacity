@@ -1,7 +1,8 @@
 extends RigidBody2D
 
 const FLOAT_SPEED = 50
-const MAX_DISTANCE_FROM_PLAYER = 32
+const JUMP_SPEED = 200
+const MAX_DISTANCE_FROM_PLAYER = 48
 
 var on_floor = false
 var can_play_sound = true
@@ -9,6 +10,7 @@ var follow_player = false
 var float_direction = 0
 var last_position_x = 0
 var position_repeated = 0
+var delta_acum = 0
 
 onready var box_sm = $box_sm
 onready var anim = $anim
@@ -24,13 +26,10 @@ func reset():
 	add_to_group("bodies")
 
 func _physics_process(_delta):
-	rotation_degrees = 0
-	angular_velocity = 0
-	
 	if box_sm.is_on(box_sm.states.idle):
-		float_direction = -1 if linear_velocity.x < 0 else 1
+		float_direction = global.SIDE_LEFT if linear_velocity.x < 0 else global.SIDE_RIGHT
 	
-		if follow_player:
+		if follow_player and player.player_sm.is_on(player.player_sm.states.pull):
 			linear_velocity.x = player.linear_velocity.x
 			var direction = (player.global_position - global_position)
 			if abs(direction.x) > MAX_DISTANCE_FROM_PLAYER:
@@ -38,6 +37,20 @@ func _physics_process(_delta):
 	
 	elif box_sm.is_on(box_sm.states.floating):
 		linear_velocity.x = FLOAT_SPEED * float_direction
+		
+		delta_acum += _delta
+		
+		if delta_acum > 1:
+			if last_position_x == round(global_position.x):
+				position_repeated += 1
+			
+			if position_repeated > 50:
+				position_repeated = 0
+				last_position_x = 0
+				
+				linear_velocity.y = -JUMP_SPEED/2
+			
+			last_position_x = round(global_position.x)
 
 func check_surface():
 	var in_sewer = false
@@ -74,7 +87,7 @@ func _on_Area2D_bottom_body_entered(body):
 	check_surface()
 	
 	if global.is_player(body):
-		linear_velocity.y = -200
+		linear_velocity.y = -JUMP_SPEED
 
 func _on_Area2D_bottom_body_exited(body):
 	check_surface()

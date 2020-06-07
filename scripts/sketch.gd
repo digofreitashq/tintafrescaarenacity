@@ -47,14 +47,18 @@ func _on_timer_frame_timeout():
 
 func _on_Area2D_body_entered(body):
 	if global.is_bullet(body):
-		if force <= 0: return
-		
-		force -= 1
-		
-		var new_object = object_classes[object].instance()
-		new_object.global_position = global_position
-		global.get_stage().get_node(object_nodes[object]).add_child(new_object)
-		$sound.stream = global.sound_beep
-		$sound.play(0)
-		
-		update_sprite()
+		call_deferred("create_object")
+
+func create_object():
+	if force <= 0: return
+	
+	force -= 1
+	
+	var new_object = object_classes[object].instance()
+	new_object.global_position = global_position
+	global.get_stage().get_node(object_nodes[object]).add_child(new_object)
+	new_object._ready()
+	$sound.stream = global.sound_beep
+	$sound.play(0)
+	
+	update_sprite()

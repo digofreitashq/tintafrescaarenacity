@@ -45,7 +45,7 @@ height = 16.0
 extents = Vector2( 30, 20 )
 
 [sub_resource type="RectangleShape2D" id=6]
-extents = Vector2( 32, 8 )
+extents = Vector2( 24, 8 )
 
 [sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 16, 8 )
@@ -79,14 +79,13 @@ shape = SubResource( 4 )
 shape = SubResource( 5 )
 
 [node name="Area2D_bottom" type="Area2D" parent="."]
-visible = false
 position = Vector2( 0, 32 )
 __meta__ = {
 "_edit_lock_": true
 }
 
 [node name="CollisionShape2D_bottom" type="CollisionShape2D" parent="Area2D_bottom"]
-position = Vector2( 0, 8 )
+position = Vector2( 0, -8 )
 shape = SubResource( 6 )
 __meta__ = {
 "_edit_lock_": true

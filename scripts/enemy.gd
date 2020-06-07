@@ -51,6 +51,8 @@ onready var detect_floor_right = $detect_floor_right
 
 onready var impact_dust = preload("res://scenes/impact_dust.tscn")
 
+signal seen
+
 func _ready():
 	reset()
 	
@@ -103,11 +105,19 @@ func _physics_process(delta):
 	
 	if not chasing:
 		if direction < 0 and not detect_floor_left.is_colliding() and detect_floor_right.is_colliding():
-			direction = global.SIDE_RIGHT
-			timer_changed_side.start()
+			if timer_changed_side.is_stopped():
+				timer_changed_side.wait_time = get_random_time()
+				timer_changed_side.start()
+				direction = global.SIDE_RIGHT
+			else:
+				direction = 0
 		elif direction > 0 and detect_floor_left.is_colliding() and not detect_floor_right.is_colliding():
-			direction = global.SIDE_LEFT
-			timer_changed_side.start()
+			if timer_changed_side.is_stopped():
+				timer_changed_side.wait_time = get_random_time()
+				timer_changed_side.start()
+				direction = global.SIDE_LEFT
+			else:
+				direction = 0
 	
 	if last_position_x == round(global_position.x):
 		position_repeated += 1
@@ -143,6 +153,14 @@ func set_direction(delta=0):
 	
 	if direction:
 		sprite.scale = Vector2(-direction * SPRITE_SCALE, SPRITE_SCALE)
+
+func get_random_time():
+	var value = randi() % 3
+	
+	if value < 1:
+		value = 1
+	
+	return value
 
 func got_damage(value, on_top=false, on_left=null):
 	resistance -= value
@@ -190,6 +208,11 @@ func _on_damage_area_body_entered(body):
 		global.get_player().got_damage(DAMAGE, on_left)
 
 func chase(body):
+	if not chasing:
+		$sound.stream = global.sound_hit
+		$sound.play(0)
+		linear_velocity.y = -JUMP_SPEED/2
+	
 	chasing = true
 	timer_chasing.start()
 	current_speed = WALK_SPEED * 2
@@ -241,3 +264,19 @@ func _on_side_area_body_entered(body):
 			direction = global.SIDE_LEFT if randi() % 2 == 0 else global.SIDE_RIGHT
 		
 		set_direction()
+
+func _on_timer_check_side_area_timeout():
+	for body in $side_area.get_overlapping_bodies():
+		if global.is_enemy(body):
+			if timer_changed_side.is_stopped():
+				timer_changed_side.wait_time = get_random_time()
+				timer_changed_side.start()
+				
+				if direction:
+					direction *= -1
+				else:
+					direction = global.SIDE_LEFT if randi() % 2 == 0 else global.SIDE_RIGHT
+
+func _on_visible_area_body_entered(body):
+	if global.is_player(body):
+		emit_signal("seen")
