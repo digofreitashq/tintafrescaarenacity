@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/TintaFrescaStage1Battle.ogg-db0edeb6875b0ee91f6675dfc1e85e1b.oggstr"
+
+[deps]
+
+source_file="res://bgm/TintaFrescaStage1Battle.ogg"
+dest_files=[ "res://.import/TintaFrescaStage1Battle.ogg-db0edeb6875b0ee91f6675dfc1e85e1b.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

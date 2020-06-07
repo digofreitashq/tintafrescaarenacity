@@ -12,9 +12,10 @@ const ENEMY_TYPES = {
 }
 
 export (String, "arara", "bode", "cachorro", "crocodilo", "pato", "rato", "rinoceronte", "tigre") var type = "pato" setget setType, getType
+export var paused = false
+export var chasing = false
 
-const FLOOR_NORMAL = Vector2(0, -2)
-
+const FLOOR_NORMAL = Vector2(0, -1)
 const WALK_SPEED = 70
 const JUMP_SPEED = 400
 const STATE_WALKING = 0
@@ -25,15 +26,14 @@ const MIN_ONAIR_TIME= 0.1
 
 var initial_resistance = 1
 var linear_velocity = Vector2()
-var direction = global.SIDE_LEFT if randi() % 2 == 0 else global.SIDE_RIGHT
+var direction = global.SIDE[randi() % 2 == 0]
 var anim_name=""
 
 var state = STATE_WALKING
 var resistance = initial_resistance
 var last_position_x = 0
 var position_repeated = 0
-var chasing = false
-var current_speed = WALK_SPEED
+var current_speed = 0
 var onair_time = 0
 var onair_counter = 0
 var on_floor = false
@@ -72,6 +72,8 @@ func setType(new_type):
 		$sprite.set_texture(load("res://sprites/enemy_%s.png" % new_type))
 
 func _physics_process(delta):
+	if paused: return
+	
 	if not global.allow_movement: return
 	
 	onair_time += delta
@@ -128,25 +130,27 @@ func _physics_process(delta):
 		
 		if not chasing:
 			if timer_changed_side.is_stopped():
-				timer_changed_side.wait_time = 3 + randi() % 3
+				timer_changed_side.wait_time = randi() % 3
 				timer_changed_side.start()
 				
 				if detect_floor_left.is_colliding() or detect_floor_right.is_colliding():
 					if direction:
 						direction *= -1
 					else:
-						direction = global.SIDE_LEFT if randi() % 2 == 0 else global.SIDE_RIGHT
+						direction = global.SIDE[randi() % 2 == 0]
 			
 			current_speed = WALK_SPEED
 		else:
 			if timer_changed_side.is_stopped():
-				timer_changed_side.wait_time = 3 + randi() % 3
+				timer_changed_side.wait_time = randi() % 3
 				timer_changed_side.start()
 				linear_velocity.y = -JUMP_SPEED
 	
 	last_position_x = round(global_position.x)
 
 func set_direction(delta=0):
+	if paused: return
+	
 	linear_velocity += GRAVITY_VEC * delta
 	linear_velocity.x = direction * current_speed
 	linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL, false, 4, PI/4, false)
@@ -177,7 +181,7 @@ func got_damage(value, on_top=false, on_left=null):
 			linear_velocity.y = -JUMP_SPEED
 		
 		if on_left != null:
-			linear_velocity.x = (global.SIDE_LEFT if on_left else global.SIDE_RIGHT) * current_speed
+			linear_velocity.x = global.SIDE[on_left] * current_speed
 		else:
 			linear_velocity.x = -direction * current_speed
 		
@@ -197,6 +201,8 @@ func die():
 	queue_free()
 
 func _on_damage_area_body_entered(body):
+	if paused: return
+	
 	if ("enemy" in body.get_name()): return
 	
 	if ("bullet" in body.get_name()):
@@ -208,6 +214,8 @@ func _on_damage_area_body_entered(body):
 		global.get_player().got_damage(DAMAGE, on_left)
 
 func chase(body):
+	if paused: return
+	
 	if not chasing:
 		$sound.stream = global.sound_hit
 		$sound.play(0)
@@ -217,17 +225,18 @@ func chase(body):
 	timer_chasing.start()
 	current_speed = WALK_SPEED * 2
 	
-	if global_position.x > body.global_position.x:
-		direction = global.SIDE_LEFT
-	else:
-		direction = global.SIDE_RIGHT
+	direction = global.SIDE[global_position.x > body.global_position.x]
 	
 	set_direction()
 
 func check_body_chase(body):
+	if paused: return
+	
 	if global.is_player(body):
 		if not chasing:
-			if (direction > 0 and global_position.x > body.global_position.x) or (direction < 0 and global_position.x < body.global_position.x):
+			var visible_direction = global.SIDE[global_position.x > body.global_position.x]
+			
+			if direction != visible_direction:
 				return
 		
 		chase(body)
@@ -246,37 +255,50 @@ func _on_timer_damage_timeout():
 	sprite.modulate = Color(1,1,1,1)
 
 func check_kinematic_below(body):
+	if paused: return
+	
 	if body == self: return
 	
 	if global.is_player(body) or global.is_enemy(body):
-		linear_velocity.y = -JUMP_SPEED
+		linear_velocity.y = -JUMP_SPEED/2
 		
 		if global.is_player(body):
 			body.got_damage(DAMAGE)
 
 func _on_side_area_body_entered(body):
+	if paused: return
+	
 	if body == self: return
 	
 	if global.is_enemy(body):
 		if direction:
-			direction *= -1
+			if chasing:
+				direction = global.SIDE[global_position.x > body.global_position.x]
+			else:
+				direction *= -1
 		else:
-			direction = global.SIDE_LEFT if randi() % 2 == 0 else global.SIDE_RIGHT
+			direction = global.SIDE[randi() % 2 == 0]
 		
 		set_direction()
 
 func _on_timer_check_side_area_timeout():
+	if paused: return
+	
 	for body in $side_area.get_overlapping_bodies():
 		if global.is_enemy(body):
-			if timer_changed_side.is_stopped():
+			if chasing:
+				direction = global.SIDE[global_position.x > body.global_position.x]
+			elif timer_changed_side.is_stopped():
 				timer_changed_side.wait_time = get_random_time()
 				timer_changed_side.start()
 				
 				if direction:
 					direction *= -1
 				else:
-					direction = global.SIDE_LEFT if randi() % 2 == 0 else global.SIDE_RIGHT
+					direction = global.SIDE[randi() % 2 == 0]
 
 func _on_visible_area_body_entered(body):
+	if paused: return
+	
 	if global.is_player(body):
 		emit_signal("seen")

@@ -61,7 +61,7 @@ extents = Vector2( 16, 16 )
 extents = Vector2( 16, 8 )
 
 [node name="trampoline" type="RigidBody2D"]
-mass = 21.4286
+mass = 20.0
 script = ExtResource( 2 )
 
 [node name="sprite" type="Sprite" parent="."]

@@ -18,7 +18,7 @@ onready var sound_water_dripping_6 = preload("res://sfx/sound_water_dripping_6.w
 onready var dialog = global.get_dialog()
 
 var undergrounded = false
-var arthur_falou = 0
+var cut_scene = 0
 var first_enemy_seen = false
 
 func _ready():
@@ -37,7 +37,7 @@ func reset():
 	global.get_player().can_reload = false
 
 func enemy_seen_signal(body):
-	if arthur_falou == 1 and not first_enemy_seen:
+	if cut_scene == 1 and not first_enemy_seen:
 		first_enemy_seen = true
 		
 		body.direction = global.SIDE_LEFT if body.global_position.x > player.global_position.x else global.SIDE_RIGHT
@@ -101,13 +101,61 @@ func _on_area_parallax_1_body_exited(body):
 
 func _on_area_dark_light_off_body_exited(body):
 	if not global.is_player(body): return
+	
+	var porco = $chars/porco
+	
+	$music.stop()
+	$timer_sfx.stop()
+	$bg.stop()
+	
 	var hide = $triggers/area_dark_light_off/CollisionShape2D.global_position.x < player.global_position.x
 	yield(player, "grounded")
 	
+	
+	
+	global.set_player_control(false)
 	
 	player.show_dark_light(hide)
 	
 	find_node("grid2").close()
 	yield(find_node("grid2"), "finished")
+	
+	dialog.display([
+		["Ícaro","É... Agora eu me ferrei."],
+		])
+	yield(dialog, "finished")
+	
+	$music.volume_db = 0
+	$music.stream = load("res://bgm/TintaFrescaStage1Battle.ogg")
+	$music.play()
+	
+	porco.porco_sm.set_state(porco.porco_sm.states.laugh)
+	
+	dialog.display([
+		["Porco","Mas olha só o peixe que caiu na minha rede! ~~\nRapazes, divirtam-se!"],
+		])
+	yield(dialog, "finished")
+	global.set_player_control(true)
+	
+	porco.siding_left = false
+	porco.sprite.scale.x = porco.SPRITE_SCALE * global.SIDE[porco.siding_left]
+	$chars/porco/anim.play("run")
+	$chars/porco/anim_porco.play("escape")
+	
 	find_node("grid1").close()
 	yield(find_node("grid1"), "finished")
+	
+	$enemies/rato3.chasing = true
+	$enemies/rinoceronte3.chasing = true
+	$enemies/crocodilo3.chasing = true
+	
+	dialog.display([
+		["Rinoceronte","Peguem ele!"],
+		])
+	yield(dialog, "finished")
+	
+	$enemies/rato3.paused = false
+	$enemies/rinoceronte3.paused = false
+	$enemies/crocodilo3.paused = false
+	
+	global.set_player_control(true)

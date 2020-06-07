@@ -101,12 +101,12 @@ extents = Vector2( 10, 9.54502 )
 [sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 56.6667, 9.90837 )
 
-[sub_resource type="RectangleShape2D" id=9]
+[sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 60, 9.54502 )
 
-[sub_resource type="RectangleShape2D" id=7]
-
 [sub_resource type="RectangleShape2D" id=8]
+
+[sub_resource type="RectangleShape2D" id=9]
 extents = Vector2( 40, 10 )
 
 [node name="enemy" type="KinematicBody2D"]
@@ -150,7 +150,6 @@ shape = SubResource( 5 )
 one_way_collision_margin = 0.0
 
 [node name="chase_area" type="Area2D" parent="."]
-visible = false
 position = Vector2( 0, 10 )
 scale = Vector2( 3, 3.143 )
 
@@ -159,24 +158,25 @@ shape = SubResource( 6 )
 one_way_collision_margin = 0.0
 
 [node name="visible_area" type="Area2D" parent="."]
+visible = false
 position = Vector2( 0, 10 )
 scale = Vector2( 3, 3.143 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="visible_area"]
-shape = SubResource( 9 )
+shape = SubResource( 7 )
 one_way_collision_margin = 0.0
 
 [node name="bottom_area" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="bottom_area"]
 position = Vector2( 0, 40 )
-shape = SubResource( 7 )
+shape = SubResource( 8 )
 
 [node name="side_area" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="side_area"]
 position = Vector2( 0, 10 )
-shape = SubResource( 8 )
+shape = SubResource( 9 )
 
 [node name="name_label" type="Label" parent="."]
 visible = false

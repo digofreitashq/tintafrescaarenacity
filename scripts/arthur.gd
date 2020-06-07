@@ -171,7 +171,7 @@ func arthur_talks():
 			])
 		yield(dialog, "finished")
 		
-		arthur_sm.set_state(arthur_sm.states.eating)
+		arthur_sm.set_state(arthur_sm.states.eat)
 		
 		global.wait_until_signal(1)
 		yield(global, "waited")
@@ -239,11 +239,11 @@ func arthur_talks():
 		
 		global.set_player_control(true)
 		
-		global.get_stage().arthur_falou = ID
+		global.get_stage().cut_scene = ID
 		
 		queue_free()
 	
-	elif ID == 2 and global.get_stage().arthur_falou == 1 and times_talked == 0:
+	elif ID == 2 and global.get_stage().cut_scene == 1 and times_talked == 0:
 		yield(player, "grounded")
 		global.set_player_control(false)
 		player.siding_left = global_position.x < player.global_position.x
@@ -307,5 +307,5 @@ func arthur_talks():
 		
 		global.set_player_control(true)
 		
-		global.get_stage().arthur_falou = ID
+		global.get_stage().cut_scene = ID
 		

@@ -4,7 +4,7 @@ func _ready():
 	add_state("idle")
 	add_state("run")
 	add_state("fall")
-	add_state("eating")
+	add_state("laugh")
 	call_deferred("set_state", states.idle)
 
 func _state_logic(delta):
@@ -34,7 +34,7 @@ func _get_transition(_delta):
 			if parent.is_on_floor():
 				return states.idle
 		
-		states.eating:
+		states.laugh:
 			if not parent.on_floor:
 				if round(parent.linear_velocity.y) > 0:
 					return states.fall
@@ -51,5 +51,5 @@ func _enter_state(new_state, _old_state):
 			parent.play_anim("walk")
 		states.fall:
 			parent.play_anim("idle")
-		states.eating:
-			parent.play_anim("eating")
+		states.laugh:
+			parent.play_anim("laugh")
