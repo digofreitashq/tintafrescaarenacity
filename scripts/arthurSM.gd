@@ -48,7 +48,7 @@ func _enter_state(new_state, _old_state):
 		states.idle:
 			parent.play_anim("idle")
 		states.run:
-			parent.play_anim("walk")
+			parent.play_anim("run")
 		states.fall:
 			parent.play_anim("idle")
 		states.eat:

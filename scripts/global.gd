@@ -13,6 +13,8 @@ var enemies = 0
 var graffitis = 0
 var allow_movement = true
 
+var finished = false
+
 var imgs_health = {}
 var imgs_bullets = {}
 
@@ -124,15 +126,17 @@ func set_player_control(enable):
 		player.play_anim("idle")
 		yield(player.anim, "animation_finished")
 
-func do_timer_signal():
+func do_timer_signal(timer=null):
 	emit_signal("waited")
+	timer.queue_free()
 
 func wait_until_signal(seconds):
-	var timer = get_tree().get_current_scene().get_node("stage_timer")
-	timer.set_wait_time(seconds)
+	var timer = Timer.new()
+	timer.one_shot = true
+	timer.wait_time = seconds
+	timer.connect("timeout", self, "do_timer_signal", [timer])
 	
-	if not timer.is_connected("timeout", self, "do_timer_signal"):
-		timer.connect("timeout", self, "do_timer_signal")
+	get_stage().add_child(timer)
 	
 	timer.start()
 
@@ -302,6 +306,7 @@ func reset_stage():
 			if "reset" in node: node.reset()
 
 func reload_stage():
+	finished = false
 	reset_stage()
 	get_tree().reload_current_scene()
 	global.allow_movement = true

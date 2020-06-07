@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://sprites/osb_right.png" type="Texture" id=1]
+[ext_resource path="res://fonts/pressstart2p.font" type="BitmapFont" id=4]
+[ext_resource path="res://scripts/disclaimer.gd" type="Script" id=8]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 20.0
+
+[node name="disclaimer" type="Node2D"]
+script = ExtResource( 8 )
+
+[node name="label1" type="Label" parent="."]
+margin_right = 640.0
+margin_bottom = 364.0
+custom_fonts/font = ExtResource( 4 )
+text = "ATENÇÃO:
+
+Este jogo é uma demonstração. Devido ao prazo estabelecido pelo desenvolvedor para a entrega desta versão, não foi possível verificar e corrigir todos os erros encontrados e outros não encontrados.
+
+"
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label2" type="Label" parent="."]
+visible = false
+margin_right = 640.0
+margin_bottom = 364.0
+custom_fonts/font = ExtResource( 4 )
+text = "Obrigado por jogar!
+
+Esta demo é o resultado de 3 anos de aprendizado, muitos recomeços. O meu primeiro jogo demo completo!
+
+Com certeza ainda há muito o que melhorar, mas espero que pelo menos tenha sido divertido para você!
+
+Ah! Gostaria de lembrar que a HQ \"Tinta Fresca: Arte-Final\" estará até o dia 19/06/2020 em campanha. Garanta sua cópia física ou digital!
+
+Acesse: 
+catarse.me/artefinal"
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2( 280, 270 )
+scale = Vector2( 2, 2 )
+normal = ExtResource( 1 )
+shape = SubResource( 1 )
+action = "shoot"
+visibility_mode = 1

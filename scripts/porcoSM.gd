@@ -15,6 +15,9 @@ func _state_logic(delta):
 	parent._apply_movement(delta)
 	
 func _get_transition(_delta):
+	if ignore_transition:
+		return
+	
 	match state:
 		states.idle:
 			if not parent.on_floor:
@@ -48,7 +51,7 @@ func _enter_state(new_state, _old_state):
 		states.idle:
 			parent.play_anim("idle")
 		states.run:
-			parent.play_anim("walk")
+			parent.play_anim("run")
 		states.fall:
 			parent.play_anim("idle")
 		states.laugh:

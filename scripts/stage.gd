@@ -1,5 +1,9 @@
 extends Node
 
+const ARTHUR_1_ID = 1
+const ARTHUR_2_ID = 2
+const PORCO_ID = 3
+
 onready var player = $chars/player
 
 onready var sound_siren_police = preload("res://sfx/sound_siren_police.wav")
@@ -20,25 +24,40 @@ onready var dialog = global.get_dialog()
 var undergrounded = false
 var cut_scene = 0
 var first_enemy_seen = false
+var porco_dead_enemies = 0
 
 func _ready():
 	for body in $enemies.get_children():
 		body.connect("seen", self, "enemy_seen_signal", [body])
+		body.connect("dead", self, "enemy_dead_signal", [body])
 	
 	reset()
 
 func reset():
 	undergrounded = false
+	cut_scene = 0
+	first_enemy_seen = false
+	porco_dead_enemies = 0
 	
 	for node in $collisions.get_children(): node.set_visible(false)
 	for node in $graffitis.get_children(): node.set_visible(false)
 	
 	$music.pause_mode = true
 	global.get_player().can_reload = false
+	
+	$collisions/porco_collision.collision_mask = 1
+	$collisions/porco_collision.collision_layer = 1
+	$chars/porco.siding_left = true
+	$chars/porco.porco_sm.ignore_transition = true
 
 func enemy_seen_signal(body):
-	if cut_scene == 1 and not first_enemy_seen:
+	if not body: return
+	
+	if cut_scene == ARTHUR_1_ID and not first_enemy_seen:
 		first_enemy_seen = true
+		
+		if not player.on_floor:
+			yield(player, "grounded")
 		
 		body.direction = global.SIDE_LEFT if body.global_position.x > player.global_position.x else global.SIDE_RIGHT
 		body.set_direction()
@@ -49,6 +68,33 @@ func enemy_seen_signal(body):
 			["Mutante","Pagou quanto pra ver minha beleza?"],
 			])
 		yield(dialog, "finished")
+		global.set_player_control(true)
+
+func enemy_dead_signal(body):
+	if cut_scene == PORCO_ID:
+		porco_dead_enemies += 1
+	
+	if porco_dead_enemies == 3:
+		if not player.on_floor:
+			yield(player, "grounded")
+		
+		global.set_player_control(false)
+		
+		find_node("grid1").open()
+		yield(find_node("grid1"), "finished")
+		find_node("grid2").open()
+		yield(find_node("grid2"), "finished")
+		
+		player.play_anim("start_scratch")
+		
+		dialog.display([
+			["Ícaro","Ufa! Achei que tinha chegado a minha hora... ~~\nO Arthur vai me pagar por essa!"],
+			])
+		yield(dialog, "finished")
+		
+		global.finished = true
+		get_tree().change_scene("res://scenes/disclaimer.tscn")
+		
 		global.set_player_control(true)
 
 func random_sound():
@@ -100,7 +146,13 @@ func _on_area_parallax_1_body_exited(body):
 	$music.play(playback_position)
 
 func _on_area_dark_light_off_body_exited(body):
+	if cut_scene == PORCO_ID: return
+	
 	if not global.is_player(body): return
+	
+	var hide = $triggers/area_dark_light_off/CollisionShape2D.global_position.x < player.global_position.x
+	
+	if not hide: return
 	
 	var porco = $chars/porco
 	
@@ -108,17 +160,18 @@ func _on_area_dark_light_off_body_exited(body):
 	$timer_sfx.stop()
 	$bg.stop()
 	
-	var hide = $triggers/area_dark_light_off/CollisionShape2D.global_position.x < player.global_position.x
-	yield(player, "grounded")
-	
-	
+	if not player.on_floor:
+		yield(player, "grounded")
 	
 	global.set_player_control(false)
 	
-	player.show_dark_light(hide)
+	player.show_dark_light(!hide)
 	
 	find_node("grid2").close()
 	yield(find_node("grid2"), "finished")
+	
+	player.siding_left = false
+	player.play_anim("start_scratch")
 	
 	dialog.display([
 		["Ícaro","É... Agora eu me ferrei."],
@@ -137,25 +190,38 @@ func _on_area_dark_light_off_body_exited(body):
 	yield(dialog, "finished")
 	global.set_player_control(true)
 	
+	player.play_anim("idle")
+	
 	porco.siding_left = false
-	porco.sprite.scale.x = porco.SPRITE_SCALE * global.SIDE[porco.siding_left]
-	$chars/porco/anim.play("run")
+	porco.porco_sm.set_state(porco.porco_sm.states.run)
+	global.wait_until_signal(2)
 	$chars/porco/anim_porco.play("escape")
+	yield($chars/porco/anim_porco, "animation_finished")
+	
+	global.wait_until_signal(2)
 	
 	find_node("grid1").close()
 	yield(find_node("grid1"), "finished")
 	
-	$enemies/rato3.chasing = true
-	$enemies/rinoceronte3.chasing = true
-	$enemies/crocodilo3.chasing = true
+	var enemies = [$enemies/rato3,$enemies/rinoceronte3,$enemies/crocodilo3]
+	
+	for enemy in enemies:
+		enemy.chasing = true
+		enemy.direction = global.SIDE_LEFT
+		enemy.initial_resistance *= 4
+		enemy.current_speed = enemy.WALK_SPEED * 2
 	
 	dialog.display([
 		["Rinoceronte","Peguem ele!"],
 		])
 	yield(dialog, "finished")
 	
-	$enemies/rato3.paused = false
-	$enemies/rinoceronte3.paused = false
-	$enemies/crocodilo3.paused = false
+	for enemy in enemies:
+		enemy.paused = false
+	
+	$collisions/porco_collision.collision_mask = 0
+	$collisions/porco_collision.collision_layer = 0
 	
 	global.set_player_control(true)
+	
+	cut_scene = PORCO_ID

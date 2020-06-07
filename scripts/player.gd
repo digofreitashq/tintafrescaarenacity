@@ -92,7 +92,7 @@ func _apply_movement(_delta):
 		var collision = get_slide_collision(index)
 		
 		if collision.collider.is_in_group("bodies"):
-			collision.collider.apply_central_impulse(Vector2((-collision.normal * 500).x,0))
+			collision.collider.apply_central_impulse(Vector2((-collision.normal * 100).x,0))
 	
 	on_floor_before = on_floor
 	on_floor = onair_time < MIN_ONAIR_TIME
@@ -445,6 +445,8 @@ func die():
 	play_sound(global.sound_dead)
 	abort_flashing()
 	player_sm.set_state(player_sm.states.dead)
+	collision_layer = 0
+	collision_mask = 0
 	anim.play("die")
 	yield(anim, "animation_finished")
 	can_reload = true

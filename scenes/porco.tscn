@@ -5,7 +5,7 @@
 [ext_resource path="res://sfx/sound_enemy.wav" type="AudioStream" id=3]
 [ext_resource path="res://scripts/porco.gd" type="Script" id=4]
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=1]
 length = 10.8
 loop = true
 step = 0.2
@@ -34,7 +34,7 @@ tracks/1/keys = {
 "values": [ 16, 17, 18, 19, 20, 21, 22, 16 ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=2]
 resource_name = "laugh"
 length = 10.0
 step = 0.25
@@ -51,7 +51,8 @@ tracks/0/keys = {
 "values": [ 8, 12, 3, 4, 5, 4, 5, 4, 5, 4, 5, 4, 5, 4, 5, 4, 5, 4, 3, 8 ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=3]
+resource_name = "run"
 length = 2.0
 loop = true
 step = 0.25
@@ -68,16 +69,17 @@ tracks/0/keys = {
 "values": [ 0, 1, 2, 1 ]
 }
 
-[sub_resource type="RectangleShape2D" id=5]
+[sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 20, 34 )
 
-[sub_resource type="RectangleShape2D" id=6]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 10, 12.7267 )
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 75.2641, 17.1474 )
 
 [node name="porco" type="KinematicBody2D"]
+collision_layer = 4
 script = ExtResource( 4 )
 
 [node name="porco_sm" type="Node" parent="."]
@@ -88,21 +90,20 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 vframes = 4
 hframes = 8
-frame = 8
 
 [node name="breath_sprite" type="Sprite" parent="."]
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 vframes = 4
 hframes = 8
-frame = 22
+frame = 16
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle"
 playback_speed = 3.0
-anims/idle = SubResource( 2 )
-anims/laugh = SubResource( 3 )
-anims/walk = SubResource( 4 )
+anims/idle = SubResource( 1 )
+anims/laugh = SubResource( 2 )
+anims/run = SubResource( 3 )
 
 [node name="detect_floor_left" type="RayCast2D" parent="."]
 visible = false
@@ -129,9 +130,8 @@ enabled = true
 cast_to = Vector2( 0, 45 )
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2( 0, 10 )
-shape = SubResource( 5 )
+position = Vector2( 0, 18 )
+shape = SubResource( 4 )
 one_way_collision_margin = 0.0
 
 [node name="damage_area" type="Area2D" parent="."]
@@ -139,7 +139,7 @@ visible = false
 scale = Vector2( 3, 3.143 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="damage_area"]
-shape = SubResource( 6 )
+shape = SubResource( 5 )
 one_way_collision_margin = 0.0
 
 [node name="chase_area" type="Area2D" parent="."]
@@ -149,7 +149,7 @@ scale = Vector2( 3, 3.143 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="chase_area"]
 position = Vector2( 0, -6 )
-shape = SubResource( 7 )
+shape = SubResource( 6 )
 one_way_collision_margin = 0.0
 
 [node name="sound" type="AudioStreamPlayer" parent="."]

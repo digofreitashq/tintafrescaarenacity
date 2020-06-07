@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Tinta Fresca Arena"
-run/main_scene="res://scenes/title.tscn"
+run/main_scene="res://scenes/disclaimer.tscn"
 run/low_processor_mode=true
 boot_splash/fullsize=false
 boot_splash/use_filter=false
@@ -108,6 +108,12 @@ skip={
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":1,"pressure":0.0,"pressed":false,"script":null)
  ]
 }
+
+[layer_names]
+
+2d_physics/layer_1="General"
+2d_physics/layer_2="Hero"
+2d_physics/layer_3="Enemies"
 
 [physics]
 

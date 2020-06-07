@@ -4,7 +4,7 @@ const ENEMY_TYPES = {
 	"arara": 1, 
 	"bode": 2, 
 	"cachorro": 2, 
-	"crocodilo": 4, 
+	"crocodilo": 3, 
 	"pato": 3, 
 	"rato": 2, 
 	"rinoceronte": 4, 
@@ -23,6 +23,7 @@ const STATE_KILLED = 1
 const SPRITE_SCALE = 2
 const DAMAGE = 1
 const MIN_ONAIR_TIME= 0.1
+const MAX_INITIAL_RESISTANCE = 4
 
 var initial_resistance = 1
 var linear_velocity = Vector2()
@@ -39,6 +40,7 @@ var onair_counter = 0
 var on_floor = false
 
 onready var GRAVITY_VEC = Vector2(0, global.GRAVITY)
+onready var player = global.get_player()
 
 onready var anim = $anim
 onready var sprite = $sprite
@@ -52,6 +54,7 @@ onready var detect_floor_right = $detect_floor_right
 onready var impact_dust = preload("res://scenes/impact_dust.tscn")
 
 signal seen
+signal dead
 
 func _ready():
 	reset()
@@ -63,6 +66,9 @@ func reset():
 	sprite.modulate = Color(1,1,1,1)
 	sprite.set_visible(true)
 	$name_label.set("text", get_name())
+	
+	if paused:
+		current_speed = 0
 
 func getType():
 	return type
@@ -96,8 +102,7 @@ func _physics_process(delta):
 	var new_anim = "idle"
 
 	if state == STATE_WALKING:
-		set_direction(delta)
-		new_anim = "walk"
+		new_anim = "run"
 	else:
 		new_anim = "explode"
 
@@ -105,48 +110,77 @@ func _physics_process(delta):
 		anim_name = new_anim
 		anim.play(anim_name)
 	
-	if not chasing:
-		if direction < 0 and not detect_floor_left.is_colliding() and detect_floor_right.is_colliding():
-			if timer_changed_side.is_stopped():
-				timer_changed_side.wait_time = get_random_time()
-				timer_changed_side.start()
-				direction = global.SIDE_RIGHT
-			else:
-				direction = 0
-		elif direction > 0 and detect_floor_left.is_colliding() and not detect_floor_right.is_colliding():
-			if timer_changed_side.is_stopped():
-				timer_changed_side.wait_time = get_random_time()
-				timer_changed_side.start()
-				direction = global.SIDE_LEFT
-			else:
-				direction = 0
+	var changed_direction = false
 	
-	if last_position_x == round(global_position.x):
-		position_repeated += 1
-	
-	if position_repeated > 10:
-		position_repeated = 0
-		last_position_x = 0
+	if chasing:
+		if player.on_floor and abs(global_position.x - player.global_position.x) > (16 * (MAX_INITIAL_RESISTANCE-initial_resistance)):
+			if randi() % 3 == 0:
+				direction = global.SIDE[global_position.x > player.global_position.x]
+	else:
+		current_speed = WALK_SPEED
 		
-		if not chasing:
+		if not changed_direction:
+			for body in $side_area.get_overlapping_bodies():
+				if body == self: continue
+
+				if global.is_enemy(body):
+					if timer_changed_side.is_stopped():
+						timer_changed_side.wait_time = get_random_time()
+						timer_changed_side.start()
+
+						if direction:
+							direction *= -1
+						else:
+							direction = global.SIDE[randi() % 2 == 0]
+
+						changed_direction = true
+
+					break
+		
+		if not changed_direction:
+			if direction == global.SIDE_LEFT and not detect_floor_left.is_colliding() and detect_floor_right.is_colliding():
+				if timer_changed_side.is_stopped():
+					timer_changed_side.wait_time = get_random_time()
+					timer_changed_side.start()
+					direction = global.SIDE_RIGHT
+				else:
+					direction = 0
+				
+				changed_direction = true
+			elif direction == global.SIDE_RIGHT and detect_floor_left.is_colliding() and not detect_floor_right.is_colliding():
+				if timer_changed_side.is_stopped():
+					timer_changed_side.wait_time = get_random_time()
+					timer_changed_side.start()
+					direction = global.SIDE_LEFT
+				else:
+					direction = 0
+				
+				changed_direction = true
+		
+	if not changed_direction or chasing:
+		if last_position_x == round(global_position.x):
+			position_repeated += 1
+		
+		if position_repeated > 10:
+			position_repeated = 0
+			last_position_x = 0
+			
 			if timer_changed_side.is_stopped():
-				timer_changed_side.wait_time = randi() % 3
+				timer_changed_side.wait_time = get_random_time()
 				timer_changed_side.start()
 				
-				if detect_floor_left.is_colliding() or detect_floor_right.is_colliding():
-					if direction:
-						direction *= -1
-					else:
-						direction = global.SIDE[randi() % 2 == 0]
-			
-			current_speed = WALK_SPEED
-		else:
-			if timer_changed_side.is_stopped():
-				timer_changed_side.wait_time = randi() % 3
-				timer_changed_side.start()
-				linear_velocity.y = -JUMP_SPEED
-	
-	last_position_x = round(global_position.x)
+				if chasing:
+					linear_velocity.y = -JUMP_SPEED
+				else:
+					if detect_floor_left.is_colliding() or detect_floor_right.is_colliding():
+						if direction:
+							direction *= -1
+						else:
+							direction = global.SIDE[randi() % 2 == 0]
+		
+		last_position_x = round(global_position.x)
+		
+	set_direction(delta)
 
 func set_direction(delta=0):
 	if paused: return
@@ -160,6 +194,8 @@ func set_direction(delta=0):
 
 func get_random_time():
 	var value = randi() % 3
+	
+	value += (MAX_INITIAL_RESISTANCE-initial_resistance)/2
 	
 	if value < 1:
 		value = 1
@@ -187,7 +223,7 @@ func got_damage(value, on_top=false, on_left=null):
 		
 		linear_velocity = move_and_slide(linear_velocity, FLOOR_NORMAL)
 		
-		chase(global.get_player())
+		chase(player)
 
 func die():
 	state = STATE_KILLED
@@ -198,6 +234,7 @@ func die():
 	global.update_enemies(-1)
 	global.drop_random_item(self, initial_resistance, Vector2(-8,0))
 	global.drop_random_item(self, initial_resistance, Vector2(-8,0))
+	emit_signal("dead")
 	queue_free()
 
 func _on_damage_area_body_entered(body):
@@ -211,7 +248,7 @@ func _on_damage_area_body_entered(body):
 	elif ("player" in body.get_name()):
 		var on_left = global_position.x > body.global_position.x
 		
-		global.get_player().got_damage(DAMAGE, on_left)
+		player.got_damage(DAMAGE, on_left)
 
 func chase(body):
 	if paused: return
@@ -224,8 +261,6 @@ func chase(body):
 	chasing = true
 	timer_chasing.start()
 	current_speed = WALK_SPEED * 2
-	
-	direction = global.SIDE[global_position.x > body.global_position.x]
 	
 	set_direction()
 
@@ -258,44 +293,12 @@ func check_kinematic_below(body):
 	if paused: return
 	
 	if body == self: return
-	
+	return
 	if global.is_player(body) or global.is_enemy(body):
 		linear_velocity.y = -JUMP_SPEED/2
 		
 		if global.is_player(body):
 			body.got_damage(DAMAGE)
-
-func _on_side_area_body_entered(body):
-	if paused: return
-	
-	if body == self: return
-	
-	if global.is_enemy(body):
-		if direction:
-			if chasing:
-				direction = global.SIDE[global_position.x > body.global_position.x]
-			else:
-				direction *= -1
-		else:
-			direction = global.SIDE[randi() % 2 == 0]
-		
-		set_direction()
-
-func _on_timer_check_side_area_timeout():
-	if paused: return
-	
-	for body in $side_area.get_overlapping_bodies():
-		if global.is_enemy(body):
-			if chasing:
-				direction = global.SIDE[global_position.x > body.global_position.x]
-			elif timer_changed_side.is_stopped():
-				timer_changed_side.wait_time = get_random_time()
-				timer_changed_side.start()
-				
-				if direction:
-					direction *= -1
-				else:
-					direction = global.SIDE[randi() % 2 == 0]
 
 func _on_visible_area_body_entered(body):
 	if paused: return

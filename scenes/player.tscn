@@ -1424,6 +1424,7 @@ color_ramp = SubResource( 70 )
 anim_speed_curve = SubResource( 68 )
 
 [node name="player" type="KinematicBody2D"]
+collision_mask = 0
 collision/safe_margin = 1.0
 script = ExtResource( 1 )
 
@@ -1454,7 +1455,7 @@ z_index = 1
 texture = ExtResource( 5 )
 vframes = 8
 hframes = 16
-frame = 48
+frame = 86
 
 [node name="anim" type="AnimationPlayer" parent="."]
 autoplay = "idle_right"

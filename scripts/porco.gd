@@ -18,13 +18,10 @@ var walk_pixels = 0
 var initial_position_x = 0
 var last_position_x = 0
 var position_repeated = 0
-
 var siding_left = false
 
 onready var sprite = $sprite
 onready var anim = $anim
-onready var left_wall_raycast = $left_wall_raycast
-onready var right_wall_raycast = $right_wall_raycast
 onready var porco_sm = $porco_sm
 onready var dialog = global.get_dialog()
 onready var player = global.get_player()
@@ -49,7 +46,7 @@ func _apply_movement(_delta):
 	on_floor = onair_time < MIN_ONAIR_TIME
 	target_speed *= WALK_SPEED
 	linear_velocity.x = lerp(linear_velocity.x, target_speed, 0.1)
-	$sprite.scale = Vector2(global.SIDE[siding_left] * SPRITE_SCALE, SPRITE_SCALE)
+	$sprite.scale = Vector2(global.SIDE[siding_left] * -SPRITE_SCALE, SPRITE_SCALE)
 	
 	if abs(initial_position_x - global_position.x) > abs(walk_pixels):
 		walk_pixels = 0
@@ -90,12 +87,7 @@ func _handle_move_input():
 			siding_left = false
 
 func play_anim(anim_name):
-	$sprite.scale.x = global.SIDE[siding_left] * SPRITE_SCALE
+	$sprite.scale.x = global.SIDE[siding_left] * -SPRITE_SCALE
+	$sprite.update()
 	
 	anim.play(anim_name)
-
-func wall_direction():
-	var is_near_left = left_wall_raycast.is_colliding()
-	var is_near_right = right_wall_raycast.is_colliding()
-	
-	return -int(is_near_left) + int(is_near_right)

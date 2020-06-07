@@ -38,6 +38,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=3]
+resource_name = "run"
 length = 2.0
 loop = true
 step = 0.25
@@ -71,14 +72,14 @@ script = ExtResource( 2 )
 playback_speed = 3.0
 anims/eat = SubResource( 1 )
 anims/idle = SubResource( 2 )
-anims/walk = SubResource( 3 )
+anims/run = SubResource( 3 )
 
 [node name="sprite" type="Sprite" parent="."]
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 vframes = 4
 hframes = 16
-frame = 22
+frame = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
