@@ -55,7 +55,7 @@ centered = false
 
 [node name="left" type="TouchScreenButton" parent="ui"]
 modulate = Color( 1, 1, 1, 0.501961 )
-position = Vector2( 20, 390 )
+position = Vector2( 14, 283 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 17 )
 shape = SubResource( 1 )
@@ -65,7 +65,7 @@ visibility_mode = 1
 
 [node name="right" type="TouchScreenButton" parent="ui"]
 modulate = Color( 1, 1, 1, 0.501961 )
-position = Vector2( 140, 390 )
+position = Vector2( 134, 283 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 18 )
 shape = SubResource( 2 )
@@ -75,7 +75,7 @@ visibility_mode = 1
 
 [node name="jump" type="TouchScreenButton" parent="ui"]
 modulate = Color( 1, 1, 1, 0.501961 )
-position = Vector2( 560, 390 )
+position = Vector2( 563, 287 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 19 )
 shape = SubResource( 3 )
@@ -84,7 +84,7 @@ visibility_mode = 1
 
 [node name="jump2" type="TouchScreenButton" parent="ui"]
 modulate = Color( 1, 1, 1, 0.501961 )
-position = Vector2( 560, 270 )
+position = Vector2( 563, 167 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 7 )
 shape = SubResource( 3 )
@@ -93,7 +93,7 @@ visibility_mode = 1
 
 [node name="fire" type="TouchScreenButton" parent="ui"]
 modulate = Color( 1, 1, 1, 0.501961 )
-position = Vector2( 450, 350 )
+position = Vector2( 453, 247 )
 scale = Vector2( 2, 2 )
 normal = ExtResource( 15 )
 shape = SubResource( 4 )

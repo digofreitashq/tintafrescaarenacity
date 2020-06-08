@@ -381,8 +381,6 @@ pause_mode = 2
 script = ExtResource( 1 )
 
 [node name="dialog_bg" type="Sprite" parent="."]
-visible = false
-self_modulate = Color( 1, 1, 1, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 centered = false
@@ -391,8 +389,6 @@ __meta__ = {
 }
 
 [node name="dialog_brace_left" type="Sprite" parent="."]
-visible = false
-position = Vector2( -64, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 centered = false
@@ -401,8 +397,6 @@ __meta__ = {
 }
 
 [node name="dialog_brace_right" type="Sprite" parent="."]
-visible = false
-position = Vector2( 64, 0 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 centered = false
@@ -422,8 +416,6 @@ __meta__ = {
 }
 
 [node name="text" type="Label" parent="."]
-visible = false
-modulate = Color( 1, 1, 1, 0 )
 margin_left = 40.0
 margin_top = 242.0
 margin_right = 626.0
@@ -441,8 +433,7 @@ __meta__ = {
 }
 
 [node name="speaker" type="Label" parent="."]
-visible = false
-modulate = Color( 1, 0.623529, 0.145098, 0 )
+modulate = Color( 1, 0.623529, 0.145098, 1 )
 self_modulate = Color( 1, 0.623529, 0.145098, 1 )
 margin_left = 40.0
 margin_top = 220.0

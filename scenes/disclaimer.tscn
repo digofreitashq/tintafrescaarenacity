@@ -11,6 +11,7 @@ radius = 20.0
 script = ExtResource( 8 )
 
 [node name="label1" type="Label" parent="."]
+visible = false
 margin_right = 640.0
 margin_bottom = 364.0
 custom_fonts/font = ExtResource( 4 )
@@ -27,13 +28,12 @@ __meta__ = {
 }
 
 [node name="label2" type="Label" parent="."]
-visible = false
 margin_right = 640.0
 margin_bottom = 364.0
 custom_fonts/font = ExtResource( 4 )
 text = "Obrigado por jogar!
 
-Esta demo é o resultado de 3 anos de aprendizado, muitos recomeços. O meu primeiro jogo demo completo!
+Esta demo é o resultado de 3 anos de aprendizado, incluindo vários reinícios até chegar numa estrutura interessante. É o meu primeiro jogo demo completo!
 
 Com certeza ainda há muito o que melhorar, mas espero que pelo menos tenha sido divertido para você!
 

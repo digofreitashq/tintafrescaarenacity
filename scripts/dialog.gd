@@ -18,7 +18,7 @@ func _ready():
 	reset()
 
 func reset():
-	self.set_visible(true)
+	visible = true
 	$dialog_bg.visible = false
 	$dialog_brace_left.visible = false
 	$dialog_brace_right.visible = false
@@ -64,6 +64,9 @@ func display(messages):
 	
 	global.show_player_ui(false)
 	
+	$fire.visible = true
+	$skip.visible = true
+	
 	if Input.is_action_pressed("skip"):
 		global.get_player().skip_dialog = true
 	else:
@@ -77,6 +80,9 @@ func display(messages):
 	timer_letter.start()
 
 func finish():
+	$fire.visible = false
+	$skip.visible = false
+	
 	global.get_player().skip_dialog = false
 	$anim.play("close")
 	yield($anim, "animation_finished")
